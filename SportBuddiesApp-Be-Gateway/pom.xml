@@ -39,11 +39,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		<!--
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
+		</dependency> 
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -56,6 +56,21 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+		<!-- INI: Dependencias para trabajar con OAUTH2 -->
+		<!-- ########################################## -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<!-- FIN: Dependencias para trabajar con OAUTH2 -->
+		<!-- ########################################## -->
 
 		<!-- INI: Dependencias para JJWT -->
 		<!-- ########################### -->
@@ -89,7 +104,6 @@
 		<!-- INI: Dependencias para JJWT -->
 		<!-- ########################### -->
 
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -102,6 +116,8 @@
 			<optional>true</optional>
 		</dependency>
 
+
+		
 	</dependencies>
 
 	<dependencyManagement>
@@ -132,4 +148,17 @@
 		</plugins>
 	</build>
 
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
 </project>
