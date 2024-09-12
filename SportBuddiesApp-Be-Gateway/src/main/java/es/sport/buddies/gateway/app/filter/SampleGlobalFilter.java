@@ -1,6 +1,7 @@
 package es.sport.buddies.gateway.app.filter;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -45,9 +47,11 @@ public class SampleGlobalFilter implements GlobalFilter {
                 Jwt jwt = jwtDecoder.decode(token);
                 String userId = jwt.getClaim("sub"); // Suponiendo que "sub" es el claim que contiene el ID del usuario
 
+                List<GrantedAuthority> roles = jwt.getClaimAsStringList("roles").stream().map(role -> (GrantedAuthority) 
+                    new SimpleGrantedAuthority(role)).toList();
+                
                 // Crea un objeto Authentication (puedes usar una clase personalizada o una de Spring Security)
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null,
-                		Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null,roles);
                 
                 // Configura el SecurityContextHolder con la Authentication
                 SecurityContextHolder.getContext().setAuthentication(authentication);

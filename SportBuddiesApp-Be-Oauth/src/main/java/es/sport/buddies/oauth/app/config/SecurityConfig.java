@@ -103,6 +103,10 @@ public class SecurityConfig {
   }
    */
 
+  /**
+   * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
+   * enviar el  IUsuarioService.java, de lo contrario dentro de dicha clase no se tiene acceso a la inyección de las dependencias
+   */
 	@Autowired
 	private IUsuarioService usuarioService;
 
@@ -170,18 +174,17 @@ public class SecurityConfig {
    * En cada ejecución creara el fichero desde cero, evitando la duplicida de la información
    * @param publicKey
    */
-	private static void exportPublicKey(RSAPublicKey publicKey) {
-		try (FileOutputStream fos = new FileOutputStream(ConstantesApp.FICHERPEMPLUBLIKEY)) {
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
-			KeyFactory keyFactory = KeyFactory.getInstance(ConstantesApp.RSA);
-			PublicKey pubKey = keyFactory.generatePublic(keySpec);
-			fos.write(pubKey.getEncoded());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+  private static void exportPublicKey(RSAPublicKey publicKey) {
+    try (FileOutputStream fos = new FileOutputStream(ConstantesApp.FICHERPEMPLUBLIKEY)) {
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
+      KeyFactory keyFactory = KeyFactory.getInstance(ConstantesApp.RSA);
+      PublicKey pubKey = keyFactory.generatePublic(keySpec);
+      fos.write(pubKey.getEncoded());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 	
-  
   @Bean
   JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
@@ -192,7 +195,6 @@ public class SecurityConfig {
     return AuthorizationServerSettings.builder().build();
   }
  
-  
   /**
    * Función encargada de agregar información al token que por defecto no se agrega
    * @return
