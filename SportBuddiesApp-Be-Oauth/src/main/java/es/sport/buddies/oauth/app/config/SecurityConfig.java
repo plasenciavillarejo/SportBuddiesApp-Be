@@ -5,8 +5,8 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,12 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -35,7 +31,6 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -46,21 +41,24 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import es.sport.buddies.entity.app.models.service.IUsuarioService;
+import es.sport.buddies.oauth.app.services.UserDetailService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  /*
+ 
   @Bean
   static BCryptPasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
   }
-  */
-
+ 
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults()); // Enable OpenID                                                                                            // Connect 1.0
+    // Enable OpenID Connect 1.0
+    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults()); 
     //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
     http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
             new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
@@ -79,6 +77,10 @@ public class SecurityConfig {
     return http.build();
   }
   
+  /**
+   * Función para trabajar con usuarios en memoria para hacer pruebasS
+   * @return
+   
   @Bean
   UserDetailsService userDetailsService() {
     UserDetails userDetails = User.builder()
@@ -88,13 +90,22 @@ public class SecurityConfig {
         .build();
     return new InMemoryUserDetailsManager(userDetails);
   }
+   */
 
+	@Autowired
+	private IUsuarioService usuarioService;
+  
+  public UserDetailService usu() {
+	  return new UserDetailService(usuarioService);
+  }
+  
   // Configuración de nuestro cliente FRONT-END
   @Bean
   RegisteredClientRepository registeredClientRepository() {
     RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId("gateway-app")
-        .clientSecret("{noop}12345")
+        .clientSecret(passwordEncoder().encode("12345"))
+        //.clientSecret("{noop}12345")
         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
         // Forma de autorización tipicas utilizado el estandar OUATH2
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -108,7 +119,6 @@ public class SecurityConfig {
         // Roles para la aplicación por defecto
         .scope(OidcScopes.OPENID)
         .scope(OidcScopes.PROFILE)
-        
         //.scope("read")
         //.scope("write")
         // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
@@ -154,7 +164,6 @@ public class SecurityConfig {
    * Función encargada de agregar información al token que por defecto no se agrega
    * @return
    */
-  
   @Bean
   OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
 	  return context -> {

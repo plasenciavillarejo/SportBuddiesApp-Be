@@ -72,6 +72,22 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- INI: Dependencia Aplicaciones -->
+		<!-- ############################# -->
+		<dependency>
+			<groupId>es.sport.buddies.entity.app</groupId>
+			<artifactId>SportBuddiesApp-Be-Entity</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<!-- FIN: Dependencia Aplicaciones -->
+		<!-- ############################# -->
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>

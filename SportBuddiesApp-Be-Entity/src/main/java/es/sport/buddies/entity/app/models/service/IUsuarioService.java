@@ -8,4 +8,6 @@ public interface IUsuarioService {
 
 	public Optional<Usuario> findById(Long idUsuario);
 	
+	public Usuario findByNombre(String nombre);
+	
 }

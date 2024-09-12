@@ -15,11 +15,17 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Autowired
 	private IUsuariosDao usuarioDao;
-
+	
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Usuario> findById(Long idUsuario) {
 		return usuarioDao.findById(idUsuario);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Usuario findByNombre(String nombre) {
+		return usuarioDao.findByNombre(nombre);
 	}
 
 }

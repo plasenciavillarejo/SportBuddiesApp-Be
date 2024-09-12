@@ -6,4 +6,5 @@ import es.sport.buddies.entity.app.models.entity.Usuario;
 
 public interface IUsuariosDao extends JpaRepository<Usuario, Long> {
 
+	public Usuario findByNombre(String nombre);
 }
