@@ -7,10 +7,13 @@ import java.util.Collection;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
@@ -42,7 +45,7 @@ public class SecurityConfig {
 				.oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt ->
 				// Implementamos al vuelo la clase anónima 'Converter()' para agregar los roles incluidos en SecurityConfig.class dentro de (SportBuildesApp-Be-Oauth)
 				
-				/* Está clase al vuelo, la he optimizado más abajo
+				/*Está clase al vuelo, la he optimizado más abajo
 				jwt.jwtAuthenticationConverter(new Converter<Jwt, Mono<AbstractAuthenticationToken>>() {
 					@Override
 					public Mono<AbstractAuthenticationToken> convert(Jwt source) {
@@ -50,8 +53,7 @@ public class SecurityConfig {
 						Collection<GrantedAuthority> authorities = roles.stream().map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role)).toList();
 						// Devolvemos un objeto mono reactivo pasndo el token y los authorities. Ahora ya podremos loguearnos con los roles de Spring Security
 						return Mono.just(new JwtAuthenticationToken(source, authorities));
-				}})
-				*/
+				}})*/
 				jwt.jwtAuthenticationConverter(source -> {
 				    Collection<String> roles = source.getClaimAsStringList("roles");
 				    Collection<GrantedAuthority> authorities = roles.stream().map(role -> (GrantedAuthority) 
