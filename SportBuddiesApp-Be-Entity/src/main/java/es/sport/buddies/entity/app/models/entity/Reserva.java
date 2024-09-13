@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,12 +41,10 @@ public class Reserva implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "idUsuarioReserva")
-  //@JsonIgnore
   private Usuario usuarioReserva;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "idDeporteReserva")
-  //@JsonIgnore
   private Deporte deporteReserva;
 
   public long getIdReserva() {
