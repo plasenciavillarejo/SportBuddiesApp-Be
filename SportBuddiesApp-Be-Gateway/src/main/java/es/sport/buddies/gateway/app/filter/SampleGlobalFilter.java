@@ -1,6 +1,5 @@
 package es.sport.buddies.gateway.app.filter;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class SampleGlobalFilter implements GlobalFilter {
 
             try {
                 Jwt jwt = jwtDecoder.decode(token);
-                String userId = jwt.getClaim("sub"); // Suponiendo que "sub" es el claim que contiene el ID del usuario
+                String userId = jwt.getClaim("sub");
 
                 List<GrantedAuthority> roles = jwt.getClaimAsStringList("roles").stream().map(role -> (GrantedAuthority) 
                     new SimpleGrantedAuthority(role)).toList();
@@ -60,10 +59,7 @@ public class SampleGlobalFilter implements GlobalFilter {
             } catch (JwtException e) {
                 LOGGER.error("Error decodificando el JWT: {}", e.getMessage());
             }
-        } else {
-            LOGGER.info("No se encontró el encabezado Authorization o no contiene un token Bearer");
         }
-
         return chain.filter(exchange).then(Mono.fromRunnable(() -> {
             LOGGER.info("Ejecutando el filtro POST Response");
         }));

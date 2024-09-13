@@ -1,4 +1,4 @@
-package es.sport.buddies.gateway.app.config;
+package es.sport.buddies.gateway.app.security.config;
 
 // Importamos método estático withDefaults
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -31,6 +31,7 @@ public class SecurityConfig {
 		return http.authorizeExchange(authHttp -> {
 			authHttp.pathMatchers("/authorized", "/logout").permitAll()
 			.pathMatchers(HttpMethod.GET, "/api/main/listar").hasAnyRole("ADMIN", "USER")
+			.pathMatchers("/api/main/listarReserva").permitAll()
 			//.hasAnyAuthority("SCOPE_read", "SCOPE_write") -> De está format trabaja los roles de Oauth 2
 			//.pathMatchers(HttpMethod.POST, "/crear").hasAuthority("SCOPE_write")
 					.anyExchange().authenticated();

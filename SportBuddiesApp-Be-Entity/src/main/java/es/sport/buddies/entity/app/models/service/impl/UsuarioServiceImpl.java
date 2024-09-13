@@ -24,8 +24,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Usuario findByNombre(String nombre) {
-		return usuarioDao.findByNombre(nombre);
+	public Usuario findByNombreUsuario(String nombre) {
+		return usuarioDao.findByNombreUsuario(nombre);
 	}
 
 }

@@ -24,8 +24,8 @@ public class Usuario implements Serializable {
 	@Column(name = "idUsuario")
 	private long idUsuario;
 
-	@Column(name = "nombre", unique = true, length = 50)
-	private String nombre;
+	@Column(name = "nombreUsuario", length = 50)
+	private String nombreUsuario;
 
 	@Column(length = 60)
 	private String password;
@@ -62,15 +62,15 @@ public class Usuario implements Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public String getNombre() {
-		return nombre;
-	}
+	public String getNombreUsuario() {
+    return nombreUsuario;
+  }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+  public void setNombreUsuario(String nombreUsuario) {
+    this.nombreUsuario = nombreUsuario;
+  }
 
-	public String getPassword() {
+  public String getPassword() {
 		return password;
 	}
 

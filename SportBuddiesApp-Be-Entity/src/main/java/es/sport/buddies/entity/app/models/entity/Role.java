@@ -12,29 +12,29 @@ import jakarta.persistence.Table;
 @Table(name = "roles")
 public class Role implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idRol;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long idRol;
 
-	@Column(unique = true, length = 45)
-	private String nombre;
+  @Column(unique = true, length = 45)
+  private String nombreRol;
 
-	public Long getIdRol() {
-		return idRol;
-	}
+  public Long getIdRol() {
+    return idRol;
+  }
 
-	public void setIdRol(Long idRol) {
-		this.idRol = idRol;
-	}
+  public void setIdRol(Long idRol) {
+    this.idRol = idRol;
+  }
 
-	public String getNombre() {
-		return nombre;
-	}
+  public String getNombreRol() {
+    return nombreRol;
+  }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+  public void setNombreRol(String nombreRol) {
+    this.nombreRol = nombreRol;
+  }
 
-	private static final long serialVersionUID = -9187918322934668329L;
+  private static final long serialVersionUID = -9187918322934668329L;
 
 }

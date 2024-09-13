@@ -23,5 +23,6 @@ public class ConstantesApp {
 	
 	public static final String CLIENTSECRET = "12345";
 	
+	public static final String ROLE = "ROLE_";
 	
 }
