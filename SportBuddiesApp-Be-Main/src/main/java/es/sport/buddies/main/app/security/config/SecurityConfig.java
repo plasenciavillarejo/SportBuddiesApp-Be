@@ -31,7 +31,10 @@ public class SecurityConfig {
   SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter authenticationFilter) throws Exception {
     return http
     .csrf(csrf -> csrf.disable())
-    .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-    .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
+    .authorizeHttpRequests(authorize -> authorize
+        .requestMatchers("/listarReserva").permitAll()
+        .anyRequest().authenticated())
+    .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+    .build();
   }
 }

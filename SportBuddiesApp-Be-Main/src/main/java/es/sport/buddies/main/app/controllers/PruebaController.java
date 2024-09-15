@@ -1,7 +1,6 @@
 package es.sport.buddies.main.app.controllers;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +31,6 @@ public class PruebaController {
 	@GetMapping(value = "/listar")
 	public ResponseEntity<Usuario> pruebaController() {
 	  UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication(); 
-	  
 		Optional<Usuario> usu = usuarioService.findById(1L);
 		return new ResponseEntity<>(!usu.isEmpty() ? usu.get() : null ,HttpStatus.OK);
 	}
@@ -44,7 +42,7 @@ public class PruebaController {
 	  try {
 	    res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva, idUsuReserva);
 	  } catch (Exception e) {
-      // TODO: handle exception
+      throw e;
     }
 	  return new ResponseEntity<>(res,HttpStatus.OK);
 	}

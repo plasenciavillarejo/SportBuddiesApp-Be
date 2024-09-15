@@ -59,13 +59,14 @@ public class SecurityConfig {
   static BCryptPasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
   }
- 
+   
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     // Enable OpenID Connect 1.0
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults()); 
+    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
+    
     //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
     http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
             new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
@@ -74,6 +75,7 @@ public class SecurityConfig {
     return http.build();
   }
 
+  // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {

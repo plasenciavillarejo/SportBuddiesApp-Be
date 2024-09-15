@@ -60,8 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           } catch (JwtException e) {
               LOGGER.error("Error decodificando el JWT: {}", e.getMessage());
           }
-      } else {
-          LOGGER.info("No se encontró el encabezado Authorization o no contiene un token Bearer");
       }
       filterChain.doFilter(request, response);
     }
