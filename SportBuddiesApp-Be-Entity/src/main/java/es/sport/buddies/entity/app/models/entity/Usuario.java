@@ -3,6 +3,7 @@ package es.sport.buddies.entity.app.models.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,24 +22,25 @@ public class Usuario implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idUsuario")
+	@Column(name = "id_usuario")
 	private long idUsuario;
 
-	@Column(name = "nombreUsuario", length = 50)
+	@Column(name = "nombre_usuario", length = 50)
 	private String nombreUsuario;
 
-	@Column(length = 60)
+	@Column(name = "password",length = 60)
 	private String password;
 
+	@Column(name = "enabled")
 	private Boolean enabled;
 	
-	@Column(length = 50)
+	@Column(name = "apellido", length = 50)
 	private String apellido;
 
-	@Column(unique = true, length = 50)
+	@Column(name = "email",unique = true, length = 50)
 	private String email;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	
 	/* Está configuración nos siver para crear una tabla intermedia entre usuario y roles que maneje ambas fk relacionadas entre ellas
 	  Indicamos el nombre de la clase intermedia -> usuarios_to_roles
 	   Llave foránea de la clase principal -> joinColumns = @JoincColumn
@@ -46,6 +48,7 @@ public class Usuario implements Serializable {
 	   	LLave foranea de roles -> inverseJoinColumns = @JoinColumn(name="role_id")
 	  Indicamos un Constraint para que el el user_id y el role_id sean únicos y no sean repetidos -> Un usuario no puede tener un rol repetido
 	   	*/
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinTable(name = "usuarios_in_role",
 	joinColumns = @JoinColumn(name="usuario_id"),
 	inverseJoinColumns = @JoinColumn(name="role_id"),

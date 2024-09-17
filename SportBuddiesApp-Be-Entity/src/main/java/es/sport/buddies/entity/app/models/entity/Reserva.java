@@ -22,29 +22,29 @@ public class Reserva implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "idReserva")
+  @Column(name = "id_reserva")
   private long idReserva;
 
-  @Column(name = "fechaReserva")
+  @Column(name = "fecha_reserva")
   @Temporal(TemporalType.DATE)
   // @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date fechaReserva;
 
-  @Column(name = "horaInicioReserva")
+  @Column(name = "hora_inicio_reserva")
   private LocalTime horaInicioReserva;
 
-  @Column(name = "horaFinReserva")
+  @Column(name = "hora_fin_reserva")
   private LocalTime horaFinReserva;
 
   @Column(name = "observaciones", length = 200)
   private String observaciones;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "idUsuarioReserva")
+  @JoinColumn(name = "usuario_reserva_fk")
   private Usuario usuarioReserva;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "idDeporteReserva")
+  @JoinColumn(name = "deporte_reserva_fk")
   private Deporte deporteReserva;
 
   public long getIdReserva() {

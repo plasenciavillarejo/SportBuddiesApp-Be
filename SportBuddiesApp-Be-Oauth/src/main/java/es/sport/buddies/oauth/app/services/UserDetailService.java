@@ -34,7 +34,7 @@ public class UserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		try {
 			LOGGER.info("Se procede a buscar al usuario: {}", username);
-			Usuario usuario = usuarioService.findByNombreUsuario(username);
+			Usuario usuario = usuarioService.buscarUsuarioConRoles(username);
 			List<GrantedAuthority> authorities = usuario.getRoles().stream()
 		             .map(role -> (GrantedAuthority) 
 		 		    		new SimpleGrantedAuthority(!role.getNombreRol().contains(ConstantesApp.ROLE) 
