@@ -8,6 +8,6 @@ public interface IUsuarioService {
 
 	public Optional<Usuario> findById(Long idUsuario);
 	
-	public Usuario buscarUsuarioConRoles(String nombre);
+	public Usuario findByNombreUsuario(String nombre);
 	
 }

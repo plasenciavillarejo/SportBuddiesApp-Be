@@ -31,7 +31,7 @@ public class PruebaController {
 	@GetMapping(value = "/listar")
 	public ResponseEntity<Usuario> pruebaController() {
 	  UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication(); 
-		Optional<Usuario> usu = usuarioService.findById(1L);
+		Optional<Usuario> usu = usuarioService.findById(3L);
 		return new ResponseEntity<>(!usu.isEmpty() ? usu.get() : null ,HttpStatus.OK);
 	}
 	
