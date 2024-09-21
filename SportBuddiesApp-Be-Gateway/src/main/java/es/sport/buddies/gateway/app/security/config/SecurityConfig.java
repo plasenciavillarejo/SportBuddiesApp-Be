@@ -56,7 +56,7 @@ public class SecurityConfig {
 	SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
 		return http.authorizeExchange(authHttp -> 
 			authHttp.pathMatchers("/authorized","/logout",
-			    "/api/main/listarReserva").permitAll()
+			    "/api/main/reserva/listarReserva").permitAll()
 			.pathMatchers("/api/main/listar").hasAnyRole("ADMIN", "USER")
 			//.hasAnyAuthority("SCOPE_read", "SCOPE_write") -> De está format trabaja los roles de Oauth 2
 			//.pathMatchers(HttpMethod.POST, "/crear").hasAuthority("SCOPE_write")

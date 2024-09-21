@@ -32,7 +32,7 @@ public class SecurityConfig {
     return http
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/listarReserva").permitAll()
+        .requestMatchers("/reserva/listarReserva").permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();
