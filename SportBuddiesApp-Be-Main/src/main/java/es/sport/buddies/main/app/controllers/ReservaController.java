@@ -29,12 +29,12 @@ public class ReservaController {
   
   @GetMapping(value = "/listarReserva")
   public ResponseEntity<List<Reserva>> listadoReservasUsuario(@RequestParam(name="fechaReserva") @DateTimeFormat(pattern = "yyyy-MM-dd") 
-  LocalDate fechaReserva, @RequestParam(name ="idUsuReserva") long idUsuReserva) throws ReservaException {
+  LocalDate fechaReserva) throws ReservaException {
     List<Reserva> res = null;
     try {
-      res = reservaMainService.listarReservas(fechaReserva, idUsuReserva);
+      res = reservaMainService.listarReservas(fechaReserva);
     } catch (Exception e) {
-      LOGGER.error("Error al buscar la reserva para la fecha {} para el Id Usuario: {}", fechaReserva, idUsuReserva);
+      LOGGER.error("Error al buscar la reserva para la fecha {}", fechaReserva);
       throw new ReservaException(e.getMessage(), e.getCause());
     }
     return new ResponseEntity<>(res,HttpStatus.OK);

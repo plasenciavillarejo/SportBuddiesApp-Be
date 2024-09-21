@@ -14,8 +14,7 @@ public interface IReservaDao extends JpaRepository<Reserva, Long> {
   @Query(value =" select reserva from Reserva reserva"
       + " left join fetch reserva.usuarioReserva usuReserva"
       + " left join fetch reserva.deporteReserva deportReserva "
-      + " where usuReserva.idUsuario = :idUsuReserva"
-      + " and reserva.fechaReserva = :fechaReserva")
-  public List<Reserva> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuReserva") long idUsuReserva);
+      + " where reserva.fechaReserva = :fechaReserva")
+  public List<Reserva> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva);
   
 }

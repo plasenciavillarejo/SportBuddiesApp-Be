@@ -23,11 +23,11 @@ public class ReservaMainServiceImpl implements IReservaMainService {
   private IReservaService reservaService;
 
   @Override
-  public List<Reserva> listarReservas(LocalDate fechaReserva, long idUsuReserva) throws ReservaException {
+  public List<Reserva> listarReservas(LocalDate fechaReserva) throws ReservaException {
     List<Reserva> res = null;
     try {
-      LOGGER.info("Se procede a listar las reservascon fecha: {} para el idUsuario {}", fechaReserva, idUsuReserva);
-      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva, idUsuReserva);
+      LOGGER.info("Se procede a listar las reservascon fecha: {}", fechaReserva);
+      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva);
       LOGGER.info(!res.isEmpty() ? "Se ha encontrado un total de {} reservas" : "No se ha encontrado ningúna reserva, se devuelve un listado vacío");
     } catch (Exception e) {
       throw new ReservaException("Error en la busqueda de la reserva");

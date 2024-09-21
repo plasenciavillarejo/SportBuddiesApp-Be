@@ -8,6 +8,6 @@ import es.sport.buddies.main.app.exceptions.ReservaException;
 
 public interface IReservaMainService {
 
-  public List<Reserva> listarReservas(LocalDate fechaReserva, long idUsuReserva) throws ReservaException;
+  public List<Reserva> listarReservas(LocalDate fechaReserva) throws ReservaException;
   
 }
