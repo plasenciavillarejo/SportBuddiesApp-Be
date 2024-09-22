@@ -1,7 +1,9 @@
 package es.sport.buddies.main.app.controllers;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,19 @@ public class ReservaController {
   
   @Autowired
   private IReservaMainService reservaMainService;
+  
+  @GetMapping(value = "/comboInicio")
+  public ResponseEntity<Map<String, Object>> comboListadoInicial() throws ReservaException {
+    Map<String, Object> mapResult = null;
+    try {
+      mapResult = reservaMainService.listarCombosPaginaInicial();
+    } catch (Exception e) {
+      LOGGER.error("Ha sucedido un error ");
+      throw new ReservaException(e.getMessage(), e.getCause());
+    }
+    // Tengo que devolver la tabla deportes, provincias, municipios
+    return new ResponseEntity<>(mapResult,HttpStatus.OK);
+  }
   
   @GetMapping(value = "/listarReserva")
   public ResponseEntity<List<Reserva>> listadoReservasUsuario(@RequestParam(name="fechaReserva") @DateTimeFormat(pattern = "yyyy-MM-dd") 
