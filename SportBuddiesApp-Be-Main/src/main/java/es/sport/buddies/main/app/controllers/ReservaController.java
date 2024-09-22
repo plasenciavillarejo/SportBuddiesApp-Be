@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.sport.buddies.entity.app.models.entity.Reserva;
+import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaMainService;
 
@@ -22,7 +23,7 @@ import es.sport.buddies.main.app.service.IReservaMainService;
 @RequestMapping(value = "/reserva")
 public class ReservaController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReservaController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConstantesMain.LOGGUERMAIN);
   
   @Autowired
   private IReservaMainService reservaMainService;

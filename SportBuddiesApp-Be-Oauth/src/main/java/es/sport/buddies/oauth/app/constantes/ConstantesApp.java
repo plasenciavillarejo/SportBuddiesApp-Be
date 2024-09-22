@@ -9,19 +9,19 @@ public class ConstantesApp {
 		// Constructor Vacío
 	}
 	
-	public static final String FICHERPEMPLUBLIKEY = "C:\\SportBuddies_repository\\llave.pem";
+	public static String FICHERPEMPLUBLIKEY = "KEY";
 
-	public static final String RSA = "RSA";
+	public static String RSA = "SEGURIDAD";
 	
-	public static final String REDIRECTURIOAUTH2 = "http://127.0.0.1:8090/login/oauth2/code/cliente-app";
+	public static String REDIRECTURIOAUTH2 = "REDIRECT";
 	
-	public static final String ENDPOINTAUTHORIZATION = "http://127.0.0.1:8090/authorized";
+	public static String ENDPOINTAUTHORIZATION = "AUTHORIZATION";
 	
-	public static final String ENDPOINTLOGOUT = "http://127.0.0.1:8090/logout";
+	public static String ENDPOINTLOGOUT = "LOGOUT";
 	
-	public static final String CLIENTID = "gateway-app";
+	public static String CLIENTID = "ID";
 	
-	public static final String CLIENTSECRET = "12345";
+	public static String CLIENTSECRET = "SECRET";
 	
 	public static final String ROLE = "ROLE_";
 	

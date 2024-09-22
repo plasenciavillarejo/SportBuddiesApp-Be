@@ -20,7 +20,7 @@ public class JwtDecoderConfig {
   }
 
   private static RSAPublicKey importPublicKey() {
-    try (FileInputStream fis = new FileInputStream("C:\\SportBuddies_repository\\llave.pem")) {
+    try (FileInputStream fis = new FileInputStream("/Users/joseplasenciavillarejo/Desktop/sportbuddies_repository/llave.pem")) {
       byte[] encodedPublicKey = fis.readAllBytes();
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedPublicKey);
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");

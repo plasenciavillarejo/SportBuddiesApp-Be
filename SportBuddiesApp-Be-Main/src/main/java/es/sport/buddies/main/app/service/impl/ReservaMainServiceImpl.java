@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.models.entity.Reserva;
 import es.sport.buddies.entity.app.models.service.IReservaService;
+import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaMainService;
 
 @Service
 public class ReservaMainServiceImpl implements IReservaMainService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReservaMainServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConstantesMain.LOGGUERMAIN);
   
   @Autowired
   private IReservaService reservaService;
