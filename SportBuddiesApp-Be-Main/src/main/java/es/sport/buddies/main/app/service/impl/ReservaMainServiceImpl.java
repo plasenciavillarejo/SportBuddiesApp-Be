@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.sport.buddies.entity.app.models.entity.Municipio;
 import es.sport.buddies.entity.app.models.entity.Reserva;
 import es.sport.buddies.entity.app.models.service.IDeporteService;
 import es.sport.buddies.entity.app.models.service.IMunicipioService;
@@ -52,13 +53,16 @@ public class ReservaMainServiceImpl implements IReservaMainService {
 
   @Override
   public Map<String, Object> listarCombosPaginaInicial() throws ReservaException {
-	  Map<String, Object> mapResult = new HashMap<String, Object>();
+	  Map<String, Object> mapResult = new HashMap<>();
 	  mapResult.put("listadoDeportes", deporteServcie.listarDeportes());
 	  mapResult.put("listaProvincias", provinciaService.listarProvincias());
-	  mapResult.put("listaMunicipios", muncipioService.findByProvincia_NombreProvincia("Araba/Álava"));
 	  return mapResult;
   }
-	  
-  
+
+  @Override
+  public List<String> listaMunicipiosProProvinca(String nombreProvincia) {
+    return muncipioService.findByProvincia_NombreProvincia(nombreProvincia)
+        .stream().map(provin -> provin.getNombreMunicipio()).toList();
+  }
   
 }

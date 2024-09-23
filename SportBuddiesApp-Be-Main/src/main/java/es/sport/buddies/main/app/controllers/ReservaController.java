@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.sport.buddies.entity.app.models.entity.Municipio;
 import es.sport.buddies.entity.app.models.entity.Reserva;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
@@ -41,6 +42,19 @@ public class ReservaController {
     }
     // Tengo que devolver la tabla deportes, provincias, municipios
     return new ResponseEntity<>(mapResult,HttpStatus.OK);
+  }
+  
+  @GetMapping(value ="/listadoMunicipios")
+  public ResponseEntity<Object> listadoMunicipio(@RequestParam(value = "municipio", required = false)
+  String provincia) {
+    List<String> listMunicipio = null;
+    try {
+      listMunicipio =  reservaMainService.listaMunicipiosProProvinca(provincia);
+    } catch (Exception e) {
+      LOGGER.error("Ha sucedido un error ");
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>(listMunicipio,HttpStatus.OK);
   }
   
   @GetMapping(value = "/listarReserva")
