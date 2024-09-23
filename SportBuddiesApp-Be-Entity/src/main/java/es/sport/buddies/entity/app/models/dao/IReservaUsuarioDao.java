@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import es.sport.buddies.entity.app.models.entity.Reserva;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
-public interface IReservaDao extends JpaRepository<Reserva, Long> {
+public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> {
 
-  @Query(value =" select reserva from Reserva reserva"
+  @Query(value =" select reserva from ReservaUsuario reserva"
       + " left join fetch reserva.usuarioReserva usuReserva"
       + " left join fetch reserva.deporteReserva deportReserva "
       + " where reserva.fechaReserva = :fechaReserva")
-  public List<Reserva> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva);
+  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva);
   
 }

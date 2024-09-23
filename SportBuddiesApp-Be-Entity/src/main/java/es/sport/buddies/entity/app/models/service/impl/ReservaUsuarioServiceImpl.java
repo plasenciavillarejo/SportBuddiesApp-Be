@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.sport.buddies.entity.app.models.dao.IReservaDao;
-import es.sport.buddies.entity.app.models.entity.Reserva;
-import es.sport.buddies.entity.app.models.service.IReservaService;
+import es.sport.buddies.entity.app.models.dao.IReservaUsuarioDao;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
+import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 
 @Service
-public class ReservaServiceImpl implements IReservaService {
+public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
 
   @Autowired
-  private IReservaDao reservaDao;
+  private IReservaUsuarioDao reservaDao;
 
   @Override
   @Transactional(readOnly = true)
-  public List<Reserva> buscarReservaPorFechaAndIdUsuario(LocalDate fechaReserva) {
+  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(LocalDate fechaReserva) {
     return reservaDao.buscarReservaPorFechaAndIdUsuario(fechaReserva);
   }
   

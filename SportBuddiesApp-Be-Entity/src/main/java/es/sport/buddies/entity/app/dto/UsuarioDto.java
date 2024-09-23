@@ -4,19 +4,17 @@ import java.io.Serializable;
 
 public class UsuarioDto implements Serializable {
 
-  private String idUsuario;
+  private long idUsuario;
 
   private String nombreUsuario;
 
-  private String descripcion;
-
   private static final long serialVersionUID = -5083569157036242898L;
 
-  public String getIdUsuario() {
+  public long getIdUsuario() {
     return idUsuario;
   }
 
-  public void setIdUsuario(String idUsuario) {
+  public void setIdUsuario(long idUsuario) {
     this.idUsuario = idUsuario;
   }
 
@@ -26,14 +24,6 @@ public class UsuarioDto implements Serializable {
 
   public void setNombreUsuario(String nombreUsuario) {
     this.nombreUsuario = nombreUsuario;
-  }
-
-  public String getDescripcion() {
-    return descripcion;
-  }
-
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
   }
 
 }

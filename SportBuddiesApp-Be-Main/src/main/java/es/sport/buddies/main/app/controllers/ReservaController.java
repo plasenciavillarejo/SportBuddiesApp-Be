@@ -1,7 +1,6 @@
 package es.sport.buddies.main.app.controllers;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.sport.buddies.entity.app.models.entity.Municipio;
-import es.sport.buddies.entity.app.models.entity.Reserva;
+import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
-import es.sport.buddies.main.app.service.IReservaMainService;
+import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 
 @RestController
 @RequestMapping(value = "/reserva")
@@ -29,7 +28,7 @@ public class ReservaController {
   private static final Logger LOGGER = LoggerFactory.getLogger(ConstantesMain.LOGGUERMAIN);
   
   @Autowired
-  private IReservaMainService reservaMainService;
+  private IReservaUsuarioMainService reservaMainService;
   
   @GetMapping(value = "/comboInicio")
   public ResponseEntity<Map<String, Object>> comboListadoInicial() throws ReservaException {
@@ -58,9 +57,9 @@ public class ReservaController {
   }
   
   @GetMapping(value = "/listarReserva")
-  public ResponseEntity<List<Reserva>> listadoReservasUsuario(@RequestParam(name="fechaReserva") @DateTimeFormat(pattern = "yyyy-MM-dd") 
+  public ResponseEntity<List<ReservaUsuarioDto>> listadoReservasUsuario(@RequestParam(name="fechaReserva") @DateTimeFormat(pattern = "yyyy-MM-dd") 
   LocalDate fechaReserva) throws ReservaException {
-    List<Reserva> res = null;
+    List<ReservaUsuarioDto> res = null;
     try {
       res = reservaMainService.listarReservas(fechaReserva);
     } catch (Exception e) {
@@ -69,5 +68,7 @@ public class ReservaController {
     }
     return new ResponseEntity<>(res,HttpStatus.OK);
   }
+  
+  
   
 }

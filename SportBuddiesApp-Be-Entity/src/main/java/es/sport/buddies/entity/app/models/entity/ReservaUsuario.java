@@ -17,8 +17,8 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "reservas")
-public class Reserva implements Serializable {
+@Table(name = "reservas_usuario")
+public class ReservaUsuario implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
