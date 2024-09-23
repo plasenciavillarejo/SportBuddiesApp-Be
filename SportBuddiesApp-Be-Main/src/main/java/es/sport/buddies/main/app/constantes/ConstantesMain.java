@@ -5,6 +5,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConstantesMain {
 
+  public ConstantesMain() {
+    // Constructor Vacío
+  }
+  
 	public static final String LOGGUERMAIN = "es.sport.buddies.main.app";
+	
+	public static String FICHERPEMPLUBLIKEY = "KEY";
 	
 }
