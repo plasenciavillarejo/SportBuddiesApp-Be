@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
+import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 
@@ -13,6 +15,6 @@ public interface IReservaUsuarioMainService {
   
   public Map<String, Object> listarCombosPaginaInicial() throws ReservaException;
  
-  public List<String> listaMunicipiosProProvinca(String nombreProvincia);
-  
+  public List<String> listaMunicipiosPorProvinca(String nombreProvincia);
+   
 }

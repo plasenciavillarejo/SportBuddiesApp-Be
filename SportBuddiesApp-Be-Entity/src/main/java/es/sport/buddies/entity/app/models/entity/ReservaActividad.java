@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
+import es.sport.buddies.entity.app.json.converter.ListToJsonConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +20,6 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,13 +48,14 @@ public class ReservaActividad implements Serializable {
   private LocalTime horaFin;
 
   @Column(name = "requerimientos")
+  @Convert(converter = ListToJsonConverter.class)
   private List<String> requerimientos;
 
   @Column(name = "usuarios_max_requeridos")
   private long usuariosMaxRequeridos;
 
-  @Column(name = "deporte")
-  private String deporte;
+  @Column(name = "actividad")
+  private String actividad;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "usuario_actividad_fk", nullable = false)
@@ -68,7 +70,7 @@ public class ReservaActividad implements Serializable {
   @Column(name = "municipio")
   private String municipio;
 
-  @Column(name = "codigoPostal")
+  @Column(name = "codigo_postal")
   private long codigoPostal;
 
   private static final long serialVersionUID = -6173273864401369841L;

@@ -11,13 +11,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
+import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
+import es.sport.buddies.main.app.service.IReservaActividadMainService;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 
 @RestController
@@ -29,6 +33,9 @@ public class ReservaController {
   @Autowired
   private IReservaUsuarioMainService reservaMainService;
   
+  @Autowired
+  private IReservaActividadMainService reservaActividadMainService;
+  
   @GetMapping(value = "/comboInicio")
   public ResponseEntity<Map<String, Object>> comboListadoInicial() throws ReservaException {
     Map<String, Object> mapResult = null;
@@ -39,7 +46,6 @@ public class ReservaController {
     } catch (Exception e) {
       throw new ReservaException(e);
     }
-    // Tengo que devolver la tabla deportes, provincias, municipios
     return new ResponseEntity<>(mapResult,HttpStatus.OK);
   }
   
@@ -49,7 +55,7 @@ public class ReservaController {
     List<String> listMunicipio = null;
     try {
       LOGGER.info("Se obtiene el municipio: {}", provincia);
-      listMunicipio =  reservaMainService.listaMunicipiosProProvinca(provincia);
+      listMunicipio =  reservaMainService.listaMunicipiosPorProvinca(provincia);
     } catch (Exception e) {
       throw new ReservaException(e);
     }
@@ -68,6 +74,16 @@ public class ReservaController {
     return new ResponseEntity<>(res,HttpStatus.OK);
   }
   
+  @GetMapping(value = "/listadoReservaActividad")
+  public List<ReservaActividadDto> listarR (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
+    List<ReservaActividadDto> listReservaDto = null;
+    try {
+      listReservaDto = reservaActividadMainService.listadoReservaActividad(listadoDto);
+    } catch (Exception e) {
+      throw new ReservaException(e);
+    }
+    return listReservaDto;
+  }
   
   
 }

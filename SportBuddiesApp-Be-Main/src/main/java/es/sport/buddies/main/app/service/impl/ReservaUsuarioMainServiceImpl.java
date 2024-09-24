@@ -11,12 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
+import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.models.service.IDeporteService;
 import es.sport.buddies.entity.app.models.service.IMunicipioService;
 import es.sport.buddies.entity.app.models.service.IProvinciaService;
+import es.sport.buddies.entity.app.models.service.IReservaActividadService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
+import es.sport.buddies.main.app.convert.map.struct.IReservaActividadMapStruct;
 import es.sport.buddies.main.app.convert.map.struct.IReservaUsuarioMapStruct;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
@@ -37,7 +41,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   
   @Autowired
   private IMunicipioService muncipioService;
-  
+    
   @Override
   public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
@@ -61,7 +65,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   }
 
   @Override
-  public List<String> listaMunicipiosProProvinca(String nombreProvincia) {
+  public List<String> listaMunicipiosPorProvinca(String nombreProvincia) {
     return muncipioService.findByProvincia_NombreProvincia(nombreProvincia)
         .stream().map(provin -> provin.getNombreMunicipio()).toList();
   }

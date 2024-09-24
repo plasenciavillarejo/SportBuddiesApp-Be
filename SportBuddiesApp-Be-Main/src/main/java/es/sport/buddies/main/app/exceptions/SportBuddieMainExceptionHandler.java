@@ -17,7 +17,7 @@ public class SportBuddieMainExceptionHandler {
   public ResponseEntity<Object> handleControlExceptions(ReservaException ex) {   
     AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
         .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .mensaje(ex.getMessage())
+        .mensaje(ex.getCause().toString())
         .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
         .stack(ExceptionUtils.getStackTrace(ex))
         .build();
