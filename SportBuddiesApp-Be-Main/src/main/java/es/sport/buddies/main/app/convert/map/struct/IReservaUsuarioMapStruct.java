@@ -16,6 +16,8 @@ public interface IReservaUsuarioMapStruct {
   /* Método para mapear un ReservaUsuario a un ReservaUsuarioDto
       1.- Si un campo se llama diferente, se debe de especificar. De lo contrario su valor saldra null
          - Indicamos el campo asociado al Dto y al que hace referencia en la entidad
+      2.- Si el campo diferente está dentro de una tabla referenciada dentro de la entidad debermos de realizar la siguiente acción:
+           @Mapping(target = "usuarioReservaDto.idUsuarioDto", source = "usuarioReserva.idUsuario")
    * */
   @Mapping(target = "usuarioReservaDto", source = "usuarioReserva")
   @Mapping(target = "deporteReservaDto", source = "deporteReserva")
