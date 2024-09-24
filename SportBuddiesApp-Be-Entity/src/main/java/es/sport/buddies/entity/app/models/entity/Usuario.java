@@ -1,8 +1,6 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -19,14 +17,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements Serializable {

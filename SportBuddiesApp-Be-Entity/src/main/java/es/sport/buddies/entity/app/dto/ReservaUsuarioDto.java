@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 public class ReservaUsuarioDto implements Serializable {
 
   private long idReserva;

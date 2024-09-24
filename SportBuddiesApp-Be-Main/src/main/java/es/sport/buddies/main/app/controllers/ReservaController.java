@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
-import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;

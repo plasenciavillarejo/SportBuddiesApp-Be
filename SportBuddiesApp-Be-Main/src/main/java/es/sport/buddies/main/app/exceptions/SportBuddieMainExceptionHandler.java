@@ -15,12 +15,12 @@ public class SportBuddieMainExceptionHandler {
 
   @ExceptionHandler(ReservaException.class)
   public ResponseEntity<Object> handleControlExceptions(ReservaException ex) {   
-    AvisoErrorDto avisoErro = new AvisoErrorDto(new Date(), 
-        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        ExceptionUtils.getRootCauseMessage(ex),
-        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), 
-        ExceptionUtils.getStackTrace(ex));    
-    avisoErro.setMensaje(ex.getMessage());
+    AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
+        .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .mensaje(ex.getMessage())
+        .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .stack(ExceptionUtils.getStackTrace(ex))
+        .build();
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
   }
   
