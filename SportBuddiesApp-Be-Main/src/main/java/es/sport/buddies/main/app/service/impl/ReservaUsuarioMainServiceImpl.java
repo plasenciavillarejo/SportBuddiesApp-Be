@@ -46,6 +46,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
       LOGGER.info("Se procede a listar las reservas con fecha: {}", fechaReserva);
       res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva).stream().map(resUsu -> { 
         ReservaUsuarioDto usuDto = new ReservaUsuarioDto();
+        
         usuDto.setIdReserva(resUsu.getIdReserva());
         usuDto.setFechaReserva(resUsu.getFechaReserva());
         usuDto.setHoraInicioReserva(resUsu.getHoraInicioReserva());

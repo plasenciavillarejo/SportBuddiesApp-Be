@@ -15,7 +15,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 @Entity
 @Table(name = "reservas_usuario")
 public class ReservaUsuario implements Serializable {
@@ -46,65 +55,6 @@ public class ReservaUsuario implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "deporte_reserva_fk")
   private Deporte deporteReserva;
-
-  public long getIdReserva() {
-    return idReserva;
-  }
-
-  public void setIdReserva(long idReserva) {
-    this.idReserva = idReserva;
-  }
-
-  public Date getFechaReserva() {
-    return fechaReserva;
-  }
-
-  public void setFechaReserva(Date fechaReserva) {
-    this.fechaReserva = fechaReserva;
-  }
-
-  public LocalTime getHoraInicioReserva() {
-    return horaInicioReserva;
-  }
-
-  public void setHoraInicioReserva(LocalTime horaInicioReserva) {
-    this.horaInicioReserva = horaInicioReserva;
-  }
-
-  public LocalTime getHoraFinReserva() {
-    return horaFinReserva;
-  }
-
-  public void setHoraFinReserva(LocalTime horaFinReserva) {
-    this.horaFinReserva = horaFinReserva;
-  }
-
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
-  }
-
-  public Usuario getUsuarioReserva() {
-    return usuarioReserva;
-  }
-
-  public void setUsuarioReserva(Usuario usuarioReserva) {
-    this.usuarioReserva = usuarioReserva;
-  }
-
-  public Deporte getDeporteReserva() {
-    return deporteReserva;
-  }
-
-  public void setDeporteReserva(Deporte deporteReserva) {
-    this.deporteReserva = deporteReserva;
-  }
-
-
-
 
   private static final long serialVersionUID = 4230007596971428886L;
 

@@ -16,7 +16,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 @Entity
 @Table(name = "reservas_actividad")
 public class ReservaActividad implements Serializable {
@@ -60,102 +69,6 @@ public class ReservaActividad implements Serializable {
 
   @Column(name = "codigoPostal")
   private long codigoPostal;
-
-  public long getIdReservaActividad() {
-    return idReservaActividad;
-  }
-
-  public void setIdReservaActividad(long idReservaActividad) {
-    this.idReservaActividad = idReservaActividad;
-  }
-
-  public Date getFechaReserva() {
-    return fechaReserva;
-  }
-
-  public void setFechaReserva(Date fechaReserva) {
-    this.fechaReserva = fechaReserva;
-  }
-
-  public LocalTime getHoraInicio() {
-    return horaInicio;
-  }
-
-  public void setHoraInicio(LocalTime horaInicio) {
-    this.horaInicio = horaInicio;
-  }
-
-  public LocalTime getHoraFin() {
-    return horaFin;
-  }
-
-  public void setHoraFin(LocalTime horaFin) {
-    this.horaFin = horaFin;
-  }
-
-  public List<String> getRequerimientos() {
-    return requerimientos;
-  }
-
-  public void setRequerimientos(List<String> requerimientos) {
-    this.requerimientos = requerimientos;
-  }
-
-  public long getUsuariosMaxRequeridos() {
-    return usuariosMaxRequeridos;
-  }
-
-  public void setUsuariosMaxRequeridos(long usuariosMaxRequeridos) {
-    this.usuariosMaxRequeridos = usuariosMaxRequeridos;
-  }
-
-  public String getDeporte() {
-    return deporte;
-  }
-
-  public void setDeporte(String deporte) {
-    this.deporte = deporte;
-  }
-
-  public Usuario getUsuarioActividad() {
-    return usuarioActividad;
-  }
-
-  public void setUsuarioActividad(Usuario usuarioActividad) {
-    this.usuarioActividad = usuarioActividad;
-  }
-
-  public String getDireccion() {
-    return direccion;
-  }
-
-  public void setDireccion(String direccion) {
-    this.direccion = direccion;
-  }
-
-  public String getProvincia() {
-    return provincia;
-  }
-
-  public void setProvincia(String provincia) {
-    this.provincia = provincia;
-  }
-
-  public String getMunicipio() {
-    return municipio;
-  }
-
-  public void setMunicipio(String municipio) {
-    this.municipio = municipio;
-  }
-
-  public long getCodigoPostal() {
-    return codigoPostal;
-  }
-
-  public void setCodigoPostal(long codigoPostal) {
-    this.codigoPostal = codigoPostal;
-  }
 
   private static final long serialVersionUID = -6173273864401369841L;
 

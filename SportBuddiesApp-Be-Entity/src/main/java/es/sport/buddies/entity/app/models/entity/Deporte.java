@@ -1,6 +1,8 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +10,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 @Entity
 @Table(name = "deportes")
 public class Deporte implements Serializable {
@@ -19,23 +30,7 @@ public class Deporte implements Serializable {
   private long idDeporte;
 
   @Column(name = "actividad", length = 100)
-  private String actividad;
-
-  public long getIdDeporte() {
-    return idDeporte;
-  }
-
-  public void setIdDeporte(long idDeporte) {
-    this.idDeporte = idDeporte;
-  }
-
-  public String getActividad() {
-    return actividad;
-  }
-
-  public void setActividad(String actividad) {
-    this.actividad = actividad;
-  }
+  private String actividad; 
 
   private static final long serialVersionUID = -8539637334356413884L;
 

@@ -1,6 +1,8 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +13,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 @Entity
 @Table(name = "municipios")
 public class Municipio implements Serializable {
@@ -27,30 +38,6 @@ public class Municipio implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipio_provincia_fk", nullable = false)
     private Provincia provincia;
-
-    public Long getIdMunicipio() {
-      return idMunicipio;
-    }
-
-    public void setIdMunicipio(Long idMunicipio) {
-      this.idMunicipio = idMunicipio;
-    }
-
-    public String getNombreMunicipio() {
-      return nombreMunicipio;
-    }
-
-    public void setNombreMunicipio(String nombreMunicipio) {
-      this.nombreMunicipio = nombreMunicipio;
-    }
-
-    public Provincia getProvincia() {
-      return provincia;
-    }
-
-    public void setProvincia(Provincia provincia) {
-      this.provincia = provincia;
-    }
 
     private static final long serialVersionUID = -1646304863958452709L;
 
