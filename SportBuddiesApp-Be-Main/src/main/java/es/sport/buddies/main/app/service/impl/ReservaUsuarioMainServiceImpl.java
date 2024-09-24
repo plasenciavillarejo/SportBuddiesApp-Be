@@ -47,7 +47,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
           .map(resUsu -> IReservaUsuarioMapStruct.mapper.reservaUsuarioToDto(resUsu)).toList();
       LOGGER.info(!res.isEmpty() ? "Se ha encontrado un total de {} reservas" : "No se ha encontrado ningúna reserva, se devuelve un listado vacío", res.size());
     } catch (Exception e) {
-      throw new ReservaException("Error en la busqueda de la reserva");
+      throw new ReservaException(e.getMessage());
     }
     return !res.isEmpty() ? res : Collections.emptyList();
   }

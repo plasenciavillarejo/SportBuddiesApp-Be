@@ -33,10 +33,11 @@ public class ReservaController {
   public ResponseEntity<Map<String, Object>> comboListadoInicial() throws ReservaException {
     Map<String, Object> mapResult = null;
     try {
+      LOGGER.info("Se procede a listar el combon de la página inicial");
       mapResult = reservaMainService.listarCombosPaginaInicial();
+      LOGGER.info("Combo cargado correcamente");
     } catch (Exception e) {
-      LOGGER.error("Ha sucedido un error ");
-      throw new ReservaException(e.getMessage(), e.getCause());
+      throw new ReservaException(e);
     }
     // Tengo que devolver la tabla deportes, provincias, municipios
     return new ResponseEntity<>(mapResult,HttpStatus.OK);
@@ -44,13 +45,13 @@ public class ReservaController {
   
   @GetMapping(value ="/listadoMunicipios")
   public ResponseEntity<Object> listadoMunicipio(@RequestParam(value = "municipio", required = false)
-  String provincia) {
+  String provincia) throws ReservaException {
     List<String> listMunicipio = null;
     try {
+      LOGGER.info("Se obtiene el municipio: {}", provincia);
       listMunicipio =  reservaMainService.listaMunicipiosProProvinca(provincia);
     } catch (Exception e) {
-      LOGGER.error("Ha sucedido un error ");
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new ReservaException(e);
     }
     return new ResponseEntity<>(listMunicipio,HttpStatus.OK);
   }
@@ -62,8 +63,7 @@ public class ReservaController {
     try {
       res = reservaMainService.listarReservas(fechaReserva);
     } catch (Exception e) {
-      LOGGER.error("Error al buscar la reserva para la fecha {}", fechaReserva);
-      throw new ReservaException(e.getMessage(), e.getCause());
+      throw new ReservaException(e);
     }
     return new ResponseEntity<>(res,HttpStatus.OK);
   }
