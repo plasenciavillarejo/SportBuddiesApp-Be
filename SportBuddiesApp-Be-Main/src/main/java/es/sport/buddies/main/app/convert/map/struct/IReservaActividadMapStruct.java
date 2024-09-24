@@ -12,5 +12,6 @@ public interface IReservaActividadMapStruct {
 
   public IReservaActividadMapStruct mapper = Mappers.getMapper(IReservaActividadMapStruct.class);
   
+  @Mapping(target = "usuarioActividadDto", source = "usuarioActividad")
   public ReservaActividadDto reservarActividadToDto(ReservaActividad reservaActividad);
 }

@@ -16,6 +16,8 @@ public class ReservaActividadDto implements Serializable {
   
   private String municipio;
   
+  private UsuarioDto usuarioActividadDto;
+  
   private static final long serialVersionUID = 722868750680709837L;
 
 }
