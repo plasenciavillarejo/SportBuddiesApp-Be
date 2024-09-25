@@ -73,6 +73,13 @@ public class ReservaActividad implements Serializable {
   @Column(name = "codigo_postal")
   private long codigoPostal;
 
+  @Column(name = "urgencia")
+  private String urgencia;
+  
+  @Column(name = "abono_pista")
+  private double abonoPista;
+
+  
   private static final long serialVersionUID = -6173273864401369841L;
 
 }

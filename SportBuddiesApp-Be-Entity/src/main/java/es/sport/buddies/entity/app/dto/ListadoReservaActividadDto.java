@@ -2,6 +2,7 @@ package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,7 +19,7 @@ public class ListadoReservaActividadDto implements Serializable {
   private String provincia;
 
   private String municipio;
-
+  
   private static final long serialVersionUID = 7339027390310558980L;
 
 }

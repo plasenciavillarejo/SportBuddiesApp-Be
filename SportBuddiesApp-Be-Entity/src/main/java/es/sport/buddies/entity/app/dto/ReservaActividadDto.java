@@ -2,6 +2,7 @@ package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,6 +18,14 @@ public class ReservaActividadDto implements Serializable {
   private String municipio;
   
   private UsuarioDto usuarioActividadDto;
+  
+  private long usuariosMaxRequeridos;
+  
+  private List<String> requerimientos;
+
+  private String urgencia;
+  
+  private double abonoPista;
   
   private static final long serialVersionUID = 722868750680709837L;
 
