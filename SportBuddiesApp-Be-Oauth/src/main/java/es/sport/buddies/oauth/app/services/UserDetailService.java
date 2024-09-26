@@ -24,7 +24,7 @@ public class UserDetailService implements UserDetailsService {
   
   private IUsuarioService usuarioService;
   
-	// Por defeto no agrega la inyección de las depenencias, para hacerlo, lo inyectamos desde SecurityConfig.java mediante su constructor
+	// Por defecto no agrega la inyección de las depenencias, para hacerlo, lo inyectamos desde SecurityConfig.java mediante su constructor
 	public UserDetailService(IUsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}

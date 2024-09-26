@@ -1,6 +1,7 @@
 package es.sport.buddies.main.app.service.impl;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +25,29 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   private IReservaActividadService reservaActividadService;
   
   @Override
-  public List<ReservaActividadDto> listadoReservaActividad(ListadoReservaActividadDto listadoDto) throws ReservaException {
-    List<ReservaActividadDto> list = null;
+  public List<ReservaActividadDto> listadoReservaActividad(ListadoReservaActividadDto listadoDto) throws ReservaException, InterruptedException, ExecutionException {
+    //CompletableFuture<List<ReservaActividadDto>> list = new CompletableFuture<>();
+    List<ReservaActividadDto> listDos = null;
     try {
-      list = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(listadoDto.getFechaReserva(), listadoDto.getActividad(),
+      /*
+      list = CompletableFuture.supplyAsync(() -> 
+      reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(listadoDto.getFechaReserva(),
+          listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio())
+      .stream()
+      .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
+      .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res))
+      .toList()).thenApply(lista -> lista);
+      CompletableFuture.allOf(list).get();
+      */
+      listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(listadoDto.getFechaReserva(), listadoDto.getActividad(),
           listadoDto.getProvincia(), listadoDto.getMunicipio()).stream()
           .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
           .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
     } catch (Exception e) {
       throw new ReservaException(e.getMessage());
     }
-    return list;
+    //return !list.get().isEmpty() ? list.get() : Collections.emptyList();
+    return listDos;
   }
 
 }

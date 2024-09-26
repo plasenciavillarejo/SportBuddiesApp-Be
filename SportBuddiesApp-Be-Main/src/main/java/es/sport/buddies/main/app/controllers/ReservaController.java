@@ -3,12 +3,15 @@ package es.sport.buddies.main.app.controllers;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +24,7 @@ import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
+import es.sport.buddies.main.app.exceptions.ReservaRuntimeException;
 import es.sport.buddies.main.app.service.IReservaActividadMainService;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 
@@ -85,5 +89,13 @@ public class ReservaController {
     return listReservaDto;
   }
   
+  /*
+   * return reservaActividadMainService.listadoReservaActividad(listadoDto)
+        .thenApply(lista -> ResponseEntity.ok(lista))
+        .exceptionally(ex -> {
+            LOGGER.error("Error al obtener las reservas: {}", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        });
+   */
   
 }
