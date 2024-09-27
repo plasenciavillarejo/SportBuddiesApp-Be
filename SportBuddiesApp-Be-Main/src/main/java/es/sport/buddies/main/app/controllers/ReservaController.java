@@ -3,28 +3,27 @@ package es.sport.buddies.main.app.controllers;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
+import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
-import es.sport.buddies.main.app.exceptions.ReservaRuntimeException;
 import es.sport.buddies.main.app.service.IReservaActividadMainService;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 
@@ -79,23 +78,24 @@ public class ReservaController {
   }
   
   @GetMapping(value = "/listadoReservaActividad")
-  public List<ReservaActividadDto> listarR (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
+  public ResponseEntity<List<ReservaActividadDto>> listarR (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
     List<ReservaActividadDto> listReservaDto = null;
     try {
       listReservaDto = reservaActividadMainService.listadoReservaActividad(listadoDto);
     } catch (Exception e) {
       throw new ReservaException(e);
     }
-    return listReservaDto;
+    return new ResponseEntity<>(listReservaDto,HttpStatus.OK);
   }
   
-  /*
-   * return reservaActividadMainService.listadoReservaActividad(listadoDto)
-        .thenApply(lista -> ResponseEntity.ok(lista))
-        .exceptionally(ex -> {
-            LOGGER.error("Error al obtener las reservas: {}", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-        });
-   */
+  @PostMapping(value = "/crear")
+  public ResponseEntity<Object> crearReserva(@RequestBody CrearReservaActividadDto reservaActividadDto) throws CrearReservaException {
+   try {
+     reservaActividadMainService.crearReservaActivdad(reservaActividadDto);
+   } catch (Exception e) {
+    throw new CrearReservaException(e);
+  }
+  return new ResponseEntity<>(HttpStatus.CREATED);
+  }
   
 }

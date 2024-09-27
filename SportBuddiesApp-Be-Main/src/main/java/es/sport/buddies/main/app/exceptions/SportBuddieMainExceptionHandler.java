@@ -24,4 +24,14 @@ public class SportBuddieMainExceptionHandler {
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
   }
   
+  @ExceptionHandler(CrearReservaException.class)
+  public ResponseEntity<Object> handleControlExceptions(CrearReservaException ex) {   
+    AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
+        .codigo(HttpStatus.CONFLICT.value())
+        .mensaje(ex.getCause().toString())
+        .causa(HttpStatus.CONFLICT.getReasonPhrase())
+        .build();
+    return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+  
 }

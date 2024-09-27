@@ -1,5 +1,7 @@
 package es.sport.buddies.entity.app.models.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -23,8 +25,22 @@ public class ReservaActividadServiceImpl implements IReservaActividadService {
       String actividad, String provincia, String municipio) {
     return reservaActividadDao.findByFechaReservaAndActividadAndProvinciaAndMunicipio(fechaReserva, actividad, provincia, municipio);
   }
-  
-  
-  
+
+  @Override
+  @Transactional
+  public void guardarReservaActividad(ReservaActividad reservaActividad) {
+    reservaActividadDao.save(reservaActividad);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ReservaActividad findByProvinciaAndMunicipioAndFechaReservaAndHoraInicioAndHoraFinAndUsuarioActividad_IdUsuario(
+      String provincia, String municpio, LocalDate fechaReserva, LocalTime horaInicio, LocalTime horaFin,
+      long idUsuario) {
+    return reservaActividadDao
+        .findByProvinciaAndMunicipioAndFechaReservaAndHoraInicioAndHoraFinAndUsuarioActividad_IdUsuario(provincia,
+            municpio, fechaReserva, horaInicio, horaFin, idUsuario);
+  }
+
   
 }
