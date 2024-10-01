@@ -156,7 +156,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
             inscripcionReservaActividad.getIdReservaActividad());
         usuPlanPago.setReservasRestantes(reserva.decrementAndGet());
         LOGGER.info("Se procede a realizar la actulización y la insercción en la BBDD");
-        guardarReservaUsuario(usuPlanPago, reservaUsuario, inscripcionReservaActividad);
+        guardarReservaUsuario(usuPlanPago,inscripcionReservaActividad);
         LOGGER.info("Se ha realizado la reserva existosamente");
       } else {
         throw new ReservaException(messageSource.getMessage(ConstantesMessages.RESERVASAGOTADAS, null, LocaleContextHolder.getLocale()));
@@ -166,7 +166,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
     }    
   }
 
-  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago, ReservaUsuario reservaUsuario, InscripcionReservaActividad inscripcionReservaActividad)
+  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,InscripcionReservaActividad inscripcionReservaActividad)
       throws ReservaException {
     try {
       usuarioPlanPagoService.actualizarReservasRestantes(usuPlanPago.getReservasRestantes(), usuPlanPago.getIdUsuarioPlanPago());
