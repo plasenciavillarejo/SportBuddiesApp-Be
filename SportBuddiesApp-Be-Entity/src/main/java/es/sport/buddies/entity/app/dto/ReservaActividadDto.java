@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class ReservaActividadDto implements Serializable {
 
+  private long idReservaActividad;
+  
   private Date fechaReserva;
   
   private String actividad;

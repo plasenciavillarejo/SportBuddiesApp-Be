@@ -45,17 +45,18 @@ public class ReservaUsuario implements Serializable {
   @Column(name = "hora_fin_reserva")
   private LocalTime horaFinReserva;
 
-  @Column(name = "observaciones", length = 200)
-  private String observaciones;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "usuario_reserva_fk")
-  private Usuario usuarioReserva;
+  private Usuario usuario;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "deporte_reserva_fk")
-  private Deporte deporteReserva;
+  private Deporte deporte;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "reserva_actividad_fk")
+  private ReservaActividad reservaActividad;
+  
   private static final long serialVersionUID = 4230007596971428886L;
 
 }

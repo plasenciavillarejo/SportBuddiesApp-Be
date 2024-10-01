@@ -2,25 +2,16 @@ package es.sport.buddies.main.app.service.impl;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
-import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
-import es.sport.buddies.entity.app.models.service.IDeporteService;
-import es.sport.buddies.entity.app.models.service.IMunicipioService;
-import es.sport.buddies.entity.app.models.service.IProvinciaService;
-import es.sport.buddies.entity.app.models.service.IReservaActividadService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
-import es.sport.buddies.main.app.convert.map.struct.IReservaActividadMapStruct;
 import es.sport.buddies.main.app.convert.map.struct.IReservaUsuarioMapStruct;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
@@ -32,42 +23,19 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   
   @Autowired
   private IReservaUsuarioService reservaService;
-
-  @Autowired
-  private IDeporteService deporteServcie;
-  
-  @Autowired
-  private IProvinciaService provinciaService;
-  
-  @Autowired
-  private IMunicipioService muncipioService;
     
   @Override
-  public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva) throws ReservaException {
+  public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idReserva) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
     try {
       LOGGER.info("Se procede a listar las reservas con fecha: {}", fechaReserva);
-      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva).stream()
+      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva,idReserva).stream()
           .map(resUsu -> IReservaUsuarioMapStruct.mapper.reservaUsuarioToDto(resUsu)).toList();
       LOGGER.info(!res.isEmpty() ? "Se ha encontrado un total de {} reservas" : "No se ha encontrado ningúna reserva, se devuelve un listado vacío", res.size());
     } catch (Exception e) {
       throw new ReservaException(e.getMessage());
     }
     return !res.isEmpty() ? res : Collections.emptyList();
-  }
-
-  @Override
-  public Map<String, Object> listarCombosPaginaInicial() throws ReservaException {
-	  Map<String, Object> mapResult = new HashMap<>();
-	  mapResult.put("listadoDeportes", deporteServcie.listarDeportes());
-	  mapResult.put("listaProvincias", provinciaService.listarProvincias());
-	  return mapResult;
-  }
-
-  @Override
-  public List<String> listaMunicipiosPorProvinca(String nombreProvincia) {
-    return muncipioService.findByProvincia_NombreProvincia(nombreProvincia)
-        .stream().map(provin -> provin.getNombreMunicipio()).toList();
   }
   
 }

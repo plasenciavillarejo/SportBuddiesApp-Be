@@ -2,10 +2,7 @@ package es.sport.buddies.entity.app.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 

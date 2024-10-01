@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
@@ -19,8 +20,14 @@ public interface IReservaUsuarioMapStruct {
       2.- Si el campo diferente está dentro de una tabla referenciada dentro de la entidad debermos de realizar la siguiente acción:
            @Mapping(target = "usuarioReservaDto.idUsuarioDto", source = "usuarioReserva.idUsuario")
    * */
-  @Mapping(target = "usuarioReservaDto", source = "usuarioReserva")
-  @Mapping(target = "deporteReservaDto", source = "deporteReserva")
+  @Mapping(target = "usuarioReservaDto", source = "usuario")
+  @Mapping(target = "deporteReservaDto", source = "deporte")
   public ReservaUsuarioDto reservaUsuarioToDto(ReservaUsuario resUsu); 
+
+  @Mapping(target = "usuario.idUsuario", source = "idUsuario")
+  @Mapping(target = "deporte.idDeporte", source = "idDeporte")
+  @Mapping(target = "reservaActividad.idReservaActividad", source = "idReservaActividad")
+  public ReservaUsuario inscripcionActividadToReservaActividad(InscripcionReservaActividad inscripcionDto);
+  
   
 }
