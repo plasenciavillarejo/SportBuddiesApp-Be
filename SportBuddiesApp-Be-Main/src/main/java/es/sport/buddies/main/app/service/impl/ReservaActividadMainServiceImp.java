@@ -150,7 +150,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       UsuarioPlanPago usuPlanPago = usuarioPlanPagoService.findBySuscripcion_IdSuscripcion(suscripcionDto.getIdSuscripcion());
       AtomicLong reserva = new AtomicLong(usuPlanPago.getReservasRestantes());
       
-      if(usuPlanPago.getReservasRestantes() > 0) {
+      if(usuPlanPago.getReservasRestantes() > 0 || usuPlanPago.getPlanPago().getNombrePlan().equalsIgnoreCase(ConstantesMain.FREE)) {
         LOGGER.info("El usuario: '{}' contiene '{}' reservas restantes, se prodece a realizar la inscripción a la reserva con ID: {}",
             usuPlanPago.getSuscripcion().getUsuario().getNombreUsuario(), usuPlanPago.getReservasRestantes(),
             inscripcionReservaActividad.getIdReservaActividad());

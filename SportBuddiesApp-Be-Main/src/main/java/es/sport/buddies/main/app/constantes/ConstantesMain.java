@@ -14,5 +14,7 @@ public class ConstantesMain {
 	public static String FICHERPEMPLUBLIKEY = "KEY";
 	
 	public static final String ACTIVO = "Activo";
+	
+	public static final String FREE = "free";
 		
 }

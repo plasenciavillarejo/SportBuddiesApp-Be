@@ -21,7 +21,7 @@ public class InscripcionReservaActividad implements Serializable {
   
   private long idDeporte;
   
-  private String abonado;
+  private boolean abonado;
   
   private static final long serialVersionUID = -4930926324910987759L;
 

@@ -19,8 +19,8 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(LocalDate fechaReserva, long idReserva) {
-    return reservaDao.buscarReservaPorFechaAndIdUsuario(fechaReserva, idReserva);
+  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(LocalDate fechaReserva, long idUsuario) {
+    return reservaDao.buscarReservaPorFechaAndIdUsuario(fechaReserva, idUsuario);
   }
 
   @Override

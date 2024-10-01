@@ -51,6 +51,7 @@ CREATE TABLE reservas_usuario (
 	usuario_reserva_fk bigint NOT NULL,
 	deporte_reserva_fk bigint NOT NULL,
 	reserva_actividad_fk bigint NOT NULL,
+	abonado tinyint(1) NOT NULL,
 	PRIMARY KEY (`id_reserva`),
     FOREIGN KEY (usuario_reserva_fk) REFERENCES usuarios(id_usuario),
 	FOREIGN KEY (deporte_reserva_fk) REFERENCES deportes(id_deporte),
@@ -176,8 +177,8 @@ INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('USER');
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol Sala');
 
 
-INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`)
-VALUES ('2024-09-13', '20:00:31', '21:00:31',3,1,1);
+INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
+VALUES ('2024-09-13', '20:00:31', '21:00:31',3,1,1,1);
 
 
 INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(1, 4);
@@ -320,7 +321,7 @@ INSERT INTO reservas_actividad (
 	
 	
 insert into planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES
-(1,'free', 1, 0),
+(1,'free', 9999, 0),
 (2, 'student', 5, 2.99),
 (3, 'basic', 3, 4.99),
 (4, 'premium', 5, 8.99),
