@@ -107,7 +107,6 @@ public class SecurityConfig {
   @Order(2)
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("authenticate").permitAll()
         .anyRequest().authenticated())
         //.formLogin(form -> form.disable())    
         .formLogin(Customizer.withDefaults())
@@ -195,7 +194,6 @@ public class SecurityConfig {
         .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
             .refreshTokenTimeToLive(Duration.ofDays(1)).build())
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    
     
     return new InMemoryRegisteredClientRepository(oidcClient,oauthDebugger,clientAngular);
   }

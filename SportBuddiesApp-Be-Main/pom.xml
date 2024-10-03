@@ -87,11 +87,17 @@
 		</dependency>
 		<!-- FIN: Dependencias para trabajar con OAUTH2 -->
 		<!-- ########################################## -->
-				<dependency>
+		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>
@@ -106,7 +112,7 @@
 		</dependencies>
 	</dependencyManagement>
 
-<!--
+	<!--
 	###############################################################################################
 	Para que funcione correctamente Lombok con MapStruct debemos indicar la siguiente configuración 
 	###############################################################################################-->
