@@ -11,12 +11,12 @@ spring:
             # Proveedor para iniciar el login
             provider: spring
             # Nombre del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
-            client-id: client-angular
+            client-id: gateway-app
             # Passwrod del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
             client-secret: 12345
             authorization-grant-type: authorization_code
             # EndPoint donde está configurado el servicio REST AutorizacionController.class (SportBuddiesApp-Be-Gateway) 
-            redirect-uri: "http://localhost:4200/authorize"
+            redirect-uri: "http://127.0.0.1:8090/authorized"
             # Los roles que 
             scope:
               - openid
@@ -25,16 +25,7 @@ spring:
               #- write
             # Nombre del cliente que vamosa registrar (client-app) ubicado en la linea 10
             client-name: client-app
-          client-be:
-            provider: spring
-            client-id: gateway-app
-            client-secret: 12345
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:8090/authorized"
-            scope:
-              - openid
-              - profile
-            client-name: client-be
+        # Configuracion del proveedor
         provider:
           spring:
             issuer-uri: "http://127.0.0.1:9000"
