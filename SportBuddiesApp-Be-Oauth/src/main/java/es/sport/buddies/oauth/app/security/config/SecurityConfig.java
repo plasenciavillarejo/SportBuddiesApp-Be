@@ -9,12 +9,14 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +42,9 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -63,6 +68,7 @@ public class SecurityConfig {
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    http.cors(Customizer.withDefaults());
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     // Enable OpenID Connect 1.0
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
@@ -75,14 +81,39 @@ public class SecurityConfig {
     return http.build();
   }
 
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration corsConfig = new CorsConfiguration();
+    corsConfig.setAllowCredentials(true);
+    corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
+    corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Métodos permitidos
+    corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE,
+        HttpHeaders.ACCEPT, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));  // Headers permitidos
+    // Configuración de las cabeceras CORS
+    corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
+    corsConfig.addExposedHeader(HttpHeaders.AUTHORIZATION);
+    corsConfig.addExposedHeader(HttpHeaders.CONTENT_DISPOSITION);
+    
+    // Pasamos el corsConfig a nuestras rutas urls    
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    // se aplique a todas nuestras rutas
+    source.registerCorsConfiguration("/**", corsConfig);
+    
+    return source;
+  }
+  
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize
+        .requestMatchers("authenticate").permitAll()
         .anyRequest().authenticated())
+        //.formLogin(form -> form.disable())    
         .formLogin(Customizer.withDefaults())
-        .csrf(csrf -> csrf.disable());
+        //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()));
     return http.build();
   }
   
@@ -112,7 +143,8 @@ public class SecurityConfig {
 		return new UserDetailService(usuarioService);
 	}
   
-  // Configuración de nuestro cliente FRONT-END
+  /* Configuración de nuestro cliente FRONT-END
+	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server */
   @Bean
   RegisteredClientRepository registeredClientRepository() {
     RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -139,7 +171,33 @@ public class SecurityConfig {
         		.refreshTokenTimeToLive(Duration.ofDays(1)).build())
         // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    return new InMemoryRegisteredClientRepository(oidcClient);
+    
+    RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId("clietn-oauthdebugger")
+        .clientSecret(passwordEncoder().encode("secret"))
+        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+        .redirectUri("https://oauthdebugger.com/debug")
+        .scope(OidcScopes.OPENID)
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
+
+    RegisteredClient clientAngular = RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId("client-angular")
+        .clientSecret(passwordEncoder().encode("12345"))
+        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+        // Envia el CODE a la página de angular
+        .redirectUri("http://localhost:4200/authorize")
+        .scope(OidcScopes.OPENID)
+        .scope(OidcScopes.PROFILE)
+        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
+            .refreshTokenTimeToLive(Duration.ofDays(1)).build())
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
+    
+    
+    return new InMemoryRegisteredClientRepository(oidcClient,oauthDebugger,clientAngular);
   }
 
   @Bean
