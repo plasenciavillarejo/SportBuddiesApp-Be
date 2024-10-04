@@ -88,8 +88,7 @@ public class SecurityConfig {
 				    		new SimpleGrantedAuthority(role)).toList();
 				    return Mono.just(new JwtAuthenticationToken(source, authorities));
 				})
-				))
-				.build();
+				)).build();
 	}
 	
 }

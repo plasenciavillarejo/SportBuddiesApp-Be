@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -52,6 +53,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.services.UserDetailService;
@@ -110,6 +112,7 @@ public class SecurityConfig {
         .anyRequest().authenticated())
         //.formLogin(form -> form.disable())    
         .formLogin(Customizer.withDefaults())
+        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
         //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()));

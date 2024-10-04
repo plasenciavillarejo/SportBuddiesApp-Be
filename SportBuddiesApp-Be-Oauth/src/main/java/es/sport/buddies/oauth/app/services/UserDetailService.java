@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
+import es.sport.buddies.entity.app.dto.UsuarioDto;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
@@ -45,8 +47,13 @@ public class UserDetailService implements UserDetailsService {
 		             .toList();
 			LOGGER.info("Se ha localizado al usuario exitosamente, se procede almancenaro en el contexto de SpringSecurity");
 			
-			UsernamePasswordAuthenticationToken userAuthentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
+			UsernameAuthenticationDto userAuthentication = new UsernameAuthenticationDto(usuario,null, authorities);
+			UsuarioDto usuDto = new UsuarioDto();
+			usuDto.setIdUsuario(usuario.getIdUsuario());
+			usuDto.setNombreUsuario(usuario.getNombreUsuario());			
+			userAuthentication.setUsuarioDto(usuDto);
 			SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+			
 			return new User(usuario.getNombreUsuario(),usuario.getPassword(),usuario.getEnabled(),true,true,true,authorities);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException("Usuario no existe");
