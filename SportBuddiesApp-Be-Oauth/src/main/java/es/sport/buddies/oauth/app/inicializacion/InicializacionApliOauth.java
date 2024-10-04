@@ -30,6 +30,15 @@ public class InicializacionApliOauth {
 	@Value("${client.secret.oauth}")
 	private String clientSecret;
 	
+	@Value("${redirect.ouaht.angular}")
+	private String redirectAngular;
+	
+	@Value("${client.id.angular}")
+	private String clientIdAngular;
+	
+	@Value("${client.secret.angular}")
+	private String clientSecretAngular;
+	
 	@PostConstruct
 	public void init() {
 		
@@ -46,6 +55,12 @@ public class InicializacionApliOauth {
 		ConstantesApp.CLIENTID = clientId;
 		
 		ConstantesApp.CLIENTSECRET = clientSecret;
+		
+	  ConstantesApp.REDIRECTANGULAR = redirectAngular;
+	  
+	  ConstantesApp.CLIENTIDANGULAR = clientIdAngular;
+	  
+	  ConstantesApp.CLIENTSECRETANGULAR = clientSecretAngular;
 		
 	}
 	

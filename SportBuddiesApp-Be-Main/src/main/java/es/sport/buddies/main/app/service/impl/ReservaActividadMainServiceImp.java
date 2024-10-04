@@ -18,7 +18,6 @@ import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
-import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
 import es.sport.buddies.entity.app.models.service.IDeporteService;

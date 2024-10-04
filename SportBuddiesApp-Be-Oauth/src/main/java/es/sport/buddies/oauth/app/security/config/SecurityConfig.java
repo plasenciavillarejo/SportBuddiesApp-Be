@@ -23,7 +23,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -53,7 +52,6 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.services.UserDetailService;
@@ -173,7 +171,7 @@ public class SecurityConfig {
         		.refreshTokenTimeToLive(Duration.ofDays(1)).build())
         // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    
+    /*
     RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId("clietn-oauthdebugger")
         .clientSecret(passwordEncoder().encode("secret"))
@@ -183,22 +181,22 @@ public class SecurityConfig {
         .redirectUri("https://oauthdebugger.com/debug")
         .scope(OidcScopes.OPENID)
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-
+    */
     RegisteredClient clientAngular = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId("client-angular")
-        .clientSecret(passwordEncoder().encode("12345"))
+        .clientId(ConstantesApp.CLIENTIDANGULAR)
+        .clientSecret(passwordEncoder().encode(ConstantesApp.CLIENTSECRETANGULAR))
         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
         // Envia el CODE a la página de angular
-        .redirectUri("http://localhost:4200/authorize")
+        .redirectUri(ConstantesApp.REDIRECTANGULAR)
         .scope(OidcScopes.OPENID)
         .scope(OidcScopes.PROFILE)
         .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
             .refreshTokenTimeToLive(Duration.ofDays(1)).build())
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
     
-    return new InMemoryRegisteredClientRepository(oidcClient,oauthDebugger,clientAngular);
+    return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }
 
   @Bean
