@@ -1,5 +1,7 @@
 package es.sport.buddies.main.app.service.impl;
 
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +82,9 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       .toList()).thenApply(lista -> lista);
       CompletableFuture.allOf(list).get();
       */
-      listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(listadoDto.getFechaReserva(), listadoDto.getActividad(),
+      listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
+          Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
+           listadoDto.getActividad(),
           listadoDto.getProvincia(), listadoDto.getMunicipio()).stream()
           .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
           .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();

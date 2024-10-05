@@ -175,6 +175,7 @@ INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('USER');
 
 
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol Sala');
+INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol');
 
 
 INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)

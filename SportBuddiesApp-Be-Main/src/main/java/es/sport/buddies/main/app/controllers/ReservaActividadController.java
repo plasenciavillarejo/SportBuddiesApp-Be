@@ -59,8 +59,8 @@ public class ReservaActividadController {
     return new ResponseEntity<>(listMunicipio,HttpStatus.OK);
   }
     
-  @GetMapping(value = "/listadoReserva")
-  public ResponseEntity<List<ReservaActividadDto>> listarR (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
+  @PostMapping(value = "/listadoReserva")
+  public ResponseEntity<List<ReservaActividadDto>> listarReservaActividad (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
     List<ReservaActividadDto> listReservaDto = null;
     try {
       listReservaDto = reservaActividadMainService.listadoReservaActividad(listadoDto);

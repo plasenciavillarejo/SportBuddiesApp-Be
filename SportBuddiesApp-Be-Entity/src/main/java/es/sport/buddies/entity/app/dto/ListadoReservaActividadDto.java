@@ -1,17 +1,15 @@
 package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 
 import lombok.Data;
 
 @Data
 public class ListadoReservaActividadDto implements Serializable {
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private Date fechaReserva;
+  //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  private LocalDate fechaReserva;
 
   private String actividad;
 

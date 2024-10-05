@@ -58,7 +58,8 @@ public class SecurityConfig {
 			authHttp.pathMatchers("/authorized","/logout",
 			    "/api/main/reservaActividad/listarReserva",
 			    "/api/main/reservaActividad/comboInicio",
-			    "/api/main/reservaActividad/listadoMunicipios").permitAll()
+			    "/api/main/reservaActividad/listadoMunicipios",
+			    "/api/main/reservaActividad/listadoReserva").permitAll()
 			.pathMatchers("/api/main/listar").hasAnyRole("ADMIN", "USER")
 			//.hasAnyAuthority("SCOPE_read", "SCOPE_write") -> De está format trabaja los roles de Oauth 2
 			//.pathMatchers(HttpMethod.POST, "/crear").hasAuthority("SCOPE_write")

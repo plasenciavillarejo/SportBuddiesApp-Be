@@ -34,7 +34,8 @@ public class SecurityConfig {
     .authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/reservaActividad/listarReserva",
             "/reservaActividad/comboInicio",
-            "/reservaActividad/listadoMunicipios").permitAll()
+            "/reservaActividad/listadoMunicipios",
+            "/reservaActividad/listadoReserva").permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();

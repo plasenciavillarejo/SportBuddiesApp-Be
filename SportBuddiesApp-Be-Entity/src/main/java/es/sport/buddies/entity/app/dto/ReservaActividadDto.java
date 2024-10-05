@@ -1,6 +1,7 @@
 package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,10 @@ public class ReservaActividadDto implements Serializable {
   private long idReservaActividad;
   
   private Date fechaReserva;
+  
+  private LocalTime horaInicio;
+  
+  private LocalTime horaFin;
   
   private String actividad;
   
