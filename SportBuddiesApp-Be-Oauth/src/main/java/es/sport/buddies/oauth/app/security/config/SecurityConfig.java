@@ -42,9 +42,7 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -58,7 +56,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
-import es.sport.buddies.oauth.app.federated.CustomOAuth2UserService;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityConfigurer;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
@@ -76,12 +73,6 @@ public class SecurityConfig {
 
   @Autowired
   private IUsuarioGoogleService googleService;
-
-  @Bean
-  RequestMatcher customRequestMatcherClave() {
-    return new AntPathRequestMatcher("/error?continue");
-  }
-    
   
   @Bean
   FederatedIdentityConfigurer federatedIdentityConfigurer() {
@@ -143,10 +134,11 @@ public class SecurityConfig {
         .anyRequest().authenticated())
         .formLogin(Customizer.withDefaults())
         .oauth2Login(Customizer.withDefaults())
-        /*.oauth2Login(oauth2 -> oauth2
-            .userInfoEndpoint(userInfo -> userInfo
-                .userService(new CustomOAuth2UserService())  // Integra tu servicio personalizado
-            ).successHandler(authenticationSuccessHandler())
+        //.apply(federatedIdentityConfigurer)
+        //.and()
+        /*.oauth2Login(oauth2 -> oauth2.loginPage("/login")
+            .successHandler(authenticationSuccessHandler())
+            .redirectionEndpoint(redirect -> redirect.baseUri("http://localhost:4200/authorize"))
         ).apply(federatedIdentityConfigurer)
         .and()*/
         // Habilitamos nuestro login propio para poder loguearnos con Google - No redirecciona a angular
