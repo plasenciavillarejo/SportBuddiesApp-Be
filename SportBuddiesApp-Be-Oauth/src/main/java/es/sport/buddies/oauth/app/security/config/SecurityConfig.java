@@ -107,9 +107,11 @@ public class SecurityConfig {
   @Order(2)
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize
+        .requestMatchers("/login", "/img/**").permitAll()
         .anyRequest().authenticated())
-        //.formLogin(form -> form.disable())    
-        .formLogin(Customizer.withDefaults())
+        // Habilitamos nuestro login propio para poder loguearnos con Google
+        .formLogin(login -> login.loginPage("/login"))
+        .oauth2Login(login -> login.loginPage("/login"))
         .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
         //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
         .csrf(csrf -> csrf.disable())
@@ -171,8 +173,8 @@ public class SecurityConfig {
         		.refreshTokenTimeToLive(Duration.ofDays(1)).build())
         // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    /*
-    RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
+    
+    /*RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId("clietn-oauthdebugger")
         .clientSecret(passwordEncoder().encode("secret"))
         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
@@ -180,8 +182,8 @@ public class SecurityConfig {
         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
         .redirectUri("https://oauthdebugger.com/debug")
         .scope(OidcScopes.OPENID)
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    */
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();*/
+    
     RegisteredClient clientAngular = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId(ConstantesApp.CLIENTIDANGULAR)
         .clientSecret(passwordEncoder().encode(ConstantesApp.CLIENTSECRETANGULAR))

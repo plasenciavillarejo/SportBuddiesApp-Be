@@ -10,13 +10,17 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-public class LogoutController {
+public class CookieController {
    
  @Autowired
  private HttpServletResponse response;
  
+ /**
+  * Función encargada de borrar la cookie cuando ha expirado el token. De está forma cuando entra para hacer el login no matiene al usuario anterior guardado
+  * @return
+  */
   @GetMapping(value = "/borrarCookie")
-  private ResponseEntity<Void>  borrarCookie() throws Exception {
+  public ResponseEntity<Void>  borrarCookie() {
     Cookie c = new Cookie("JSESSIONID", "");
     c.setMaxAge(0);
     c.setPath("/");

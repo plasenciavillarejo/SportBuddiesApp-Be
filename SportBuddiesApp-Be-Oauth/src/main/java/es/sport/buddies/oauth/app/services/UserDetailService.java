@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,8 +51,9 @@ public class UserDetailService implements UserDetailsService {
 			usuDto.setIdUsuario(usuario.getIdUsuario());
 			usuDto.setNombreUsuario(usuario.getNombreUsuario());			
 			userAuthentication.setUsuarioDto(usuDto);
+						
 			SecurityContextHolder.getContext().setAuthentication(userAuthentication);
-			
+
 			return new User(usuario.getNombreUsuario(),usuario.getPassword(),usuario.getEnabled(),true,true,true,authorities);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException("Usuario no existe");

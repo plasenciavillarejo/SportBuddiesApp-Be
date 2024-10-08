@@ -2,6 +2,8 @@ package es.sport.buddies.oauth.app.constantes;
 
 import org.springframework.stereotype.Component;
 
+import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
+
 @Component
 public class ConstantesApp {
 
@@ -31,5 +33,6 @@ public class ConstantesApp {
   
   public static String CLIENTSECRETANGULAR = "CLIENTSECRETANGULAR";
 
+  public static UsernameAuthenticationDto userAuthenticationDto;
 
 }

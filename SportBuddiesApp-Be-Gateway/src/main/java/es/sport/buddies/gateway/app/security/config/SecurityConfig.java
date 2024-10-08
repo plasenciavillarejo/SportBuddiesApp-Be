@@ -76,16 +76,6 @@ public class SecurityConfig {
 				// Obtenemos los roles del token que hemos agregador por defecto de Spring Security en vez e utilzar de SCOP_write, SCOPE_read de Oauth2
 				.oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt ->
 				// Implementamos al vuelo la clase anónima 'Converter()' para agregar los roles incluidos en SecurityConfig.class dentro de (SportBuildesApp-Be-Oauth)
-				
-				/*Está clase al vuelo, la he optimizado más abajo
-				jwt.jwtAuthenticationConverter(new Converter<Jwt, Mono<AbstractAuthenticationToken>>() {
-					@Override
-					public Mono<AbstractAuthenticationToken> convert(Jwt source) {
-						Collection<String> roles = source.getClaimAsStringList("roles");
-						Collection<GrantedAuthority> authorities = roles.stream().map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role)).toList();
-						// Devolvemos un objeto mono reactivo pasndo el token y los authorities. Ahora ya podremos loguearnos con los roles de Spring Security
-						return Mono.just(new JwtAuthenticationToken(source, authorities));
-				}})*/
 				jwt.jwtAuthenticationConverter(source -> {
 				    Collection<String> roles = source.getClaimAsStringList("roles");
 				    Collection<GrantedAuthority> authorities = roles.stream().map(role -> (GrantedAuthority) 
