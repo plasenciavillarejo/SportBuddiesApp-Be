@@ -39,7 +39,10 @@ spring:
             provider: google
             client-id: ${GOOGLE_CLIENT_ID:63154317662-tmbv229bcf0cvp8nbnevvhmml9t4r3ph.apps.googleusercontent.com}
             client-secret: ${GOOGLE_CLIENT_SECRET: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}
-            scope: openid, https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email
+            scope: 
+              - openid 
+              - profile 
+            #https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email
             client-name: oauth-sportbuddies-client
           #github-idp:
           #  provider: github
