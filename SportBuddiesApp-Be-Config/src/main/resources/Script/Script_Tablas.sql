@@ -172,6 +172,8 @@ INSERT INTO `sportbuddies`.`usuarios`(`nombre_usuario`,`password`,`enabled`,`ape
 
 INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('ADMIN');
 INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('USER');
+INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('OIDC_USER');
+
 
 
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol Sala');

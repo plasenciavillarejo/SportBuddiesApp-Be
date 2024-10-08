@@ -40,8 +40,11 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -52,19 +55,44 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
+import es.sport.buddies.oauth.app.federated.CustomOAuth2UserService;
+import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
+import es.sport.buddies.oauth.app.federated.FederatedIdentityConfigurer;
+import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.services.UserDetailService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
- 
+   
+  
   @Bean
   static BCryptPasswordEncoder passwordEncoder() {
       return new BCryptPasswordEncoder();
   }
-   
+
+  @Autowired
+  private IUsuarioGoogleService googleService;
+
+  @Bean
+  RequestMatcher customRequestMatcherClave() {
+    return new AntPathRequestMatcher("/error?continue");
+  }
+    
+  
+  @Bean
+  FederatedIdentityConfigurer federatedIdentityConfigurer() {
+      return new FederatedIdentityConfigurer()
+          .oauth2UserHandler(new UserRepositoryOAuth2UserHandler(googleService));
+  }
+  
+  private AuthenticationSuccessHandler authenticationSuccessHandler() {
+    return new FederatedIdentityAuthenticationSuccessHandler();
+  }
+ 
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -101,19 +129,31 @@ public class SecurityConfig {
     
     return source;
   }
-  
+    
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    
+    FederatedIdentityConfigurer federatedIdentityConfigurer = new FederatedIdentityConfigurer()
+        .oauth2UserHandler(new UserRepositoryOAuth2UserHandler(googleService));
+    
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login", "/img/**").permitAll()
+        .requestMatchers("/login", "/img/**", "/css/**", "/assets/**").permitAll()
         .anyRequest().authenticated())
-        // Habilitamos nuestro login propio para poder loguearnos con Google
-        .formLogin(login -> login.loginPage("/login"))
-        .oauth2Login(login -> login.loginPage("/login"))
-        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
-        //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
+        .formLogin(Customizer.withDefaults())
+        .oauth2Login(Customizer.withDefaults())
+        /*.oauth2Login(oauth2 -> oauth2
+            .userInfoEndpoint(userInfo -> userInfo
+                .userService(new CustomOAuth2UserService())  // Integra tu servicio personalizado
+            ).successHandler(authenticationSuccessHandler())
+        ).apply(federatedIdentityConfigurer)
+        .and()*/
+        // Habilitamos nuestro login propio para poder loguearnos con Google - No redirecciona a angular
+        /*.formLogin(login -> login.loginPage("/login"))
+        .oauth2Login(login -> login.loginPage("/login")
+            .successHandler(authenticationSuccessHandler()))*/
+        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))        //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()));
     return http.build();
@@ -197,6 +237,20 @@ public class SecurityConfig {
         .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
             .refreshTokenTimeToLive(Duration.ofDays(1)).build())
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
+
+   /*RegisteredClient googleClient = RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId("google")
+        .clientSecret(passwordEncoder().encode("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"))
+        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+        // Envia el CODE a la página de angular
+        .redirectUri(ConstantesApp.REDIRECTANGULAR)
+        .scope(OidcScopes.OPENID)
+        .scope(OidcScopes.PROFILE)
+        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
+            .refreshTokenTimeToLive(Duration.ofDays(1)).build())
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();*/
     
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }

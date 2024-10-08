@@ -27,6 +27,7 @@
             <label for="password">Contraseña</label>
         </div>
         <div>
+            
             <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
             <a class="w-100 btn btn-light btn-block bg-white" href="/oauth2/authorization/google" role="link" style="margin-top: 10px">
                 <img th:src="@{/img/google_icon.png}" width="20" style="margin-right: 5px;" alt="Sign in with Google">
