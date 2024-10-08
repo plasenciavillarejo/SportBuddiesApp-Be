@@ -58,6 +58,7 @@ import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityConfigurer;
+import es.sport.buddies.oauth.app.federated.OAuth2UserService;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.services.UserDetailService;
 
@@ -74,6 +75,9 @@ public class SecurityConfig {
   @Autowired
   private IUsuarioGoogleService googleService;
   
+  @Autowired
+  private OAuth2UserService oAuth2UserService;
+
   @Bean
   FederatedIdentityConfigurer federatedIdentityConfigurer() {
       return new FederatedIdentityConfigurer()
@@ -133,7 +137,10 @@ public class SecurityConfig {
         .requestMatchers("/login", "/img/**", "/css/**", "/assets/**").permitAll()
         .anyRequest().authenticated())
         .formLogin(Customizer.withDefaults())
-        .oauth2Login(Customizer.withDefaults())
+        .oauth2Login(oauth2 -> oauth2
+            .userInfoEndpoint(infoEndpoint ->
+            infoEndpoint.userService(oAuth2UserService))
+            .successHandler(authenticationSuccessHandler()))
         //.apply(federatedIdentityConfigurer)
         //.and()
         /*.oauth2Login(oauth2 -> oauth2.loginPage("/login")

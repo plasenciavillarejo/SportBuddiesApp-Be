@@ -22,7 +22,7 @@ public class UsuarioGoogle {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private long id;
   
   @Column(name = "email")
   private String email;
