@@ -5,10 +5,15 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
 import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 
+/**
+ * Clase encargada de validar al usuario recibido desde google, en el caso de que no exista se creara en BBDD
+ */
+@Service
 public class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryOAuth2UserHandler.class);

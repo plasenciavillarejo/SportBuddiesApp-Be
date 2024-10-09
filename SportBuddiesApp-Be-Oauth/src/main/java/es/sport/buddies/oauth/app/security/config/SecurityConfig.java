@@ -57,37 +57,37 @@ import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
-import es.sport.buddies.oauth.app.federated.FederatedIdentityConfigurer;
-import es.sport.buddies.oauth.app.federated.OAuth2UserService;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.services.UserDetailService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-   
-  
-  @Bean
-  static BCryptPasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-  }
-
-  @Autowired
-  private IUsuarioGoogleService googleService;
   
   @Autowired
-  private OAuth2UserService oAuth2UserService;
+  private UserRepositoryOAuth2UserHandler ouaht2Handler;
+  
+  /**
+   * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
+   * enviar el  IUsuarioService.java, de lo contrario dentro de dicha clase no se tiene acceso a la inyección de las dependencias
+   */
+  @Autowired
+  private IUsuarioService usuarioService;
 
-  @Bean
-  FederatedIdentityConfigurer federatedIdentityConfigurer() {
-      return new FederatedIdentityConfigurer()
-          .oauth2UserHandler(new UserRepositoryOAuth2UserHandler(googleService));
+  public UserDetailService usu() {
+    return new UserDetailService(usuarioService);
   }
   
   private AuthenticationSuccessHandler authenticationSuccessHandler() {
-    return new FederatedIdentityAuthenticationSuccessHandler();
+    return new FederatedIdentityAuthenticationSuccessHandler(ouaht2Handler);
   }
- 
+  
+  @Bean
+  static BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -124,42 +124,24 @@ public class SecurityConfig {
     
     return source;
   }
-    
+  
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
-  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    
-    FederatedIdentityConfigurer federatedIdentityConfigurer = new FederatedIdentityConfigurer()
-        .oauth2UserHandler(new UserRepositoryOAuth2UserHandler(googleService));
-    
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {   
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/login", "/img/**", "/css/**", "/assets/**").permitAll()
         .anyRequest().authenticated())
         .formLogin(Customizer.withDefaults())
-        .oauth2Login(oauth2 -> oauth2
-            .userInfoEndpoint(infoEndpoint ->
-            infoEndpoint.userService(oAuth2UserService))
-            .successHandler(authenticationSuccessHandler()))
-        //.apply(federatedIdentityConfigurer)
-        //.and()
-        /*.oauth2Login(oauth2 -> oauth2.loginPage("/login")
-            .successHandler(authenticationSuccessHandler())
-            .redirectionEndpoint(redirect -> redirect.baseUri("http://localhost:4200/authorize"))
-        ).apply(federatedIdentityConfigurer)
-        .and()*/
-        // Habilitamos nuestro login propio para poder loguearnos con Google - No redirecciona a angular
-        /*.formLogin(login -> login.loginPage("/login"))
-        .oauth2Login(login -> login.loginPage("/login")
-            .successHandler(authenticationSuccessHandler()))*/
-        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))        //.formLogin(form -> form.loginPage("/loginAngular").loginProcessingUrl("/loginAngular").permitAll())
+        .oauth2Login(oauth -> oauth.successHandler(authenticationSuccessHandler()))
+        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()));
     return http.build();
   }
   
   /**
-   * Función para trabajar con usuarios en memoria para hacer pruebasS
+   * Función para trabajar con usuarios en memoria para hacer pruebas
    * @return
    
   @Bean
@@ -172,17 +154,6 @@ public class SecurityConfig {
     return new InMemoryUserDetailsManager(userDetails);
   }
    */
-
-  /**
-   * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
-   * enviar el  IUsuarioService.java, de lo contrario dentro de dicha clase no se tiene acceso a la inyección de las dependencias
-   */
-	@Autowired
-	private IUsuarioService usuarioService;
-
-	public UserDetailService usu() {
-		return new UserDetailService(usuarioService);
-	}
   
   /* Configuración de nuestro cliente FRONT-END
 	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server */
@@ -236,20 +207,6 @@ public class SecurityConfig {
         .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
             .refreshTokenTimeToLive(Duration.ofDays(1)).build())
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-
-   /*RegisteredClient googleClient = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId("google")
-        .clientSecret(passwordEncoder().encode("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"))
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-        // Envia el CODE a la página de angular
-        .redirectUri(ConstantesApp.REDIRECTANGULAR)
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
-            .refreshTokenTimeToLive(Duration.ofDays(1)).build())
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();*/
     
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }
@@ -306,25 +263,30 @@ public class SecurityConfig {
   }
  
   /**
+   * Lo mismo que OAuth2TokenCustomizer pero crea una clase en medio
+   * @return   
+  @Bean
+  OAuth2TokenCustomizer<JwtEncodingContext> idTokenCustomizer() {
+      return new FederatedIdentityIdTokenCustomizer();
+  }
+  */
+  
+  /**
    * Función encargada de agregar información al token que por defecto no se agrega
    * @return
    */
   @Bean
   OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
-	  return context -> {
-		if(context.getTokenType().getValue().equalsIgnoreCase(OAuth2TokenType.ACCESS_TOKEN.getValue())) {
-			Authentication principal = context.getPrincipal();
-			// Agregamos claims adicionales al token, como roles, direccion, nombres, etc...
-			context.getClaims()
-			.claim("Datos Adicionales", "Aquí se agrega los claims adicionales que por defecto se agregan")
-			.claim("roles", principal.getAuthorities()
-					.stream()
-					.map(GrantedAuthority:: getAuthority)
-					.toList());
-		}
-	  };
+    return context -> {
+      if (context.getTokenType().getValue().equalsIgnoreCase(OAuth2TokenType.ACCESS_TOKEN.getValue())) {
+        Authentication principal = context.getPrincipal();
+        // Agregamos claims adicionales al token, como roles, direccion, nombres, etc...
+        context.getClaims()
+            .claim("Datos Adicionales", "Aquí se agrega los claims adicionales que por defecto se agregan")
+            .claim("roles", principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+      }
+    };
   }
-  
   
   
 }

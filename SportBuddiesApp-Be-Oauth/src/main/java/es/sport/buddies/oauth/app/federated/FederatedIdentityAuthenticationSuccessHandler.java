@@ -16,30 +16,38 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public final class FederatedIdentityAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-  
   private final AuthenticationSuccessHandler delegate = new SavedRequestAwareAuthenticationSuccessHandler();
 
   private Consumer<OAuth2User> oauth2UserHandler = user -> {};
 
   private Consumer<OidcUser> oidcUserHandler = user -> this.oauth2UserHandler.accept(user);
-
-  private UserRepositoryOAuth2UserHandler userRepo;
+  
+  private UserRepositoryOAuth2UserHandler ouaht2Handler;
+  
+  public FederatedIdentityAuthenticationSuccessHandler() {
+    // Constructor vacío
+  }
+  
+  /**
+   * Constructor para inyectar el servicio UserRepositoryOAuth2UserHandler para realizar el login cuando recibo un usuario 
+   * @param repositoryOAuth2UserHandler
+   */
+  public FederatedIdentityAuthenticationSuccessHandler(UserRepositoryOAuth2UserHandler repositoryOAuth2UserHandler) {
+    this.ouaht2Handler = repositoryOAuth2UserHandler;
+  }
   
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws IOException, ServletException {
     if (authentication instanceof OAuth2AuthenticationToken) {
-      if (authentication.getPrincipal() instanceof OidcUser) {
-        OAuth2User usu = (OAuth2User) authentication.getPrincipal();
+      if ((OidcUser) authentication.getPrincipal() instanceof OidcUser) {
         this.oidcUserHandler.accept((OidcUser) authentication.getPrincipal());
-        //userRepo.accept(usu);
-      } else if (authentication.getPrincipal() instanceof OAuth2User) {
+        ouaht2Handler.accept((OidcUser) authentication.getPrincipal());
+      } else if ((OAuth2User) authentication.getPrincipal() instanceof OAuth2User) {
         this.oauth2UserHandler.accept((OAuth2User) authentication.getPrincipal());
       }
     }
-
     this.delegate.onAuthenticationSuccess(request, response, authentication);
-
   }
 
   public void setOAuth2UserHandler(Consumer<OAuth2User> oauth2UserHandler) {

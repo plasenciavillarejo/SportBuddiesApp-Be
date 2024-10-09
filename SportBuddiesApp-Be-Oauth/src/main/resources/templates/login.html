@@ -9,7 +9,38 @@
     <link rel="stylesheet" href="/assets/css/signin.css" th:href="@{/assets/css/signin.css}" />
 </head>
 <body>
-<div class="container">
+	<!-- 
+	<div class="container">
+		<form class="form-signin" method="post" action="/login">
+			<div th:if="${param.error}" class="alert alert-danger" role="alert">
+				Credenciales erróneas.</div>
+			<div th:if="${param.logout}" class="alert alert-success" role="alert">
+				Has cerrar la sesíon con éxito.</div>
+			<h2 class="form-signin-heading">Please sign in</h2>
+			<p>
+				<label for="username" class="sr-only">Username</label> <input
+					type="text" id="username" name="username" class="form-control"
+					placeholder="Username" required="" autofocus="">
+			</p>
+			<p>
+				<label for="password" class="sr-only">Password</label> <input
+					type="password" id="password" name="password" class="form-control"
+					placeholder="Password" required="">
+			</p>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign
+				in</button>
+		</form>
+		<h2 class="form-signin-heading">Login with OAuth 2.0 PLASENCIA</h2>
+		<table id="table" class="table table-striped">
+			<tbody>
+				<tr>
+					<td><a th:src="@{/img/google_icon.png}" width="20" style="margin-right: 5px;" href="/oauth2/authorization/google">oauth-sportbuddies-app-client</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+-->
+	<div class="container">
     <form class="form-signin w-100 m-auto" method="post" th:action="@{/login}">
         <div th:if="${param.error}" class="alert alert-danger" role="alert">
             Credenciales erróneas.
@@ -32,7 +63,7 @@
             <a class="w-100 btn btn-light btn-block bg-white" href="/oauth2/authorization/google" role="link" style="margin-top: 10px">
                 <img th:src="@{/img/google_icon.png}" width="20" style="margin-right: 5px;" alt="Sign in with Google">
                 Sign in with Google
-            </a>
+            </a> 
             <!--  
             <a class="w-100 btn btn-light btn-block bg-white" href="/oauth2/authorization/github-idp" role="link" style="margin-top: 10px">
                 <img src="/assets/img/github.png" th:src="@{/assets/img/github.png}" width="24" style="margin-right: 5px;" alt="Sign in with Github">
@@ -41,5 +72,6 @@
         </div>
     </form>
 </div>
+ -->
 </body>
 </html>
