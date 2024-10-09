@@ -8,6 +8,6 @@ import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
 
 public interface IUsuarioGoogleDao extends JpaRepository<UsuarioGoogle, Long>{
 
-  Optional<UsuarioGoogle> findByEmail(String email);
+  public Optional<UsuarioGoogle> findByEmail(String email);
   
 }

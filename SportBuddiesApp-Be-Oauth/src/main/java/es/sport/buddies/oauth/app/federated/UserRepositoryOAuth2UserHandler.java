@@ -26,15 +26,14 @@ public class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
 
   @Override
   public void accept(OAuth2User user) {
-      // Capture user in a local data store on first authentication
       if (!this.googleService.findByEmail(user.getName()).isPresent()) {
           UsuarioGoogle usuGoogle = new UsuarioGoogle();
           usuGoogle.setEmail(user.getName());
           usuGoogle.setName(user.getAttributes().get("name").toString());
           usuGoogle.setGivenName(user.getAttributes().get("given_name").toString());
           usuGoogle.setFamilyName(user.getAttributes().get("family_name").toString());
-          usuGoogle.setPictureUrl(user.getAttributes().get("picture").toString());
-         LOGGER.info(usuGoogle.toString());
+          usuGoogle.setPictureUrl(user.getAttributes().get("picture").toString());          
+          LOGGER.info("Se procede almacenar al usuario {} logueado desde google", usuGoogle.getEmail());
           this.googleService.guardarUsuarioGoogle(usuGoogle);
       } else {
         LOGGER.info("bienvenido {}", user.getAttributes().get("given_name"));
