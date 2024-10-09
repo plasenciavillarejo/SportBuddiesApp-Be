@@ -55,8 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
       String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-      if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      if (authHeader != null && authHeader.startsWith(ConstantesMain.BEARER)) {
         try {
           /* Decodificar token */
           SignedJWT signedJWT = SignedJWT.parse(authHeader.substring(7));
@@ -71,8 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                   new SimpleGrantedAuthority(role)).toList();
           */
           
-          String userName = claims.get("sub").toString();
-          List<String> rolString = claimsSet.getStringListClaim("roles");
+          String userName = claims.get(ConstantesMain.SUB).toString();
+          List<String> rolString = claimsSet.getStringListClaim(ConstantesMain.ROLES);
 
           Usuario usuario = usuarioService.findByNombreUsuario(userName);
           UsuarioGoogle usuarioGoogle = null;

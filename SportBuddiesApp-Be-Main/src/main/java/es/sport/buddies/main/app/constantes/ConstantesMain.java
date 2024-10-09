@@ -16,5 +16,10 @@ public class ConstantesMain {
 	public static final String ACTIVO = "Activo";
 	
 	public static final String FREE = "free";
+	
+	public static final String ROLES = "roles";
+	
+	public static final String SUB = "sub";
 		
+	public static final String BEARER = "Bearer ";
 }
