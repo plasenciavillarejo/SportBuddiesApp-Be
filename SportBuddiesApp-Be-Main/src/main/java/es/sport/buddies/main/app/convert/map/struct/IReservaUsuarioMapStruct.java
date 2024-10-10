@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
+import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
@@ -27,7 +27,7 @@ public interface IReservaUsuarioMapStruct {
   @Mapping(target = "usuario.idUsuario", source = "idUsuario")
   @Mapping(target = "deporte.idDeporte", source = "idDeporte")
   @Mapping(target = "reservaActividad.idReservaActividad", source = "idReservaActividad")
-  public ReservaUsuario inscripcionActividadToReservaActividad(InscripcionReservaActividad inscripcionDto);
+  public ReservaUsuario inscripcionActividadToReservaActividad(InscripcionReservaActividadDto inscripcionDto);
   
   
 }

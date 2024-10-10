@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import lombok.Data;
 
 @Data
-public class InscripcionReservaActividad implements Serializable {
+public class InscripcionReservaActividadDto implements Serializable {
   
   private long idReservaActividad;
   

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
-import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
+import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
@@ -81,13 +81,16 @@ public class ReservaActividadController {
   }
 
   @PostMapping(value = "/inscripcion")
-  public ResponseEntity<Object> inscripcionReserva(@RequestBody InscripcionReservaActividad inscripcionActividad) throws ReservaException {
+  public ResponseEntity<Object> inscripcionReserva(@RequestBody InscripcionReservaActividadDto inscripcionActividad) throws ReservaException, CrearReservaException {
     try {
       LOGGER.info("Se procede a realizar una inscripcion sobre la actividad con ID: {}", inscripcionActividad.getIdReservaActividad());
       reservaActividadMainService.inscripcionReservaActividad(inscripcionActividad);
-    } catch (Exception e) {
-      throw new ReservaException(e);
+    } catch (CrearReservaException e) {
+      throw e;
+    }  catch ( ReservaException  e2) {
+      throw e2;
     }
+    
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
   

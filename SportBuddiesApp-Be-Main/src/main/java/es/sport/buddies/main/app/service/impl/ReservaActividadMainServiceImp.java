@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
-import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
+import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
@@ -132,7 +132,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   
   @Override
   @Transactional // Indico el Rollback de forma directa en el servicio para que se haga el rollback del update en caso de que falle el insert
-  public void inscripcionReservaActividad(InscripcionReservaActividad inscripcionReservaActividad) throws ReservaException {
+  public void inscripcionReservaActividad(InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException, CrearReservaException {
     try {
       LOGGER.info("Se procede a validar si el usuario tiene una suscripción activa");
       SuscripcionDto suscripcionDto = ISuscripcionMapStruct.mapper.sucricpcionToDto(suscripcionService.findByUsuario_IdUsuario(inscripcionReservaActividad.getIdUsuario()));
@@ -146,7 +146,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
           inscripcionReservaActividad.getIdReservaActividad());
       
       if(reservaUsuario != null) {
-        throw new ReservaException("El usuario ya está inscrito en la reserva");
+        throw new CrearReservaException("Ya estás inscrito en la actividad");
       }
       
       LOGGER.info("Validando el tipo de plan que contiene el usuario y sus reservas restantes");
@@ -164,12 +164,14 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       } else {
         throw new ReservaException(messageSource.getMessage(ConstantesMessages.RESERVASAGOTADAS, null, LocaleContextHolder.getLocale()));
       }
-    } catch (Exception e) {
-      throw new ReservaException(e.getMessage());
-    }    
+    } catch (CrearReservaException e) {
+      throw e;
+    } catch (ReservaException e2) {
+      throw e2;
+    } 
   }
 
-  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,InscripcionReservaActividad inscripcionReservaActividad)
+  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,InscripcionReservaActividadDto inscripcionReservaActividad)
       throws ReservaException {
     try {
       usuarioPlanPagoService.actualizarReservasRestantes(usuPlanPago.getReservasRestantes(), usuPlanPago.getIdUsuarioPlanPago());

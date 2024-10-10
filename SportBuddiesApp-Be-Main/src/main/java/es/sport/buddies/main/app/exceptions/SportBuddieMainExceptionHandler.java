@@ -14,10 +14,11 @@ import es.sport.buddies.entity.app.dto.AvisoErrorDto;
 public class SportBuddieMainExceptionHandler {
 
   @ExceptionHandler(ReservaException.class)
-  public ResponseEntity<Object> handleControlExceptions(ReservaException ex) {   
+  public ResponseEntity<Object> handleControlExceptions(ReservaException ex) {
+    String [] separaCadena = ex.getCause() != null ? ex.getCause().toString().split(":") : null;
     AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
         .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .mensaje(ex.getCause().toString())
+        .mensaje(ex.getLocalizedMessage() != null ? ex.getLocalizedMessage() : separaCadena[1])
         .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
         .stack(ExceptionUtils.getStackTrace(ex))
         .build();
@@ -25,10 +26,11 @@ public class SportBuddieMainExceptionHandler {
   }
   
   @ExceptionHandler(CrearReservaException.class)
-  public ResponseEntity<Object> handleControlExceptions(CrearReservaException ex) {   
+  public ResponseEntity<Object> handleControlExceptions(CrearReservaException ex) {
+    String [] separaCadena = ex.getCause() != null ? ex.getCause().toString().split(":") : null;
     AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
         .codigo(HttpStatus.CONFLICT.value())
-        .mensaje(ex.getCause().toString())
+        .mensaje(ex.getLocalizedMessage() != null ? ex.getLocalizedMessage() : separaCadena[1])
         .causa(HttpStatus.CONFLICT.getReasonPhrase())
         .build();
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);

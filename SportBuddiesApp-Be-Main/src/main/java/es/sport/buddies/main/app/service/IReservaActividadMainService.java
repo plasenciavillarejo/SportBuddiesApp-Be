@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
-import es.sport.buddies.entity.app.dto.InscripcionReservaActividad;
+import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.main.app.exceptions.CrearReservaException;
@@ -20,6 +20,6 @@ public interface IReservaActividadMainService {
   
   public List<String> listaMunicipiosPorProvinca(String nombreProvincia);
   
-  public void inscripcionReservaActividad(InscripcionReservaActividad inscripcionReservaActividad) throws ReservaException;
+  public void inscripcionReservaActividad(InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException, CrearReservaException;
   
 }
