@@ -21,6 +21,7 @@ public class InscripcionReservaActividadDto implements Serializable {
   
   private long idDeporte;
   
+  //@Convert(converter = BooleanToIntegerConverter.class)
   private boolean abonado;
   
   private static final long serialVersionUID = -4930926324910987759L;

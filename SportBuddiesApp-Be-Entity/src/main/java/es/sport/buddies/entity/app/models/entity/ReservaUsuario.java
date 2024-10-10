@@ -57,6 +57,9 @@ public class ReservaUsuario implements Serializable {
   @JoinColumn(name = "reserva_actividad_fk")
   private ReservaActividad reservaActividad;
   
+  @Column(name = "abonado")
+  private boolean abonado;
+  
   private static final long serialVersionUID = 4230007596971428886L;
 
 }

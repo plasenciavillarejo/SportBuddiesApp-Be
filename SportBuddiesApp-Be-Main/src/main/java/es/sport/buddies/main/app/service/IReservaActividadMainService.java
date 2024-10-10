@@ -21,5 +21,7 @@ public interface IReservaActividadMainService {
   public List<String> listaMunicipiosPorProvinca(String nombreProvincia);
   
   public void inscripcionReservaActividad(InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException, CrearReservaException;
+ 
+  public List<Long> listarActividadInscritas(long idUsuario);
   
 }

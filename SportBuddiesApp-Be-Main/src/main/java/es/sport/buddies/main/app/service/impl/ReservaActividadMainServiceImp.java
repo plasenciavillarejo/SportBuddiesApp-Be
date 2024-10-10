@@ -171,16 +171,23 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
     } 
   }
 
-  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,InscripcionReservaActividadDto inscripcionReservaActividad)
-      throws ReservaException {
+  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,
+      InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException {
     try {
-      usuarioPlanPagoService.actualizarReservasRestantes(usuPlanPago.getReservasRestantes(), usuPlanPago.getIdUsuarioPlanPago());
+      usuarioPlanPagoService.actualizarReservasRestantes(usuPlanPago.getReservasRestantes(),
+          usuPlanPago.getIdUsuarioPlanPago());
       LOGGER.info("Se ha actualizado correctamente");
       LOGGER.info("Se procede a insertar la reserva para el usuario");
-      reservaUsuarioService.guardarReservaUsuario(IReservaUsuarioMapStruct.mapper.inscripcionActividadToReservaActividad(inscripcionReservaActividad));
+      reservaUsuarioService.guardarReservaUsuario(
+          IReservaUsuarioMapStruct.mapper.inscripcionActividadToReservaActividad(inscripcionReservaActividad));
     } catch (Exception e) {
       throw new ReservaException(e);
     }
+  }
+
+  @Override
+  public List<Long> listarActividadInscritas(long idUsuario) {
+    return reservaUsuarioService.obtenerReservasPorUsuario(idUsuario);
   }
   
   

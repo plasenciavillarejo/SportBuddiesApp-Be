@@ -34,5 +34,11 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(long idUsuario, long idReserva) {
     return reservaDao.findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(idUsuario, idReserva);
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Long> obtenerReservasPorUsuario(long idUsuario) {
+    return reservaDao.obtenerReservasPorUsuario(idUsuario);
+  }
   
 }

@@ -20,4 +20,7 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
  
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
+  @Query("SELECT r.idReserva FROM ReservaUsuario r WHERE r.usuario.idUsuario = :idUsuario")
+  List<Long> obtenerReservasPorUsuario(@Param("idUsuario") long idUsuario);
+  
 }

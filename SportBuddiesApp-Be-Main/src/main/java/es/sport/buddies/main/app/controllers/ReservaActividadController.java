@@ -1,5 +1,6 @@
 package es.sport.buddies.main.app.controllers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,11 +89,23 @@ public class ReservaActividadController {
       reservaActividadMainService.inscripcionReservaActividad(inscripcionActividad);
     } catch (CrearReservaException e) {
       throw e;
-    }  catch ( ReservaException  e2) {
+    }  catch (ReservaException  e2) {
       throw e2;
-    }
-    
+    }   
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
+  
+  @GetMapping(value = "/validarActividad/{idUsuario}")
+  public ResponseEntity<List<Long>> validarUsuarioAbonadoActivdad(@PathVariable("idUsuario") long idUsuario) throws ReservaException {
+    List<Long> listLongActividad = null;
+    try { 
+      LOGGER.info("Validando las actividades inscritas por el usuario");
+      listLongActividad = reservaActividadMainService.listarActividadInscritas(idUsuario);
+    } catch (Exception e) {
+      throw new ReservaException(e);
+    }
+    return new ResponseEntity<>(listLongActividad != null ? listLongActividad : Collections.emptyList(), HttpStatus.OK);
+  }
+  
   
 }
