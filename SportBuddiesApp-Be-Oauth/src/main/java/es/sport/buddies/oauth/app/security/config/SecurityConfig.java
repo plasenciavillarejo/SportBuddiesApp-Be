@@ -213,7 +213,7 @@ public class SecurityConfig {
         .scope(OidcScopes.PROFILE)
         .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
             .refreshTokenTimeToLive(Duration.ofDays(1)).build())
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build()).build();
     
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }

@@ -160,6 +160,18 @@ CREATE TABLE usuario_plan_pago (
 );
 
 
+-- ###################### --
+-- ### USUARIO_GOOGLE ### --
+-- ###################### --
+CREATE TABLE usuario_google (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    nombre VARCHAR(255),
+    nombre_pila VARCHAR(255),
+    apellidos VARCHAR(255),
+    url_imagen VARCHAR(255)
+);
+
 
 -- ############## --
 -- ### INSERT ### --
