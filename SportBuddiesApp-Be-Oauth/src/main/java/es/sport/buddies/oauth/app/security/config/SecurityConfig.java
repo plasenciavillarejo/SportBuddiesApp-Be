@@ -130,12 +130,17 @@ public class SecurityConfig {
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
-  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {   
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    /* Cuando implemento un formulario propio, al loguear por google, la repuesta llega a '/error?continue', para poder enviar el code generado al servicio angular tengo que permitir
+     * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
+     */
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login", "/img/**", "/css/**", "/assets/**").permitAll()
+        .requestMatchers("/login","/error/**","/img/**", "/css/**", "/assets/**").permitAll()
         .anyRequest().authenticated())
-        .formLogin(Customizer.withDefaults())
-        .oauth2Login(oauth -> oauth.successHandler(authenticationSuccessHandler()))
+        //.formLogin(Customizer.withDefaults())
+        .formLogin(form -> form.loginPage("/login"))
+        .oauth2Login(oauth -> oauth.loginPage("/login")
+            .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()));

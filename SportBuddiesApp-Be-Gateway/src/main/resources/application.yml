@@ -35,16 +35,16 @@ spring:
               - openid
               - profile
             client-name: client-be
-          oauth-sportbuddies-client:
-            provider: google
-            client-id: ${GOOGLE_CLIENT_ID:63154317662-tmbv229bcf0cvp8nbnevvhmml9t4r3ph.apps.googleusercontent.com}
-            client-secret: ${GOOGLE_CLIENT_SECRET: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}
-            redirect-uri: "http://localhost:4200/authorize"
-            scope: 
-              - openid 
-              - profile 
+          #oauth-sportbuddies-client:
+          #  provider: google
+          #  client-id: ${GOOGLE_CLIENT_ID:63154317662-tmbv229bcf0cvp8nbnevvhmml9t4r3ph.apps.googleusercontent.com}
+          #  client-secret: ${GOOGLE_CLIENT_SECRET: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}
+          #  redirect-uri: "http://localhost:4200/authorize"
+          #  scope: 
+          #    - openid 
+          #    - profile 
             #https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email
-            client-name: oauth-sportbuddies-client
+          #  client-name: oauth-sportbuddies-client
           #github-idp:
           #  provider: github
           #  client-id: ${GITHUB_CLIENT_ID:github-client-id}
@@ -54,8 +54,8 @@ spring:
         provider:
           spring:
             issuer-uri: "http://127.0.0.1:9000"
-          google:
-            user-name-attribute: email
+          #google:
+          #  user-name-attribute: email
           #github:
           #  user-name-attribute: login        
           
