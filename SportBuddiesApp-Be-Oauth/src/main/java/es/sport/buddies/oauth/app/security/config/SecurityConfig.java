@@ -100,7 +100,7 @@ public class SecurityConfig {
     
     //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
     http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
-            new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+            new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
         // Aceptar tokens de acceso para información de usuario y/o registro de cliente
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
     return http.build();
@@ -138,10 +138,10 @@ public class SecurityConfig {
         .requestMatchers("/login","/error/**","/img/**", "/css/**", "/assets/**").permitAll()
         .anyRequest().authenticated())
         //.formLogin(Customizer.withDefaults())
-        .formLogin(form -> form.loginPage("/login"))
-        .oauth2Login(oauth -> oauth.loginPage("/login")
+        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN))
+        .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
-        .logout(logout -> logout.logoutSuccessUrl("http://localhost:4200/logout"))
+        .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()));
     return http.build();

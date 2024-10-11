@@ -36,7 +36,9 @@ public class SecurityConfig {
             "/reservaActividad/comboInicio",
             "/reservaActividad/listadoMunicipios",
             "/reservaActividad/listadoReserva",
-            "/borrarCookie").permitAll()
+            "/borrarCookie",
+            "/swagger-ui/**",
+            "/api-docs/**").permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();

@@ -35,4 +35,10 @@ public class ConstantesApp {
 
   public static UsernameAuthenticationDto userAuthenticationDto;
 
+  public static final String LOGIN = "/login";
+  
+  public static final String LOGOUTANGULAR = "http://localhost:4200/logout";
+  
+  public static final String ASTERISCO = "*";
+  
 }
