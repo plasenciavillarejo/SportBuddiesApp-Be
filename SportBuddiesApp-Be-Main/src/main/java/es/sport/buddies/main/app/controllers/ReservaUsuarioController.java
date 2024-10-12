@@ -18,6 +18,7 @@ import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/reservaUsuario")
@@ -28,17 +29,23 @@ public class ReservaUsuarioController {
   @Autowired
   private IReservaUsuarioMainService reservaUsuarioService;
   
-  @GetMapping(value = "/misReservas")
+  @Autowired
+  private HttpServletRequest httpRequest;
+  
+  @GetMapping(value = {"/misReservas", "/historialReservas"})
   public ResponseEntity<List<ReservaUsuarioDto>> listadoReservasUsuario(@RequestParam(name="fechaReserva", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") 
   LocalDate fechaReserva, @RequestParam(name = "idUsuario") long idUsuario) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
     try {
       LOGGER.info("Se recibe fechaReserva: '{}' e IdUsuario: '{}' para listar las reservas que contiene el usuario", fechaReserva, idUsuario);
-      res = reservaUsuarioService.listarReservas(fechaReserva, idUsuario);
+      res = reservaUsuarioService.listarReservas(fechaReserva, idUsuario, httpRequest.getRequestURI().contains("historialReservas") ? true : false);
     } catch (Exception e) {
       throw new ReservaException(e);
     }
     return new ResponseEntity<>(res,HttpStatus.OK);
   }
+ 
+  
+  
   
 }

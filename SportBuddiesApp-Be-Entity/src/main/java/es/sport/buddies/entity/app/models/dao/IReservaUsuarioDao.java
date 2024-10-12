@@ -16,10 +16,18 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
       + " left join fetch reserva.deporte deportReserva "
       + " where usuReserva.idUsuario = :idUsuario"
       + " and ("
-      + " (:fechaReserva is null and reserva.fechaReserva >= CURRENT_DATE)"
-      + " or (:fechaReserva is not null and reserva.fechaReserva = :fechaReserva "
-      + " AND :fechaReserva >= CURRENT_DATE))")
-  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuario") long idUsuario);
+      + "   (:historial = true AND ("
+      + "     (:fechaReserva IS NULL AND reserva.fechaReserva <= CURRENT_DATE)"
+      + "       or (reserva.fechaReserva = :fechaReserva AND :fechaReserva <= CURRENT_DATE)"
+      + "   ))"
+      + " or "
+      + "   (:historial = false AND ("
+      + "     (:fechaReserva is null and reserva.fechaReserva >= CURRENT_DATE)"
+      + "       or (:fechaReserva is not null and reserva.fechaReserva = :fechaReserva AND :fechaReserva >= CURRENT_DATE)"
+      + "   ))"
+      + " )")
+  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuario") long idUsuario, 
+      @Param("historial") boolean historial);
  
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   

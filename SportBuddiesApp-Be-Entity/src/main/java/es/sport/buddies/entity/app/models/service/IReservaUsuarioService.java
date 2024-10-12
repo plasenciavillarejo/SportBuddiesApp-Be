@@ -9,7 +9,8 @@ import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
 public interface IReservaUsuarioService {
 
-  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuario") long idUsuario);
+  public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuario") long idUsuario,
+      @Param("histoiral") boolean historial);
   
   public void guardarReservaUsuario(ReservaUsuario reservaUsuario);
 

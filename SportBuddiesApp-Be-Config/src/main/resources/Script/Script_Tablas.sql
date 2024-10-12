@@ -194,6 +194,12 @@ INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol');
 
 INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
 VALUES ('2024-09-13', '20:00:31', '21:00:31',3,1,1,1);
+INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
+VALUES ('2024-09-14', '20:00:31', '21:00:31',3,1,1,0);
+INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
+VALUES ('2024-12-13', '20:00:31', '21:00:31',3,1,1,0);
+INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
+VALUES ('2024-12-14', '20:00:31', '21:00:31',3,1,1,0);
 
 
 INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(1, 4);
