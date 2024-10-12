@@ -25,11 +25,11 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   private IReservaUsuarioService reservaService;
     
   @Override
-  public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idReserva) throws ReservaException {
+  public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idUsuario) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
     try {
       LOGGER.info("Se procede a listar las reservas con fecha: {}", fechaReserva);
-      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva,idReserva).stream()
+      res = reservaService.buscarReservaPorFechaAndIdUsuario(fechaReserva,idUsuario).stream()
           .map(resUsu -> IReservaUsuarioMapStruct.mapper.reservaUsuarioToDto(resUsu)).toList();
       LOGGER.info(!res.isEmpty() ? "Se ha encontrado un total de {} reservas" : "No se ha encontrado ningúna reserva, se devuelve un listado vacío", res.size());
     } catch (Exception e) {

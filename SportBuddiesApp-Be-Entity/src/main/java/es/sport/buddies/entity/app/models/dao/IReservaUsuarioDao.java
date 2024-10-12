@@ -11,11 +11,14 @@ import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
 public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> {
 
-  @Query(value =" select reserva from ReservaUsuario reserva"
+  @Query(value = "from ReservaUsuario reserva"
       + " left join fetch reserva.usuario usuReserva"
       + " left join fetch reserva.deporte deportReserva "
       + " where usuReserva.idUsuario = :idUsuario"
-      + " and (:fechaReserva IS NULL or reserva.fechaReserva = :fechaReserva)")
+      + " and ("
+      + " (:fechaReserva is null and reserva.fechaReserva >= CURRENT_DATE)"
+      + " or (:fechaReserva is not null and reserva.fechaReserva = :fechaReserva "
+      + " AND :fechaReserva >= CURRENT_DATE))")
   public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(@Param("fechaReserva") LocalDate fechaReserva, @Param("idUsuario") long idUsuario);
  
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);

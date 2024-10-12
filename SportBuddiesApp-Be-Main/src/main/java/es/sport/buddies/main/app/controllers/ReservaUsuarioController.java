@@ -30,11 +30,11 @@ public class ReservaUsuarioController {
   
   @GetMapping(value = "/misReservas")
   public ResponseEntity<List<ReservaUsuarioDto>> listadoReservasUsuario(@RequestParam(name="fechaReserva", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") 
-  LocalDate fechaReserva, @RequestParam(name = "idReserva") long idReserva) throws ReservaException {
+  LocalDate fechaReserva, @RequestParam(name = "idUsuario") long idUsuario) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
     try {
-      LOGGER.info("Se recibe fechaReserva: '{}' e IdReserva: '{}' para listar las reservas que contiene el usuario", fechaReserva, idReserva);
-      res = reservaUsuarioService.listarReservas(fechaReserva, idReserva);
+      LOGGER.info("Se recibe fechaReserva: '{}' e IdUsuario: '{}' para listar las reservas que contiene el usuario", fechaReserva, idUsuario);
+      res = reservaUsuarioService.listarReservas(fechaReserva, idUsuario);
     } catch (Exception e) {
       throw new ReservaException(e);
     }
