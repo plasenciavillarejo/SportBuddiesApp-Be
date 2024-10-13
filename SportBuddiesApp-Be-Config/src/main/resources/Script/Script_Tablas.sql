@@ -172,6 +172,16 @@ CREATE TABLE usuario_google (
     url_imagen VARCHAR(255)
 );
 
+-- ###################### --
+-- ### AUTORIZACIONCONSENTIMIENTO ### --
+-- ###################### --
+CREATE TABLE autorizacion_consentimiento (
+    id_cliente_registrado varchar(255) NOT NULL,
+    nombre_principal varchar(255) NOT NULL,
+    authorities varchar(1000) NOT NULL,
+    PRIMARY KEY (id_cliente_registrado, nombre_principal)
+);
+
 
 -- ############## --
 -- ### INSERT ### --
