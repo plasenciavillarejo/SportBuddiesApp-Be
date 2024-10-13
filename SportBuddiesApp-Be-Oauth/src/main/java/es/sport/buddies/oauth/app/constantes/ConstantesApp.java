@@ -41,4 +41,6 @@ public class ConstantesApp {
   
   public static final String ASTERISCO = "*";
   
+  public static final String CUSTOMCONSENTPAGE = "/oauth2/consent";
+  
 }

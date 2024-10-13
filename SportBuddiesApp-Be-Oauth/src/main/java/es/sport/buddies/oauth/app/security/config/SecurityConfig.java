@@ -96,7 +96,9 @@ public class SecurityConfig {
     http.cors(Customizer.withDefaults());
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     // Enable OpenID Connect 1.0
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
+    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+    //.authorizationEndpoint(auth -> auth.consentPage(ConstantesApp.CUSTOMCONSENTPAGE))
+    .oidc(Customizer.withDefaults());
     
     //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
     http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
