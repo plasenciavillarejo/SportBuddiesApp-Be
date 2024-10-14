@@ -40,6 +40,7 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -58,6 +59,7 @@ import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
 import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
+import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.services.UserDetailService;
@@ -89,20 +91,28 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  
+  @Bean
+  AccessDeniedHandler accessDeniedHandler() {
+      return new CustomAccessDeniedHandler();
+  }
+    
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
     http.cors(Customizer.withDefaults());
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
     // Enable OpenID Connect 1.0
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
     //.authorizationEndpoint(auth -> auth.consentPage(ConstantesApp.CUSTOMCONSENTPAGE))
     .oidc(Customizer.withDefaults());
+        
+    http.exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()));
     
     //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
     http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
-            new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+            new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN),
+            new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
         // Aceptar tokens de acceso para información de usuario y/o registro de cliente
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
     return http.build();
@@ -137,15 +147,16 @@ public class SecurityConfig {
      * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
      */
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login","/error/**","/img/**", "/css/**", "/assets/**").permitAll()
+        .requestMatchers("/login","/error/**","/img/**", "/css/**",
+            "/assets/**", "/clienteOauth/**").permitAll()
         .anyRequest().authenticated())
-        //.formLogin(Customizer.withDefaults())
         .formLogin(form -> form.loginPage(ConstantesApp.LOGIN))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()));
     return http.build();
   }
   
@@ -165,7 +176,7 @@ public class SecurityConfig {
    */
   
   /* Configuración de nuestro cliente FRONT-END
-	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server */
+	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server 
   @Bean
   RegisteredClientRepository registeredClientRepository() {
     RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -193,7 +204,7 @@ public class SecurityConfig {
         // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
         .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
     
-    /*RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
+    RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId("clietn-oauthdebugger")
         .clientSecret(passwordEncoder().encode("secret"))
         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
@@ -201,7 +212,7 @@ public class SecurityConfig {
         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
         .redirectUri("https://oauthdebugger.com/debug")
         .scope(OidcScopes.OPENID)
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();*/
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
     
     RegisteredClient clientAngular = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId(ConstantesApp.CLIENTIDANGULAR)
@@ -219,7 +230,7 @@ public class SecurityConfig {
     
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }
-
+*/
   @Bean
   JWKSource<SecurityContext> jwkSource() {
     KeyPair keyPair = generateRsaKey();

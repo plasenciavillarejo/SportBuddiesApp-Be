@@ -60,7 +60,7 @@ public class ConsentimientoController {
       }
     }
 
-    model.addAttribute("clientId", clientId);
+    model.addAttribute("client_id", clientId);
     model.addAttribute("state", state);
     model.addAttribute("scopes", withDescription(scopesToApprove));
     model.addAttribute("previouslyApprovedScopes", withDescription(previouslyApprovedScopes));

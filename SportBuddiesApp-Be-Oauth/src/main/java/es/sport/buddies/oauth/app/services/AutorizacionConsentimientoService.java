@@ -24,29 +24,23 @@ public class AutorizacionConsentimientoService implements OAuth2AuthorizationCon
   private final RegisteredClientRepository registeredClientRepository;
   
   public AutorizacionConsentimientoService(IAutorizacionConsentimentoService autorizacionService, RegisteredClientRepository registeredClientRepository) {
-    Assert.notNull(autorizacionService, "autorizacionService cannot be null");
-    Assert.notNull(registeredClientRepository, "registeredClientRepository cannot be null");
     this.autorizacionConsentimientoService = autorizacionService;
     this.registeredClientRepository = registeredClientRepository;
   }
   
   @Override
   public void save(OAuth2AuthorizationConsent authorizationConsent) {
-    Assert.notNull(authorizationConsent, "authorizationConsent cannot be null");
     this.autorizacionConsentimientoService.guardarConsentimiento(toEntity(authorizationConsent));
   }
 
   @Override
   public void remove(OAuth2AuthorizationConsent authorizationConsent) {
-    Assert.notNull(authorizationConsent, "authorizationConsent cannot be null");
     this.autorizacionConsentimientoService.deleteByIdClienteRegistradoAndPrincipalName(
         authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName());
   }
 
   @Override
   public OAuth2AuthorizationConsent findById(String registeredClientId, String principalName) {
-    Assert.hasText(registeredClientId, "registeredClientId cannot be empty");
-    Assert.hasText(principalName, "principalName cannot be empty");
     return this.autorizacionConsentimientoService.findByIdClienteRegistradoAndPrincipalName(
         registeredClientId, principalName).map(this::toObject).orElse(null);
   }
@@ -58,7 +52,6 @@ public class AutorizacionConsentimientoService implements OAuth2AuthorizationCon
       throw new DataRetrievalFailureException(
           "The RegisteredClient with id '" + registeredClientId + "' was not found in the RegisteredClientRepository.");
     }
-
     OAuth2AuthorizationConsent.Builder builder = OAuth2AuthorizationConsent.withId(
         registeredClientId, authorizationConsent.getPrincipalName());
     if (authorizationConsent.getAuthorities() != null) {
@@ -66,21 +59,15 @@ public class AutorizacionConsentimientoService implements OAuth2AuthorizationCon
         builder.authority(new SimpleGrantedAuthority(authority));
       }
     }
-
     return builder.build();
   }
 
   private AutorizacionConsentimento toEntity(OAuth2AuthorizationConsent authorizationConsent) {
     AutorizacionConsentimento entity = new AutorizacionConsentimento();
     entity.setIdClienteRegistrado(authorizationConsent.getRegisteredClientId());
-    entity.setPrincipalName(authorizationConsent.getPrincipalName());
-
-    Set<String> authorities = authorizationConsent.getAuthorities()
-        .stream()
-        .map(auth -> auth.getAuthority()).collect(Collectors.toSet());
-    
-    entity.setAuthorities(StringUtils.collectionToCommaDelimitedString(authorities));
-
+    entity.setPrincipalName(authorizationConsent.getPrincipalName()); 
+    entity.setAuthorities(StringUtils.collectionToCommaDelimitedString(authorizationConsent.getAuthorities()
+        .stream().map(auth -> auth.getAuthority()).collect(Collectors.toSet())));
     return entity;
   }
 

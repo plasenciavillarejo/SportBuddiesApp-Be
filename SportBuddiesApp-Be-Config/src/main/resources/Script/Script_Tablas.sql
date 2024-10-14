@@ -27,6 +27,24 @@ CREATE TABLE `roles` (
   UNIQUE KEY `idRol_UNIQUE` (`id_rol`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ###################### --
+-- ### CLIENTES OAUTH ### --
+-- ###################### --
+
+CREATE TABLE clientes_oauth (
+    id_cliente_oauth bigint NOT NULL AUTO_INCREMENT,
+    client_id varchar(255) NOT NULL,
+    client_secret varchar(255) DEFAULT NULL,
+    nombre_cliente varchar(255) NOT NULL,
+    metodos_autenticacion varchar(1000) NOT NULL,
+    tipos_autorizacion varchar(1000) NOT NULL,
+    redireccion_uris varchar(1000) DEFAULT NULL,
+    redireccion_uris_logout varchar(1000) DEFAULT NULL,
+    permisos varchar(1000) NOT NULL,
+	access_token bigint,
+	refresh_token bigint,
+    PRIMARY KEY (id_cliente_oauth)
+);
 
 -- ################ --
 -- ### DEPORTES ### --
