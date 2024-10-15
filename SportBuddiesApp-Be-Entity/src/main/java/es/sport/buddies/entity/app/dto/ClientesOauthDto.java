@@ -1,9 +1,8 @@
 package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -17,15 +16,15 @@ public class ClientesOauthDto implements Serializable {
 
   private String clientName;
   
-  private Set<String> authenticationMethods;
+  private List<String> authenticationMethods;
 
-  private Set<String> authorizationGrantTypes;
+  private List<String> authorizationGrantTypes;
 
-  private Set<String> redirectUris;
+  private List<String> redirectUris;
 
-  private Set<String> postLogoutRedirectUris;
+  private List<String> postLogoutRedirectUris;
 
-  private Set<String> scopes;
+  private List<String> scopes;
 
   private long timeAccesToken;
   
