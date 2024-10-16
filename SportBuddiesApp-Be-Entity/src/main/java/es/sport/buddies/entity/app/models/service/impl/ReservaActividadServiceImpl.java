@@ -41,6 +41,5 @@ public class ReservaActividadServiceImpl implements IReservaActividadService {
         .findByProvinciaAndMunicipioAndFechaReservaAndHoraInicioAndHoraFinAndUsuarioActividad_IdUsuario(provincia,
             municpio, fechaReserva, horaInicio, horaFin, idUsuario);
   }
-
   
 }

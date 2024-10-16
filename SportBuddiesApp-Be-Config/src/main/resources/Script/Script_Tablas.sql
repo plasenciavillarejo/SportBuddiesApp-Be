@@ -369,6 +369,37 @@ INSERT INTO reservas_actividad (
 	);
 	
 	
+INSERT INTO reservas_actividad (
+	fecha_reserva,
+    hora_inicio, 
+    hora_fin, 
+    requerimientos, 
+    usuarios_max_requeridos, 
+    actividad, 
+    usuario_actividad_fk, 
+    direccion, 
+    provincia, 
+    municipio, 
+    codigo_postal,
+	urgencia,
+	abono_pista
+) VALUES (
+	'2024-12-14',
+    '17:00:31', 
+    '18:00:31', 
+    JSON_ARRAY('Equipo uno falta dos jugadores', 'Equipación Roja'), 
+    10, 
+    'Fútbol', 
+    3, 
+    'Avenida florida', 
+    'Araba/Álava', 
+    'Amurrio', 
+    4200,
+	'Alta',
+	4.5
+	);	
+	
+	
 insert into planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES
 (1,'free', 9999, 0),
 (2, 'student', 5, 2.99),

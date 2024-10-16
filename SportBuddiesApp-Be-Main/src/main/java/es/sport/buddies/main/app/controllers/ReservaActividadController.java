@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,8 +96,12 @@ public class ReservaActividadController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
   
+  /**
+   * Función encargada de devolver las actividades en las que está inscrita el usuario para poder habiltar o deshabilitar el botón para 
+   * su inscripción en ella.
+   */
   @GetMapping(value = "/validarActividad/{idUsuario}")
-  public ResponseEntity<List<Long>> validarUsuarioAbonadoActivdad(@PathVariable("idUsuario") long idUsuario) throws ReservaException {
+  public ResponseEntity<List<Long>> validarUsuarioAbonadoActividad(@PathVariable("idUsuario") long idUsuario) throws ReservaException {
     List<Long> listLongActividad = null;
     try { 
       LOGGER.info("Validando las actividades inscritas por el usuario");
@@ -107,5 +112,6 @@ public class ReservaActividadController {
     return new ResponseEntity<>(listLongActividad != null ? listLongActividad : Collections.emptyList(), HttpStatus.OK);
   }
   
+
   
 }

@@ -3,14 +3,16 @@ package es.sport.buddies.entity.app.models.dao;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 
-public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> {
 
+public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> {
   @Query(value = "from ReservaUsuario reserva"
       + " left join fetch reserva.usuario usuReserva"
       + " left join fetch reserva.deporte deportReserva "
@@ -31,7 +33,12 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
  
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
-  @Query("SELECT r.idReserva FROM ReservaUsuario r WHERE r.usuario.idUsuario = :idUsuario")
-  List<Long> obtenerReservasPorUsuario(@Param("idUsuario") long idUsuario);
+  @EntityGraph(attributePaths = {"reservaActividad"})
+  @Query("SELECT r.reservaActividad.idReservaActividad FROM ReservaUsuario r WHERE r.usuario.idUsuario = :idUsuario")
+  public List<Long> obtenerReservasPorUsuario(@Param("idUsuario") long idUsuario);
+  
+  @Modifying
+  @Query(value = "delete from ReservaUsuario resUsu where resUsu.usuario.idUsuario= :idUsuario and resUsu.reservaActividad.idReservaActividad = :idReserva")
+  public void borrarReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
 }

@@ -15,30 +15,37 @@ import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
 
   @Autowired
-  private IReservaUsuarioDao reservaDao;
+  private IReservaUsuarioDao reservaUsuarioDao;
 
   @Override
   @Transactional(readOnly = true)
   public List<ReservaUsuario> buscarReservaPorFechaAndIdUsuario(LocalDate fechaReserva, long idUsuario, boolean historial) {
-    return reservaDao.buscarReservaPorFechaAndIdUsuario(fechaReserva, idUsuario, historial);
+    return reservaUsuarioDao.buscarReservaPorFechaAndIdUsuario(fechaReserva, idUsuario, historial);
   }
 
   @Override
   @Transactional
   public void guardarReservaUsuario(ReservaUsuario reservaUsuario) {
-    reservaDao.save(reservaUsuario);
+    reservaUsuarioDao.save(reservaUsuario);
   }
 
   @Override
   @Transactional(readOnly = true)
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(long idUsuario, long idReserva) {
-    return reservaDao.findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(idUsuario, idReserva);
+    return reservaUsuarioDao.findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(idUsuario, idReserva);
   }
 
   @Override
   @Transactional(readOnly = true)
   public List<Long> obtenerReservasPorUsuario(long idUsuario) {
-    return reservaDao.obtenerReservasPorUsuario(idUsuario);
+    return reservaUsuarioDao.obtenerReservasPorUsuario(idUsuario);
+  }
+
+  @Override
+  @Transactional
+  public void borrarReservaActividad(long idUsuario, long idReserva) {
+    reservaUsuarioDao.borrarReservaActividad(idUsuario, idReserva);
   }
   
+
 }

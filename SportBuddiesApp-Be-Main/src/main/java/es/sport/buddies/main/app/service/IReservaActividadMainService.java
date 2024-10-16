@@ -23,5 +23,5 @@ public interface IReservaActividadMainService {
   public void inscripcionReservaActividad(InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException, CrearReservaException;
  
   public List<Long> listarActividadInscritas(long idUsuario);
-  
+   
 }

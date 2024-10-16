@@ -27,16 +27,15 @@ import es.sport.buddies.entity.app.models.service.IMunicipioService;
 import es.sport.buddies.entity.app.models.service.IProvinciaService;
 import es.sport.buddies.entity.app.models.service.IReservaActividadService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
-import es.sport.buddies.entity.app.models.service.ISuscripcionService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.constantes.ConstantesMessages;
 import es.sport.buddies.main.app.convert.map.struct.IReservaActividadMapStruct;
 import es.sport.buddies.main.app.convert.map.struct.IReservaUsuarioMapStruct;
-import es.sport.buddies.main.app.convert.map.struct.ISuscripcionMapStruct;
 import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaActividadMainService;
+import es.sport.buddies.main.app.utils.Utilidades;
 
 @Service
 public class ReservaActividadMainServiceImp implements IReservaActividadMainService {
@@ -54,10 +53,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   
   @Autowired
   private IMunicipioService muncipioService;
-  
-  @Autowired
-  private ISuscripcionService suscripcionService;
-  
+    
   @Autowired
   private IUsuarioPlanPagoService usuarioPlanPagoService;
   
@@ -67,6 +63,9 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   @Autowired
   private IReservaUsuarioService reservaUsuarioService;
     
+  @Autowired
+  private Utilidades utilidades;
+  
   @Override
   public List<ReservaActividadDto> listadoReservaActividad(ListadoReservaActividadDto listadoDto) throws ReservaException {
     //CompletableFuture<List<ReservaActividadDto>> list = new CompletableFuture<>();
@@ -134,12 +133,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   @Transactional // Indico el Rollback de forma directa en el servicio para que se haga el rollback del update en caso de que falle el insert
   public void inscripcionReservaActividad(InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException, CrearReservaException {
     try {
-      LOGGER.info("Se procede a validar si el usuario tiene una suscripción activa");
-      SuscripcionDto suscripcionDto = ISuscripcionMapStruct.mapper.sucricpcionToDto(suscripcionService.findByUsuario_IdUsuario(inscripcionReservaActividad.getIdUsuario()));
-      if(suscripcionDto == null || !suscripcionDto.getEstadoPago().equalsIgnoreCase(ConstantesMain.ACTIVO)) {
-        throw new ReservaException("El usuario actualmente no tiene una suscripcion activa");
-      }
-      LOGGER.info("Suscripción Activa - OKEY");
+      SuscripcionDto suscripcionDto = utilidades.validarSuscripcion(inscripcionReservaActividad.getIdUsuario());
       
       LOGGER.info("Validando que el usuario no este inscrito en la reserva con ID: {}", inscripcionReservaActividad.getIdReservaActividad());
       ReservaUsuario reservaUsuario = reservaUsuarioService.findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(inscripcionReservaActividad.getIdUsuario(),
@@ -150,7 +144,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       }
       
       LOGGER.info("Validando el tipo de plan que contiene el usuario y sus reservas restantes");
-      UsuarioPlanPago usuPlanPago = usuarioPlanPagoService.findBySuscripcion_IdSuscripcion(suscripcionDto.getIdSuscripcion());
+      UsuarioPlanPago usuPlanPago = utilidades.obtenerUsuarioPlanPago(suscripcionDto.getIdSuscripcion());
       AtomicLong reserva = new AtomicLong(usuPlanPago.getReservasRestantes());
       
       if(usuPlanPago.getReservasRestantes() > 0 || usuPlanPago.getPlanPago().getNombrePlan().equalsIgnoreCase(ConstantesMain.FREE)) {
@@ -189,6 +183,6 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   public List<Long> listarActividadInscritas(long idUsuario) {
     return reservaUsuarioService.obtenerReservasPorUsuario(idUsuario);
   }
-  
+
   
 }

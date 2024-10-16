@@ -17,5 +17,7 @@ public interface IReservaUsuarioService {
   public ReservaUsuario findByUsuario_IdUsuarioAndReservaActividad_IdReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
   public List<Long> obtenerReservasPorUsuario(@Param("idUsuario") long idUsuario);
+ 
+  public void borrarReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
 }

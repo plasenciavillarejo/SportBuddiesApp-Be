@@ -29,7 +29,7 @@ public class ClienteOauthController {
   
   @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping(value = "/crear")
-  public ResponseEntity<Map<String, String>> crearClienteOauth(@RequestBody ClientesOauthDto clienDto) throws Exception {
+  public ResponseEntity<Map<String, String>> crearClienteOauth(@RequestBody ClientesOauthDto clienDto) {
     Map<String, String> result = new HashMap<>();
     RegisteredClient clienteExistente = clientOauthServiceImpl.findById(clienDto.getClientId());
     if(clienteExistente != null) {
