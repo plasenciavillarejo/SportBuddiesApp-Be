@@ -43,6 +43,11 @@ public class Utilidades {
     return suscripcionDto;
   }
   
+  /**
+   * Función para buscar si el usuario contiene una suscripcion activa
+   * @param idSuscripcion
+   * @return
+   */
   public UsuarioPlanPago obtenerUsuarioPlanPago(long idSuscripcion) {
     return usuarioPlanPagoService.findBySuscripcion_IdSuscripcion(idSuscripcion);
   }
