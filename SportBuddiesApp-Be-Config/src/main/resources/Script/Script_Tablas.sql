@@ -4,7 +4,7 @@ use sportbuddies;
 -- ################ --
 -- ### USUARIOS ### --
 -- ################ --
-CREATE TABLE `usuarios_reserva` (
+CREATE TABLE `usuarios` (
   `id_usuario` bigint NOT NULL AUTO_INCREMENT,
   `nombre_usuario` varchar(50) NOT NULL,
   `password` varchar(60) NOT NULL,
@@ -56,6 +56,26 @@ CREATE TABLE deportes (
 	PRIMARY KEY (`id_deporte`)
 );
 
+-- ########################## --
+-- ### RESERVAS_ACTIVIDAD ### --
+-- ########################## --
+CREATE TABLE reservas_actividad (
+    id_reserva_actividad BIGINT AUTO_INCREMENT PRIMARY KEY,
+	fecha_reserva DATE,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    requerimientos JSON,
+    usuarios_max_requeridos BIGINT NOT NULL,
+    actividad VARCHAR(255) NOT NULL,
+    usuario_actividad_fk BIGINT NOT NULL COMMENT 'Id del usuario que ha creado la reserva de la actividad',
+    direccion VARCHAR(255),
+    provincia VARCHAR(255),
+    municipio VARCHAR(255),
+    codigo_postal BIGINT,
+	urgencia Varchar(20),
+	abono_pista DECIMAL(5,2),
+    CONSTRAINT fk_usuario_actividad FOREIGN KEY (usuario_actividad_fk) REFERENCES usuarios(id_usuario)
+);
 
 -- ######################## --
 -- ### RESERVAS_USUARIO ### --
@@ -106,26 +126,7 @@ CREATE TABLE municipios (
     CONSTRAINT fk_municipio_provincia FOREIGN KEY (municipio_provincia_fk) REFERENCES provincias(id_provincia)
 );
 
--- ########################## --
--- ### RESERVAS_ACTIVIDAD ### --
--- ########################## --
-CREATE TABLE reservas_actividad (
-    id_reserva_actividad BIGINT AUTO_INCREMENT PRIMARY KEY,
-	fecha_reserva DATE,
-    hora_inicio TIME NOT NULL,
-    hora_fin TIME NOT NULL,
-    requerimientos JSON,
-    usuarios_max_requeridos BIGINT NOT NULL,
-    actividad VARCHAR(255) NOT NULL,
-    usuario_actividad_fk BIGINT NOT NULL COMMENT 'Id del usuario que ha creado la reserva de la actividad',
-    direccion VARCHAR(255),
-    provincia VARCHAR(255),
-    municipio VARCHAR(255),
-    codigo_postal BIGINT,
-	urgencia Varchar(20),
-	abono_pista DECIMAL(5,2),
-    CONSTRAINT fk_usuario_actividad FOREIGN KEY (usuario_actividad_fk) REFERENCES usuarios(id_usuario)
-);
+
 
 
 
@@ -219,6 +220,17 @@ INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('OIDC_USER');
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol Sala');
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol');
 
+INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(1, 4);
+
+
+INSERT INTO reservas_actividad ( fecha_reserva, hora_inicio,  hora_fin,  requerimientos,  usuarios_max_requeridos,  actividad,  usuario_actividad_fk, 
+direccion, provincia,  municipio,  codigo_postal, urgencia,abono_pista) VALUES ('2024-09-13','10:00:00', '12:00:00', JSON_ARRAY('Camiseta Roja equipo 1', 'Camiseta Verde Equipo B', 'Árbitro'), 
+10,'Fútbol',3,'Calle Ejemplo 123','Araba/Álava','Amurrio',28001,'Alta',2.5);
+
+INSERT INTO reservas_actividad ( fecha_reserva, hora_inicio,  hora_fin,  requerimientos,  usuarios_max_requeridos,  actividad,  usuario_actividad_fk, 
+direccion, provincia,  municipio,  codigo_postal, urgencia,abono_pista) VALUES ('2024-12-14','17:00:31', '18:00:31', JSON_ARRAY('Equipo uno falta dos jugadores', 'Equipación Roja'), 
+10,'Fútbol', 3, 'Avenida florida', 'Araba/Álava', 'Amurrio', 4200,'Alta',4.5);	
+
 
 INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
 VALUES ('2024-09-13', '20:00:31', '21:00:31',3,1,1,1);
@@ -228,9 +240,6 @@ INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_res
 VALUES ('2024-12-13', '20:00:31', '21:00:31',3,1,1,0);
 INSERT INTO `sportbuddies`.`reservas_usuario` (`fecha_reserva`, `hora_inicio_reserva`, `hora_fin_reserva`, `usuario_reserva_fk`,`deporte_reserva_fk`, `reserva_actividad_fk`, `abonado`)
 VALUES ('2024-12-14', '20:00:31', '21:00:31',3,1,1,0);
-
-
-INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(1, 4);
 
 
 INSERT INTO provincias (id_provincia, sigla_provincia, nombre_provincia) VALUES
@@ -336,71 +345,7 @@ INSERT INTO municipios (id_municipio, municipio_provincia_fk, nombre_municipio) 
 (47,1, 'Zuia');
 
 
-
-
-INSERT INTO reservas_actividad (
-	fecha_reserva,
-    hora_inicio, 
-    hora_fin, 
-    requerimientos, 
-    usuarios_max_requeridos, 
-    actividad, 
-    usuario_actividad_fk, 
-    direccion, 
-    provincia, 
-    municipio, 
-    codigo_postal,
-	urgencia,
-	abono_pista
-) VALUES (
-	'2024-09-13',
-    '10:00:00', 
-    '12:00:00', 
-    JSON_ARRAY('Camiseta Roja equipo 1', 'Camiseta Verde Equipo B', 'Árbitro'), 
-    10, 
-    'Fútbol', 
-    3, 
-    'Calle Ejemplo 123', 
-    'Araba/Álava', 
-    'Amurrio', 
-    28001,
-	'Alta',
-	2.5
-	);
-	
-	
-INSERT INTO reservas_actividad (
-	fecha_reserva,
-    hora_inicio, 
-    hora_fin, 
-    requerimientos, 
-    usuarios_max_requeridos, 
-    actividad, 
-    usuario_actividad_fk, 
-    direccion, 
-    provincia, 
-    municipio, 
-    codigo_postal,
-	urgencia,
-	abono_pista
-) VALUES (
-	'2024-12-14',
-    '17:00:31', 
-    '18:00:31', 
-    JSON_ARRAY('Equipo uno falta dos jugadores', 'Equipación Roja'), 
-    10, 
-    'Fútbol', 
-    3, 
-    'Avenida florida', 
-    'Araba/Álava', 
-    'Amurrio', 
-    4200,
-	'Alta',
-	4.5
-	);	
-	
-	
-insert into planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES
+INSERT INTO planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES
 (1,'free', 9999, 0),
 (2, 'student', 5, 2.99),
 (3, 'basic', 3, 4.99),
@@ -408,9 +353,8 @@ insert into planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_pl
 (5, 'unlimited', 10, 14.99)	
 
 
-insert into suscripciones(id_sucripcion, suscripcion_usuario_fk,fecha_inicio,fecha_fin, precio_total, metodo_pago , estado_pago) 
-value (1,3,'2024-09-19','2024-10-19', 4.99, 'Paypal', 'Activo'); 
-
+INSERT INTO suscripciones(id_sucripcion, suscripcion_usuario_fk,fecha_inicio,fecha_fin, precio_total, metodo_pago , estado_pago) 
+VALUE (1,3,'2024-09-19','2024-10-19', 4.99, 'Paypal', 'Activo'); 
 
 INSERT INTO tipo_estados (estado, descripcion) VALUES
 ('Activo', 'La suscripción está activa y el usuario puede usar todos los servicios.'),
@@ -422,10 +366,8 @@ INSERT INTO tipo_estados (estado, descripcion) VALUES
 ('Devuelto', 'El pago fue devuelto por alguna razón (por ejemplo, disputa o solicitud del usuario)');
 
 
-
-
-insert into usuario_plan_pago(id_usuario_plan_pago, usuario_plan_pago_suscripcion_fk, plan_pago_fk, reservas_restantes, fecha_renovacion) 
-value (1,1,3,3,'2024-10-19') ;
+INSERT INTO usuario_plan_pago(id_usuario_plan_pago, usuario_plan_pago_suscripcion_fk, plan_pago_fk, reservas_restantes, fecha_renovacion) 
+VALUES (1,1,3,3,'2024-10-19') ;
 
 
 
