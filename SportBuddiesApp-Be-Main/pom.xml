@@ -111,6 +111,24 @@
 			<version>2.6.0</version>
 		</dependency>
 		
+		
+		<!-- INI: Dependencias PayPal -->
+		<!-- ######################## -->
+		<dependency>
+		    <groupId>com.paypal.sdk</groupId>
+		    <artifactId>paypal-core</artifactId>
+		    <version>1.7.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.paypal.sdk</groupId>
+			<artifactId>rest-api-sdk</artifactId>
+			<version>1.14.0</version>
+		</dependency>
+		<!-- FIN: Dependencias PayPal -->
+		<!-- ######################## -->
+
+		
 	</dependencies>
 
 	<dependencyManagement>

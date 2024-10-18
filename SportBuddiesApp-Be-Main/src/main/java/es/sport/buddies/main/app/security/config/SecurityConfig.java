@@ -38,7 +38,8 @@ public class SecurityConfig {
             "/reservaActividad/listadoReserva",
             "/borrarCookie",
             "/swagger-ui/**",
-            "/api-docs/**").permitAll()
+            "/api-docs/**",
+            "/estado/pago").permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();

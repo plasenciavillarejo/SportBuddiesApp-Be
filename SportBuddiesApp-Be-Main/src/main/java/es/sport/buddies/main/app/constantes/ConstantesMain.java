@@ -22,4 +22,15 @@ public class ConstantesMain {
 	public static final String SUB = "sub";
 		
 	public static final String BEARER = "Bearer ";
+	
+	public static String CLIENTIDPAYPAL = "CLIENTID";
+	
+	public static String CLIENTSERCRETPAYPAL = "CLIENTSECRET";
+	
+	public static String MODEPAYPAL = "MODE"; 
+	
+	public static String SPORTBUDDIESGTW = "GTW";
+	
+	public static String SPORTBUDDIESFE = "FE";
+	
 }

@@ -1,4 +1,4 @@
-create table sportbuddies if not exist;
+create database sportbuddies;
 use sportbuddies;
 
 -- ################ --
@@ -220,7 +220,7 @@ INSERT INTO `sportbuddies`.`roles` (`nombre_rol`) VALUES ('OIDC_USER');
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol Sala');
 INSERT INTO `sportbuddies`.`deportes` (`actividad`) VALUES ('Futbol');
 
-INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(1, 4);
+INSERT INTO `sportbuddies`.`usuarios_in_role` (`usuario_id`, `role_id`) VALUES(3, 4);
 
 
 INSERT INTO reservas_actividad ( fecha_reserva, hora_inicio,  hora_fin,  requerimientos,  usuarios_max_requeridos,  actividad,  usuario_actividad_fk, 
@@ -345,19 +345,14 @@ INSERT INTO municipios (id_municipio, municipio_provincia_fk, nombre_municipio) 
 (47,1, 'Zuia');
 
 
-INSERT INTO planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES
-(1,'free', 9999, 0),
-(2, 'student', 5, 2.99),
-(3, 'basic', 3, 4.99),
-(4, 'premium', 5, 8.99),
-(5, 'unlimited', 10, 14.99)	
+INSERT INTO planes_de_pago(id_plan_pago, nombre_plan, limite_reservas, precio_plan) VALUES (1,'free', 9999, 0), (2, 'student', 5, 2.99), (3, 'basic', 3, 4.99),
+(4, 'premium', 5, 8.99),(5, 'unlimited', 10, 14.99)	
 
 
 INSERT INTO suscripciones(id_sucripcion, suscripcion_usuario_fk,fecha_inicio,fecha_fin, precio_total, metodo_pago , estado_pago) 
 VALUE (1,3,'2024-09-19','2024-10-19', 4.99, 'Paypal', 'Activo'); 
 
-INSERT INTO tipo_estados (estado, descripcion) VALUES
-('Activo', 'La suscripción está activa y el usuario puede usar todos los servicios.'),
+INSERT INTO tipo_estados (estado, descripcion) VALUES ('Activo', 'La suscripción está activa y el usuario puede usar todos los servicios.'),
 ('Pendiente', 'El pago está en proceso, pero no se ha confirmado aún. Puede ser por un intento de pago que no ha sido verificado'),
 ('Expirado', 'La suscripción ha caducado y el usuario no puede acceder a los servicios hasta que renueve su pago'),
 ('Cancelado', 'El usuario ha cancelado su suscripción y no puede acceder a los servicios'),
@@ -370,9 +365,8 @@ INSERT INTO usuario_plan_pago(id_usuario_plan_pago, usuario_plan_pago_suscripcio
 VALUES (1,1,3,3,'2024-10-19') ;
 
 
-
-
-
-
-
-
+INSERT INTO clientes_oauth (id_cliente_oauth,client_id,client_secret,nombre_cliente,metodos_autenticacion,tipos_autorizacion,redireccion_uris,redireccion_uris_logout,permisos,access_token,refresh_token)
+VALUES
+(4,'gateway-app','$2a$10$.Ud6UXjF6ScEieX7erFVU.dWPYyfnhYSjbSqVRpRR4k2r68GVMQeO','client-be','client_secret_basic','refresh_token,authorization_code','http://127.0.0.1:8090/authorized,http://127.0.0.1:8090/login/oauth2/code/client-be','http://127.0.0.1:8090/logout','openid,profile',12,1),
+(5,'client-angular','$2a$10$3M0wg0e2LAKomzpTIjaJWOIKOjMFCRvpOinc6RG2WQhwNdIsMzjcu','client-angular','client_secret_basic','refresh_token,authorization_code','http://localhost:4200/authorize','http://127.0.0.1:8090/logout','openid,profile',12,1),
+(6,'prueba_id','$2a$10$5WBAhfQ/3gCWhuNyBFFYJ.FUS6mrGFfWJUM13K7KNwEG1hBo9wz4m','pureba_cliente','http://localhost:8090/prueba/oauth','authorization_code,refresh_token','http://localhost:8090/prueba/oauth,http://localhost:8090/prueba/','http://localhost:8090/prueba/redorect','openid,profile',12,12);

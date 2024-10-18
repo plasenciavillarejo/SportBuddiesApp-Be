@@ -21,10 +21,35 @@ public class Inicializacion {
 	@Value("${pass.public.key}")
   private String publicKey;
 
+  @Value("${paypal.client.id}")
+  private String clientId;
+  
+  @Value("${paypal.client.secret}")
+  private String clientSecret;
+  
+  @Value("${paypal.mode}")
+  private String mode;
+	
+  @Value("${sportbuddies.gtw}")
+  private String appSportBuddiesGtw;
+  
+  @Value("${sportbuddies.fe}")
+  private String appSportBuddiesFe;
+  
 	@PostConstruct
 	public void inicializacion() {
 	  
 	  ConstantesMain.FICHERPEMPLUBLIKEY = publicKey;
+	  
+	  ConstantesMain.CLIENTIDPAYPAL = clientId;
+	  
+	  ConstantesMain.CLIENTSERCRETPAYPAL = clientSecret;
+	  
+	  ConstantesMain.MODEPAYPAL = mode;
+	  
+	  ConstantesMain.SPORTBUDDIESGTW = appSportBuddiesGtw;
+	  
+	  ConstantesMain.SPORTBUDDIESFE = appSportBuddiesFe;
 	  
 		String password = "12345";
 		
