@@ -5,14 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.hc.core5.http.impl.bootstrap.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,22 +25,12 @@ import es.sport.buddies.entity.app.dto.PaypalDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PaypalException;
 import es.sport.buddies.main.app.service.IPaypalService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/paypal")
 public class PaypalController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConstantesMain.LOGGUERMAIN);
-  
-  @Autowired
-  private HttpServletRequest request;
-  
-  @Autowired
-  private HttpServletResponse response;
-  
-  private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
   
   private static final String URLESTADOPAGO = "/api/main/paypal/estado/pago";
   
@@ -55,7 +42,7 @@ public class PaypalController {
     Map<String, String> response = new HashMap<>();
     try {
       String urlCancel = ConstantesMain.SPORTBUDDIESFE;
-      String urlSuccess = ConstantesMain.SPORTBUDDIESFE;
+      String urlSuccess = ConstantesMain.SPORTBUDDIESFE; // URLESTADOPAGO, en el caso de que se quiera trabjar con postman
       
       Payment payment = paypalService.crearPago(paypalDto.getTotal(), paypalDto.getDivisa(), paypalDto.getMetodo(),
           paypalDto.getIntencion(), paypalDto.getDescripcion(),urlCancel, urlSuccess);
@@ -78,6 +65,14 @@ public class PaypalController {
     }
   }
   
+  /**
+   * Servicio encargado de recibir el paymen y el payer para realizar la confirmación del pago
+   * @param paymentId
+   * @param payerId
+   * @return
+   * @throws PaypalException
+   * @throws IOException
+   */
   @GetMapping(value = "/estado/pago")
   public ResponseEntity<Map<String, String>> pagoCorrecto(@RequestParam("paymentId") String paymentId,
       @RequestParam("PayerID") String payerId) throws PaypalException, IOException {
