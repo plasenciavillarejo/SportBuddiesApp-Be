@@ -41,7 +41,7 @@ public class PaypalController {
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
     Map<String, String> response = new HashMap<>();
     try {
-      String urlCancel = ConstantesMain.SPORTBUDDIESFE;
+      String urlCancel = ConstantesMain.SPORTBUDDIESFE.concat("/paypal-cancel");
       String urlSuccess = ConstantesMain.SPORTBUDDIESFE; // URLESTADOPAGO, en el caso de que se quiera trabjar con postman
       
       Payment payment = paypalService.crearPago(paypalDto.getTotal(), paypalDto.getDivisa(), paypalDto.getMetodo(),
@@ -75,7 +75,7 @@ public class PaypalController {
    */
   @GetMapping(value = "/estado/pago")
   public ResponseEntity<Map<String, String>> pagoCorrecto(@RequestParam("paymentId") String paymentId,
-      @RequestParam("PayerID") String payerId) throws PaypalException, IOException {
+      @RequestParam("PayerID") String payerId) throws PaypalException {
     Map<String, String> mapResponse = new HashMap<>();
     try {
       Payment payment = paypalService.ejecutarPago(paymentId, payerId);
