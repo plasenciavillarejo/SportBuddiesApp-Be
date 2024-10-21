@@ -20,4 +20,6 @@ public interface IReservaUsuarioService {
  
   public void borrarReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
+  public void actualizarAbonoReserva(@Param("idReserva") long idReserva);
+  
 }

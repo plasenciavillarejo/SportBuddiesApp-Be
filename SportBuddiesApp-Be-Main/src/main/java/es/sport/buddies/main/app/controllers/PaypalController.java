@@ -22,6 +22,7 @@ import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
 import es.sport.buddies.entity.app.dto.PaypalDto;
+import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PaypalException;
 import es.sport.buddies.main.app.service.IPaypalService;
@@ -36,6 +37,9 @@ public class PaypalController {
   
   @Autowired
   private IPaypalService paypalService;
+  
+  @Autowired
+  private IReservaUsuarioService reservaUsuarioService;
   
   @PostMapping(value = "/crear/pago")
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
@@ -75,11 +79,13 @@ public class PaypalController {
    */
   @GetMapping(value = "/estado/pago")
   public ResponseEntity<Map<String, String>> pagoCorrecto(@RequestParam("paymentId") String paymentId,
-      @RequestParam("PayerID") String payerId) throws PaypalException {
+      @RequestParam("PayerID") String payerId, @RequestParam("idReserva") long idReserva) throws PaypalException {
     Map<String, String> mapResponse = new HashMap<>();
     try {
       Payment payment = paypalService.ejecutarPago(paymentId, payerId);
       if (payment.getState().equalsIgnoreCase("approved")) {
+        // Una vez que se ha pagado la reserva, se actuliza la tabla
+        reservaUsuarioService.actualizarAbonoReserva(idReserva);
         mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
       } else {
         mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");

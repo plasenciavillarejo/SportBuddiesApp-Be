@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class ReservaUsuarioDto implements Serializable {
 
+  private long idReserva;
+  
   private Date fechaReserva;
 
   private LocalTime horaInicioReserva;

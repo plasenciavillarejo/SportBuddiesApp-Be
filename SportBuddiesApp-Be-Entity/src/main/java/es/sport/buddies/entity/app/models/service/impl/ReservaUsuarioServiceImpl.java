@@ -46,6 +46,12 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   public void borrarReservaActividad(long idUsuario, long idReserva) {
     reservaUsuarioDao.borrarReservaActividad(idUsuario, idReserva);
   }
+
+  @Override
+  @Transactional
+  public void actualizarAbonoReserva(long idReserva) {
+    reservaUsuarioDao.actualizarAbonoReserva(idReserva);
+  }
   
 
 }
