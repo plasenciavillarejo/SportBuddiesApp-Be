@@ -41,19 +41,19 @@ public class PaypalController {
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
     Map<String, String> response = new HashMap<>();
     try {
-      String urlCancel = ConstantesMain.SPORTBUDDIESFE.concat("/paypal-cancel");
-      String urlSuccess = ConstantesMain.SPORTBUDDIESFE; // URLESTADOPAGO, en el caso de que se quiera trabjar con postman
+      String urlCancel = ConstantesMain.SPORTBUDDIESFE.concat(ConstantesMain.PAYPALCANCEL);
+      String urlSuccess = ConstantesMain.SPORTBUDDIESFE;
       
       Payment payment = paypalService.crearPago(paypalDto.getTotal(), paypalDto.getDivisa(), paypalDto.getMetodo(),
           paypalDto.getIntencion(), paypalDto.getDescripcion(),urlCancel, urlSuccess);
       
       Optional<Links> approvalLink = payment.getLinks().stream()
-          .filter(link -> link.getRel().equalsIgnoreCase("approval_url"))
+          .filter(link -> link.getRel().equalsIgnoreCase(ConstantesMain.URLAPROBACION))
           .findFirst();
       
       if (approvalLink.isPresent()) {
         // Devolver el enlace de aprobación
-        response.put("approval_url", approvalLink.get().getHref());
+        response.put(ConstantesMain.URLAPROBACION, approvalLink.get().getHref());
         return new ResponseEntity<>(response, HttpStatus.OK);
       } else {
         // No se encontró la URL de aprobación
@@ -80,9 +80,9 @@ public class PaypalController {
     try {
       Payment payment = paypalService.ejecutarPago(paymentId, payerId);
       if (payment.getState().equalsIgnoreCase("approved")) {
-        mapResponse.put("success", "Pago realizado correctamente");
+        mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
       } else {
-        mapResponse.put("error", "Pago incorrecto");
+        mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");
       }
       return new ResponseEntity<>(mapResponse,HttpStatus.OK);
     }catch (PayPalRESTException e) {

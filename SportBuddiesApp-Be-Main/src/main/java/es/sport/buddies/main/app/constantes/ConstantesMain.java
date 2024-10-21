@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConstantesMain {
 
-  public ConstantesMain() {
+  private ConstantesMain() {
     // Constructor Vacío
   }
   
@@ -32,5 +32,13 @@ public class ConstantesMain {
 	public static String SPORTBUDDIESGTW = "GTW";
 	
 	public static String SPORTBUDDIESFE = "FE";
+	
+	public static final String PAYPALCANCEL = "/paypal-cancel";
+	
+	public static final String URLAPROBACION = "approval_url";
+	
+	public static final String SUCCESS = "success";
+	
+	public static final String ERRROR = "error";
 	
 }

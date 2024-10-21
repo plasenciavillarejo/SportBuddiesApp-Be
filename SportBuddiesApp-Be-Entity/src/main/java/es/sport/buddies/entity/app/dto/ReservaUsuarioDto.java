@@ -19,6 +19,8 @@ public class ReservaUsuarioDto implements Serializable {
 
   private DeporteDto deporteReservaDto;
 
+  private boolean abonado;
+  
   private static final long serialVersionUID = -3497616209985551630L;
 
 }
