@@ -22,6 +22,7 @@ public interface IReservaUsuarioMapStruct {
    * */
   @Mapping(target = "usuarioReservaDto", source = "usuario")
   @Mapping(target = "deporteReservaDto", source = "deporte")
+  @Mapping(target = "reservaActividadDto", source = "reservaActividad")
   public ReservaUsuarioDto reservaUsuarioToDto(ReservaUsuario resUsu); 
 
   @Mapping(target = "usuario.idUsuario", source = "idUsuario")

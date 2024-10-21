@@ -20,6 +20,8 @@ public class ReservaUsuarioDto implements Serializable {
   private UsuarioDto usuarioReservaDto;
 
   private DeporteDto deporteReservaDto;
+  
+  private ReservaActividadDto reservaActividadDto;
 
   private boolean abonado;
   
