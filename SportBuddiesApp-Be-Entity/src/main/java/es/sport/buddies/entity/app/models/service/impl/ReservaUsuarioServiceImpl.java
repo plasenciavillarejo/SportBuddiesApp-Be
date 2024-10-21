@@ -52,6 +52,12 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   public void actualizarAbonoReserva(long idReserva) {
     reservaUsuarioDao.actualizarAbonoReserva(idReserva);
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ReservaUsuario validarAbonoReserva(long idUsuario, long idReserva) {
+    return reservaUsuarioDao.validarAbonoReserva(idUsuario, idReserva);
+  }
   
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
+import es.sport.buddies.main.app.exceptions.CancelarReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,11 +49,11 @@ public class ReservaUsuarioController {
   }
  
   @DeleteMapping(value = "/eliminar/{idReserva}/{idUsuario}")
-  public ResponseEntity<Void> cancelarReserva(@PathVariable("idReserva") long idReserva, @PathVariable("idUsuario") long idUsuario) throws ReservaException {
+  public ResponseEntity<Void> cancelarReserva(@PathVariable("idReserva") long idReserva, @PathVariable("idUsuario") long idUsuario) throws CancelarReservaException {
     try {
       reservaUsuarioService.eliminarActividad(idReserva,idUsuario);
     }catch (Exception e) {
-      throw new ReservaException(e);
+      throw new CancelarReservaException(e);
     }
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

@@ -12,11 +12,15 @@ import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
+import es.sport.buddies.entity.app.models.entity.ReservaActividad;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
+import es.sport.buddies.entity.app.models.service.IReservaActividadService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.convert.map.struct.IReservaUsuarioMapStruct;
+import es.sport.buddies.main.app.exceptions.CancelarReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 import es.sport.buddies.main.app.utils.Utilidades;
@@ -34,7 +38,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   
   @Autowired
   private Utilidades utilidades;
-  
+    
   @Override
   public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idUsuario, boolean historial) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
@@ -50,8 +54,14 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   }
   
   @Override
-  public void eliminarActividad(long idReserva, long idUsuario) throws ReservaException {
+  public void eliminarActividad(long idReserva, long idUsuario) throws CancelarReservaException {
     try {
+      LOGGER.info("Validando que el usuario no haya pagado la reserva");
+      ReservaUsuario resUsuario = reservaUsuarioService.validarAbonoReserva(idUsuario, idReserva);
+      if(resUsuario != null && resUsuario.isAbonado()) {
+        throw new CancelarReservaException("El usuario ya ha abonado la reserva, no se puede cancelar");
+      }
+      
       SuscripcionDto suscripcionDto = utilidades.validarSuscripcion(idUsuario);
       UsuarioPlanPago usuPlanPago = utilidades.obtenerUsuarioPlanPago(suscripcionDto.getIdSuscripcion());
       AtomicLong reserva = new AtomicLong(usuPlanPago.getReservasRestantes());
@@ -66,7 +76,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
       reservaUsuarioService.borrarReservaActividad(idUsuario,idReserva);
       LOGGER.info("Reserva borrada exitosamente");
     } catch (Exception e) {
-      throw new ReservaException(e);
+      throw new CancelarReservaException(e);
     }
   }
   
