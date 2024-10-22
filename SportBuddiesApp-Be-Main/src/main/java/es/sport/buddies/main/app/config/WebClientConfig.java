@@ -14,4 +14,9 @@ public class WebClientConfig {
 		return WebClient.builder();
 	}
 	
+	 @Bean(name = "externalWebClient")
+   WebClient.Builder externalWebClient() {
+       return WebClient.builder();
+   }
+	
 }

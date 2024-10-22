@@ -41,4 +41,14 @@ public class ConstantesMain {
 	
 	public static final String ERRROR = "error";
 	
+	public static String URLTOKENAPIPAYPAL = "APIPAYPAL";
+	
+	public static String URLESTADOTRANSACCIONPAYPAL = "ESTADO";
+	
+	public static final String GRANTTYPE = "grant_type";
+	
+	public static final String CLIENTCREDENTIALS = "client_credentials";
+	
+	
+	
 }

@@ -36,6 +36,12 @@ public class Inicializacion {
   @Value("${sportbuddies.fe}")
   private String appSportBuddiesFe;
   
+  @Value("${paypal.url.token}")
+  private String urlTokenApiPaypal;
+    
+  @Value("${paypal.url.estado}")
+  private String urlConfirmTransaccionPaypal;
+  
 	@PostConstruct
 	public void inicializacion() {
 	  
@@ -50,6 +56,10 @@ public class Inicializacion {
 	  ConstantesMain.SPORTBUDDIESGTW = appSportBuddiesGtw;
 	  
 	  ConstantesMain.SPORTBUDDIESFE = appSportBuddiesFe;
+	  
+	  ConstantesMain.URLTOKENAPIPAYPAL = urlTokenApiPaypal;
+	 	  
+	  ConstantesMain.URLESTADOTRANSACCIONPAYPAL = urlConfirmTransaccionPaypal;
 	  
 		String password = "12345";
 		

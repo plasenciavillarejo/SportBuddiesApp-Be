@@ -16,10 +16,10 @@ import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 
-import es.sport.buddies.main.app.service.IPaypalService;
+import es.sport.buddies.main.app.service.IPaypalMainService;
 
 @Service
-public class PaypalServiceImpl implements IPaypalService {
+public class PaypalMainServiceImpl implements IPaypalMainService {
 
   @Autowired
   private APIContext apiContext;

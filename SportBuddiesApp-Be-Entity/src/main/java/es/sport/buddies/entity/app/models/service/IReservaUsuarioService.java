@@ -24,4 +24,5 @@ public interface IReservaUsuarioService {
  
   public ReservaUsuario validarAbonoReserva(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
+  
 }

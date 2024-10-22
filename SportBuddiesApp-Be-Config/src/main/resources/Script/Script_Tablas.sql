@@ -126,10 +126,6 @@ CREATE TABLE municipios (
     CONSTRAINT fk_municipio_provincia FOREIGN KEY (municipio_provincia_fk) REFERENCES provincias(id_provincia)
 );
 
-
-
-
-
 -- ###################### --
 -- ### PLANES_DE_PAGO ### --
 -- ###################### --
@@ -191,15 +187,31 @@ CREATE TABLE usuario_google (
     url_imagen VARCHAR(255)
 );
 
--- ###################### --
--- ### AUTORIZACIONCONSENTIMIENTO ### --
--- ###################### --
+-- ################################## --
+-- ### AUTORIZACION_CONSENTIMIENTO ### --
+-- ################################## --
 CREATE TABLE autorizacion_consentimiento (
     id_cliente_registrado varchar(255) NOT NULL,
     nombre_principal varchar(255) NOT NULL,
     authorities varchar(1000) NOT NULL,
     PRIMARY KEY (id_cliente_registrado, nombre_principal)
 );
+
+-- ############## --
+-- ### PAYPAL ### --
+-- ############## --
+CREATE TABLE paypal (
+	id_paypal BIGINT AUTO_INCREMENT PRIMARY KEY,
+	url_refund VARCHAR(255),
+	total BIGINT COMMENT 'Precio que se ha abonado',
+	moneda VARCHAR(100) COMMENT 'Nombre de la moneda con la que se hizo el pago `EUR`, `USD`, `LIB` ',
+	reembolsado tinyint(1),
+	fecha_reembolso DATE COMMENT 'Fecha en la que se realizao el reembolso',
+	reserva_usuario_fk BIGINT COMMENT 'ID de la reservas del usuario',
+	constraint fk_reserva_usuario FOREIGN KEY (reserva_usuario_fk) REFERENCES RESERVAS_USUARIO(id_reserva)
+);
+
+
 
 
 -- ############## --
