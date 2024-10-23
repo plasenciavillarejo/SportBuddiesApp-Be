@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
@@ -24,8 +23,6 @@ import com.nimbusds.jwt.SignedJWT;
 import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
 import es.sport.buddies.entity.app.dto.UsuarioDto;
 import es.sport.buddies.entity.app.models.entity.Usuario;
-import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
-import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import jakarta.servlet.FilterChain;
@@ -43,9 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private IUsuarioService usuarioService;
-    
-    @Autowired
-    private IUsuarioGoogleService googleService;
     
     public JwtAuthenticationFilter(JwtDecoder jwtDecoder) {
         this.jwtDecoder = jwtDecoder;
@@ -80,20 +74,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           List<String> rolString = claimsSet.getStringListClaim(ConstantesMain.ROLES);
 
           Usuario usuario = usuarioService.findByNombreUsuario(userName);
-          UsuarioGoogle usuarioGoogle = null;
-          if (usuario == null) {
-            usuarioGoogle = googleService.findByEmail(userName).orElse(null);
+         
+          if(usuario == null ) {
+            usuario = usuarioService.findByEmail(userName);
           }
-
+          
           List<GrantedAuthority> roles = rolString.stream()
               .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role)).toList();
 
-          UsernameAuthenticationDto userAuthentication = new UsernameAuthenticationDto(
-              usuario != null ? usuario : usuarioGoogle, null, roles);
+          UsernameAuthenticationDto userAuthentication = new UsernameAuthenticationDto(usuario, null, roles);
 
           UsuarioDto usuDto = new UsuarioDto();
-          usuDto.setIdUsuario(usuario != null ? usuario.getIdUsuario() : usuarioGoogle.getId());
-          usuDto.setNombreUsuario(usuario != null ? usuario.getNombreUsuario() : usuarioGoogle.getEmail());
+          usuDto.setIdUsuario(usuario.getIdUsuario());
+          usuDto.setNombreUsuario(usuario.getNombreUsuario());
           userAuthentication.setUsuarioDto(usuDto);
 
           // Configura el SecurityContextHolder con la Authentication

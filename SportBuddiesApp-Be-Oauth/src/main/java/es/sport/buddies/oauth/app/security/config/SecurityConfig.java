@@ -46,8 +46,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import es.sport.buddies.entity.app.models.entity.Usuario;
-import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
-import es.sport.buddies.entity.app.models.service.IUsuarioGoogleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
@@ -287,18 +285,17 @@ public class SecurityConfig {
    * @return
    */
   @Bean
-  OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(IUsuarioGoogleService usuarioGoogleService) {
+  OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
     return context -> {
       if (context.getTokenType().getValue().equalsIgnoreCase(OAuth2TokenType.ACCESS_TOKEN.getValue())) {
         Authentication principal = context.getPrincipal();
         Usuario usu = usuarioService.findByNombreUsuario(principal.getName());
-        UsuarioGoogle usuGoogle = null;
-        if (usu == null) {
-          usuGoogle = usuarioGoogleService.findByEmail(principal.getName()).orElse(null);
+        if(usu == null) {
+          usu = usuarioService.findByEmail(principal.getName());
         }
         context.getClaims()
             .claim("roles", principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-            .claim("idusuario", usu != null ? usu.getIdUsuario() : usuGoogle.getId());
+            .claim("idusuario", usu.getIdUsuario());
       }
     };
   }

@@ -3,7 +3,6 @@ package es.sport.buddies.main.app.controllers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,12 +31,10 @@ import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
 import es.sport.buddies.entity.app.dto.ApiPaypalDto;
-import es.sport.buddies.entity.app.dto.PaypalAmountDto;
 import es.sport.buddies.entity.app.dto.PaypalDto;
 import es.sport.buddies.entity.app.models.entity.Paypal;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.Usuario;
-import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
 import es.sport.buddies.entity.app.models.service.IPaypalService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
@@ -69,7 +66,7 @@ public class PaypalController {
   
   @Autowired
   private IUsuarioService usuarioService;
-  
+    
   @PostMapping(value = "/crear/pago")
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
     Map<String, String> response = new HashMap<>();
@@ -128,7 +125,6 @@ public class PaypalController {
               .filter(link -> link.getHref().endsWith("refund")).findFirst();
           
           ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
-          
           Usuario usuario = usuarioService.findById(res.getUsuario().getIdUsuario()).orElse(null);
           
           if (linkRefund.isPresent()) {

@@ -11,6 +11,7 @@ CREATE TABLE `usuarios` (
   `enabled` tinyint(1) NOT NULL,
   `apellido` varchar(50) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
+  `url_imagen` VARCHAR(255)
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `idusuarios_UNIQUE` (`id_usuario`),
   UNIQUE KEY `email_UNIQUE` (`email`)
@@ -174,19 +175,6 @@ CREATE TABLE usuario_plan_pago (
 	CONSTRAINT fk_plan_pago FOREIGN KEY (plan_pago_fk) REFERENCES planes_de_pago(id_plan_pago)
 );
 
-
--- ###################### --
--- ### USUARIO_GOOGLE ### --
--- ###################### --
-CREATE TABLE usuario_google (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    nombre VARCHAR(255),
-    nombre_pila VARCHAR(255),
-    apellidos VARCHAR(255),
-    url_imagen VARCHAR(255)
-);
-
 -- ################################## --
 -- ### AUTORIZACION_CONSENTIMIENTO ### --
 -- ################################## --
@@ -209,10 +197,8 @@ CREATE TABLE paypal (
 	fecha_reembolso DATE COMMENT 'Fecha en la que se realizao el reembolso',
 	reserva_usuario_fk BIGINT COMMENT 'ID de la reservas del usuario',
 	usuario_fk BIGINT COMMENT 'ID del usuario que hace la reserva dentro de la tabla usuarios',
-	usuario_google_fk BIGINT COMMENT 'ID del usuario que hace la reserva dentro de la tabla usuarios_google',
 	constraint fk_reserva_usuario FOREIGN KEY (reserva_usuario_fk) REFERENCES RESERVAS_USUARIO(id_reserva),
-	constraint fk_usuario_ FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario),
-	constraint fk_usuario_google FOREIGN KEY (usuario_google_fk) REFERENCES usuario_google(id)
+	constraint fk_usuario_ FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario)
 );
 
 

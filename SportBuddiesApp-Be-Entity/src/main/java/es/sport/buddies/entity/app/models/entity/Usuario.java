@@ -66,6 +66,9 @@ public class Usuario implements Serializable {
 
 	//private Integer intentos;
 
+  @Column(name = "url_imagen")
+  private String pictureUrl;
+	
 	private static final long serialVersionUID = 3877502676666789805L;
 
 }

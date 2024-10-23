@@ -28,4 +28,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		return usuarioDao.findByNombreUsuario(nombre);
 	}
 
+  @Override
+  @Transactional(readOnly = true)
+  public Usuario findByEmail(String email) {
+    return usuarioDao.findByEmail(email);
+  }
+
+  @Override
+  @Transactional
+  public void guardarUsuario(Usuario usuario) {
+    usuarioDao.save(usuario);
+  }
+
 }
