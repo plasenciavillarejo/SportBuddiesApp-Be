@@ -30,7 +30,8 @@ public class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
     if (this.usuarioService.findByEmail(user.getName()) == null) {
       Usuario usuario = new Usuario();
       usuario.setApellido(user.getAttributes().get("family_name").toString());
-      usuario.setNombreUsuario(user.getAttributes().get("given_name").toString());
+      // user.getAttributes().get("given_name").toString()
+      usuario.setNombreUsuario(user.getName());
       usuario.setEnabled(true);
       usuario.setEmail(user.getName());
       usuario.setPictureUrl(user.getAttributes().get("picture").toString());
