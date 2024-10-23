@@ -55,7 +55,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
       String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            
       if (authHeader != null && authHeader.startsWith(ConstantesMain.BEARER)) {
+        if (request.getRequestURI().contains("/reservaUsuario/eliminar/")) {
+          ConstantesMain.TOKEN = authHeader.substring(7);
+        } else if(!request.getRequestURI().contains("/reservaUsuario/eliminar/") && !ConstantesMain.TOKEN.isEmpty()) {
+          ConstantesMain.TOKEN = "";
+        }
         try {
           /* Decodificar token */
           SignedJWT signedJWT = SignedJWT.parse(authHeader.substring(7));

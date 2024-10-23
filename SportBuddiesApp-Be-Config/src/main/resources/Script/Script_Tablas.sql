@@ -208,7 +208,11 @@ CREATE TABLE paypal (
 	reembolsado tinyint(1),
 	fecha_reembolso DATE COMMENT 'Fecha en la que se realizao el reembolso',
 	reserva_usuario_fk BIGINT COMMENT 'ID de la reservas del usuario',
-	constraint fk_reserva_usuario FOREIGN KEY (reserva_usuario_fk) REFERENCES RESERVAS_USUARIO(id_reserva)
+	usuario_fk BIGINT COMMENT 'ID del usuario que hace la reserva dentro de la tabla usuarios',
+	usuario_google_fk BIGINT COMMENT 'ID del usuario que hace la reserva dentro de la tabla usuarios_google',
+	constraint fk_reserva_usuario FOREIGN KEY (reserva_usuario_fk) REFERENCES RESERVAS_USUARIO(id_reserva),
+	constraint fk_usuario_ FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario),
+	constraint fk_usuario_google FOREIGN KEY (usuario_google_fk) REFERENCES usuario_google(id)
 );
 
 

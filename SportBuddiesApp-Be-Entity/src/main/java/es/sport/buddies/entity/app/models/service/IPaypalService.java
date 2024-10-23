@@ -13,5 +13,5 @@ public interface IPaypalService {
   public Paypal buscarReservaPagada(@Param("idReservaUsuario") long idReservaUsuario);
   
   public void actualizarReservaReembolsada(@Param("fechaReembolso") LocalDate fechaReembolso, @Param("idPaypal") long idPaypal);
-  
+    
 }

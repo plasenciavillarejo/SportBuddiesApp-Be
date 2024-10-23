@@ -1,7 +1,6 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -49,10 +48,13 @@ public class Paypal implements Serializable {
   private LocalDate fechaReembolso;
   
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "reserva_usuario_fk", nullable = false)
+  @JoinColumn(name = "reserva_usuario_fk")
   private ReservaUsuario reservaUsuario;
   
-  
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "usuario_fk")
+  private Usuario usuario;
+    
   private static final long serialVersionUID = -1453742027484417035L;
 
 }

@@ -49,6 +49,20 @@ public class ConstantesMain {
 	
 	public static final String CLIENTCREDENTIALS = "client_credentials";
 	
+	public static final String STATE = "state";
 	
+	public static final String TOTAL = "total";
+	
+	public static final String CURRENCY = "currency";
+	
+	public static final String REFUNED = "refunded";
+	
+	public static final String SLASH = "/";
+	
+	public static final String AMOUNT = "amount";
+	
+	public static String TOKEN = "token";
 	
 }
+
+

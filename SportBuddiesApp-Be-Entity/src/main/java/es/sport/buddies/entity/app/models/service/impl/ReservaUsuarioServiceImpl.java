@@ -58,6 +58,12 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   public ReservaUsuario validarAbonoReserva(long idUsuario, long idReserva) {
     return reservaUsuarioDao.validarAbonoReserva(idUsuario, idReserva);
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ReservaUsuario findById(long idReservaUsuario) {
+    return reservaUsuarioDao.findById(idReservaUsuario).orElse(null);
+  }
   
 
 }

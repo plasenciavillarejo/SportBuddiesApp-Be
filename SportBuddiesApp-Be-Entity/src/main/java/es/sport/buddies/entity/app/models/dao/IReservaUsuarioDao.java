@@ -38,7 +38,7 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
   public List<Long> obtenerReservasPorUsuario(@Param("idUsuario") long idUsuario);
   
   @Modifying
-  @Query(value = "delete from ReservaUsuario resUsu where resUsu.usuario.idUsuario= :idUsuario and resUsu.reservaActividad.idReservaActividad = :idReserva")
+  @Query(value = "delete from ReservaUsuario resUsu where resUsu.usuario.idUsuario= :idUsuario and resUsu.idReserva = :idReserva")
   public void borrarReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
  
   @Modifying

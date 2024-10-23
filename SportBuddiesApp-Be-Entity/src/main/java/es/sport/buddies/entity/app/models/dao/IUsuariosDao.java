@@ -12,5 +12,5 @@ public interface IUsuariosDao extends JpaRepository<Usuario, Long> {
   /* Para hacer lo mismo sería lanzando esta query, pero al incluir el EntityGraph ya lo hace JPA internamente
     @Query("SELECT u FROM Usuario u JOIN FETCH u.roles WHERE u.nombreUsuario = :nombre") */
 	public Usuario findByNombreUsuario(String nombre);
-	
+	  
 }

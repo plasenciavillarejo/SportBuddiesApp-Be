@@ -48,10 +48,10 @@ public class ReservaUsuarioController {
     return new ResponseEntity<>(res,HttpStatus.OK);
   }
  
-  @DeleteMapping(value = "/eliminar/{idReserva}/{idUsuario}")
-  public ResponseEntity<Void> cancelarReserva(@PathVariable("idReserva") long idReserva, @PathVariable("idUsuario") long idUsuario) throws CancelarReservaException {
+  @DeleteMapping(value = "/eliminar/{idReservaUsuario}/{idUsuario}")
+  public ResponseEntity<Void> cancelarReserva(@PathVariable("idReservaUsuario") long idReservaUsuario, @PathVariable("idUsuario") long idUsuario) throws CancelarReservaException {
     try {
-      reservaUsuarioService.eliminarActividad(idReserva,idUsuario);
+      reservaUsuarioService.eliminarActividad(idReservaUsuario,idUsuario);
     }catch (Exception e) {
       throw new CancelarReservaException(e);
     }

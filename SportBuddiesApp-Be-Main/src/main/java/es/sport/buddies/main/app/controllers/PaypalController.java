@@ -36,8 +36,11 @@ import es.sport.buddies.entity.app.dto.PaypalAmountDto;
 import es.sport.buddies.entity.app.dto.PaypalDto;
 import es.sport.buddies.entity.app.models.entity.Paypal;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
+import es.sport.buddies.entity.app.models.entity.Usuario;
+import es.sport.buddies.entity.app.models.entity.UsuarioGoogle;
 import es.sport.buddies.entity.app.models.service.IPaypalService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
+import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PaypalException;
 import es.sport.buddies.main.app.service.IPaypalMainService;
@@ -63,6 +66,9 @@ public class PaypalController {
   @Autowired
   @Qualifier("externalWebClient")
   private WebClient.Builder externalWebClient;
+  
+  @Autowired
+  private IUsuarioService usuarioService;
   
   @PostMapping(value = "/crear/pago")
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
@@ -120,10 +126,15 @@ public class PaypalController {
 
           Optional<Links> linkRefund = related.getSale().getLinks().stream()
               .filter(link -> link.getHref().endsWith("refund")).findFirst();
-
+          
+          ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
+          
+          Usuario usuario = usuarioService.findById(res.getUsuario().getIdUsuario()).orElse(null);
+          
           if (linkRefund.isPresent()) {
             paypal.setUrlRefund(linkRefund.get().getHref());
             paypal.setReservaUsuario(ReservaUsuario.builder().idReserva(idReservaUsuario).build());
+            paypal.setUsuario(usuario);
             try {
               guardarObjetoPaypal(paypal);
             } catch (PaypalException e) {
@@ -154,8 +165,7 @@ public class PaypalController {
       throw new PaypalException();
     }
   }
-  
-  
+
   @PostMapping(value = "/devolver/pago")
   public ResponseEntity<Void> devolucionPaypal(@RequestParam("idReservaUsuario") long idReservaUsuario) throws PaypalException {
     try {
@@ -175,22 +185,24 @@ public class PaypalController {
           LOGGER.info("Se a obtenido el token corectamente");
           LOGGER.info("Se procede a validar que el estado de la transaccion sea 'completed'");
           // Obtenemos el parametro a enviar:
-          String [] parts = paypal.getUrlRefund().split("/");
+          String [] parts = paypal.getUrlRefund().split(ConstantesMain.SLASH);
           
-          Map<String, Object> estado = validarEstadoTransaccion(apiPaypalTokenResponse.getBody().getAccess_token(), parts[parts.length-2]).block();
+          Map<String, Object> estado = validarEstadoTransaccion(apiPaypalTokenResponse.getBody().getAccess_token(),
+              parts[parts.length-2]).block();
           
-          if(estado.get("state") == "refunded") {
+          if(estado.get(ConstantesMain.STATE) == ConstantesMain.REFUNED) {
             throw new PaypalException("Error, la transaccion ya se abonado con anterioridad");
           }
-          LOGGER.info("La transacción actualmente tiene une stado 'completed', se procede con el abono de la misma");
+          
+          LOGGER.info("La transacción actualmente tiene un estado 'completed', se procede con el abono de la misma");
           ApiPaypalDto apiPaypalDto = apiPaypalTokenResponse.getBody();
 
           Map<String, Object> bodyDos = new HashMap<>();
           Map<String, String> amount = new HashMap<>();
-          amount.put("total", String.valueOf(paypal.getTotal()));
-          amount.put("currency", paypal.getMoneda());
+          amount.put(ConstantesMain.TOTAL, String.valueOf(paypal.getTotal()));
+          amount.put(ConstantesMain.CURRENCY, paypal.getMoneda());
 
-          bodyDos.put("amount", amount);
+          bodyDos.put(ConstantesMain.AMOUNT, amount);
           
           ResponseEntity<Void> respone = enviarDevolucion(bodyDos, apiPaypalDto.getAccess_token(), paypal.getUrlRefund()).block();
           if(respone.getStatusCode().is2xxSuccessful()) {
@@ -199,26 +211,21 @@ public class PaypalController {
             LOGGER.info("Actualización existosa para el ID: '{}'", paypal.getIdPaypal());
           }
       } else {
-        // FALTA POR IMPLEMENTAR MEJOR EL ERROR
-        LOGGER.error("NO se ha recibido ninguna respuesta");
-      }
-      
-      
+        throw new PaypalException("Error al obtener el token de paypal");
+      }     
     } catch (Exception e) {
       throw new PaypalException(e);
-    }
-    
+    }   
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
   
   /**
-   * Función encargada de obtener el token desde la api de paypal
+   * Función encargada de obtener el token desde la api de paypal 
    * @param body
    * @return
    */
   private Mono<ResponseEntity<ApiPaypalDto>> respuestaApiTokenPaypal(MultiValueMap<String, String> body) {
-    return externalWebClient.build().post().uri(ConstantesMain.URLTOKENAPIPAYPAL)
-        .body(BodyInserters.fromValue(body))
+    return externalWebClient.build().post().uri(ConstantesMain.URLTOKENAPIPAYPAL).body(BodyInserters.fromValue(body))
         .headers(headers -> {
           headers.setAccept((Collections.singletonList(MediaType.APPLICATION_JSON)));
           headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -228,17 +235,23 @@ public class PaypalController {
 
   /**
    * Función encargada de validar el estado de la transacción
+   * @param token
+   * @param identificador
    * @return
    */
   private Mono<Map<String, Object>> validarEstadoTransaccion(String token, String identificador) {
     return externalWebClient.build().get().uri(ConstantesMain.URLESTADOTRANSACCIONPAYPAL.concat(identificador))
         .headers(headers -> headers.setBearerAuth(token))
         .retrieve()
-        .bodyToMono( new ParameterizedTypeReference<Map<String, Object>>() {});
+        .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {});
   }
   
   /**
    * Función encargda de enviar la devolución del dinero
+   * @param body
+   * @param token
+   * @param url
+   * @return
    */
   private Mono<ResponseEntity<Void>> enviarDevolucion(Map<String, Object> body, String token, String url) {
     return externalWebClient.build().post().uri(url)

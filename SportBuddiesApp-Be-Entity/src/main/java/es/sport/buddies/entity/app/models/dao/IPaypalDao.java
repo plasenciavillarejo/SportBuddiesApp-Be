@@ -17,7 +17,8 @@ public interface IPaypalDao extends JpaRepository<Paypal, Long> {
   public Paypal buscarReservaPagada(@Param("idReservaUsuario") long idReservaUsuario);
   
   @Modifying
-  @Query(value = "update Paypal set reembolsado = true, fechaReembolso = :fechaReembolso where idPaypal = :idPaypal")
+  @Query(value = "update Paypal set reembolsado = true, fechaReembolso = :fechaReembolso,"
+      + " reservaUsuario = null where idPaypal = :idPaypal")
   public void actualizarReservaReembolsada(@Param("fechaReembolso") LocalDate fechaReembolso,@Param("idPaypal") long idPaypal);
-  
+    
 }

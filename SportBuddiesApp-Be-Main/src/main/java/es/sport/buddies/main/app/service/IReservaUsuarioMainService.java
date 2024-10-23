@@ -11,6 +11,6 @@ public interface IReservaUsuarioMainService {
 
   public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idUsuariom, boolean historial) throws ReservaException;
      
-  public void eliminarActividad(long idReserva, long idUsuario) throws CancelarReservaException;
+  public void eliminarActividad(long idReservaUsuario, long idUsuario) throws CancelarReservaException;
   
 }
