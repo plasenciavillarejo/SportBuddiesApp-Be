@@ -1,6 +1,8 @@
 package es.sport.buddies.main.app.service.impl;
 
+import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,12 +83,18 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       .toList()).thenApply(lista -> lista);
       CompletableFuture.allOf(list).get();
       */
-      listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
-          Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
-           listadoDto.getActividad(),
-          listadoDto.getProvincia(), listadoDto.getMunicipio()).stream()
-          .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
-          .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
+      if(!listadoDto.getFechaReserva().isBefore(LocalDate.now())) {
+        listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
+            Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
+             listadoDto.getActividad(),
+            listadoDto.getProvincia(), listadoDto.getMunicipio()).stream()
+            .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
+            .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
+
+      } else {
+        listDos = Collections.emptyList();
+      }
+      
     } catch (Exception e) {
       throw new ReservaException(e.getMessage());
     }
