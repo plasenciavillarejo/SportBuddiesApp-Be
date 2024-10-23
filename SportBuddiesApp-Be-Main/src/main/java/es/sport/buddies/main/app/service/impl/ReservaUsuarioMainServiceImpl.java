@@ -98,7 +98,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
           usuPlanPago.getIdUsuarioPlanPago());
       LOGGER.info("Reserva restante actualizada correctamente");
       
-      if(resUsuario != null) {
+      if(resUsuario.isAbonado()) {
         LOGGER.info("Se procede a devolver el pago");
         //devolverPago(idReservaUsuario);
         paypal.devolucionPaypal(idReservaUsuario);
