@@ -64,6 +64,13 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   public ReservaUsuario findById(long idReservaUsuario) {
     return reservaUsuarioDao.findById(idReservaUsuario).orElse(null);
   }
-  
+
+  @Override
+  @Transactional(readOnly = true)
+  public double findByIdReserva(long idReservaUsuario) {
+    return reservaUsuarioDao.findByIdReserva(idReservaUsuario);
+  }
+
+
 
 }

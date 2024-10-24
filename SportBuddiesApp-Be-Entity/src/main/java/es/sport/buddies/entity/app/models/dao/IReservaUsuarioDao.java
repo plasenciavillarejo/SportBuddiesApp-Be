@@ -50,4 +50,8 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
       + " and r.idReserva = :idReserva")
   public ReservaUsuario validarAbonoReserva(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
+  @EntityGraph(attributePaths = {"reservaActividad"})
+  @Query(value = "select r.reservaActividad.abonoPista from ReservaUsuario r where r.idReserva = :idReservaUsuario")
+  public double findByIdReserva(@Param("idReservaUsuario") long idReservaUsuario);
+  
 }

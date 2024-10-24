@@ -119,5 +119,10 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
     //.headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN))
     .retrieve().bodyToMono(new ParameterizedTypeReference<Void>() {}).block();
   }
+
+  @Override
+  public double obtenerPrecioActividad(long idReservaUsuario) throws CancelarReservaException {
+    return reservaUsuarioService.findByIdReserva(idReservaUsuario);
+  }
   
 }

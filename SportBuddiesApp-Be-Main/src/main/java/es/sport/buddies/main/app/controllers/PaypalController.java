@@ -115,7 +115,7 @@ public class PaypalController {
         payment.getTransactions().forEach(transaction -> transaction.getRelatedResources()
             .forEach(related -> {
               Paypal paypal = Paypal.builder()
-                  .total(Double.valueOf(related.getSale().getAmount().getTotal()))
+                  .total(Double.valueOf(related.getSale().getAmount().getTotal().replace(",", ".")))
                   .moneda(related.getSale().getAmount().getCurrency())
                   .reembolsado(false)
                   .fechaReembolso(null)

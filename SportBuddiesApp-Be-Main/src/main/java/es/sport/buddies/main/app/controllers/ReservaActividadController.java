@@ -111,6 +111,4 @@ public class ReservaActividadController {
     return new ResponseEntity<>(listLongActividad != null ? listLongActividad : Collections.emptyList(), HttpStatus.OK);
   }
   
-
-  
 }

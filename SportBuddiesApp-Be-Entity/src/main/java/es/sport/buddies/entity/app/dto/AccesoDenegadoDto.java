@@ -1,4 +1,4 @@
-package es.sport.buddies.entity.app.models.entity;
+package es.sport.buddies.entity.app.dto;
 
 import java.io.Serializable;
 

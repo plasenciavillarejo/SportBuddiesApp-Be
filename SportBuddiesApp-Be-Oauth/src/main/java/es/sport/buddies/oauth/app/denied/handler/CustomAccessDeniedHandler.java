@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.sport.buddies.entity.app.models.entity.AccesoDenegadoDto;
+import es.sport.buddies.entity.app.dto.AccesoDenegadoDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

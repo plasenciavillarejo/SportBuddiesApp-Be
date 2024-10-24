@@ -191,6 +191,5 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   public List<Long> listarActividadInscritas(long idUsuario) {
     return reservaUsuarioService.obtenerReservasPorUsuario(idUsuario);
   }
-
   
 }

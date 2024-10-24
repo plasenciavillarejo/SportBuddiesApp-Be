@@ -13,4 +13,6 @@ public interface IReservaUsuarioMainService {
      
   public void eliminarActividad(long idReservaUsuario, long idUsuario) throws CancelarReservaException;
   
+  public double obtenerPrecioActividad(long idReservaUsuario) throws CancelarReservaException;
+  
 }

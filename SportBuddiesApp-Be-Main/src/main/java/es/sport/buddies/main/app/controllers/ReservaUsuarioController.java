@@ -52,11 +52,18 @@ public class ReservaUsuarioController {
   public ResponseEntity<Void> cancelarReserva(@PathVariable("idReservaUsuario") long idReservaUsuario, @PathVariable("idUsuario") long idUsuario) throws CancelarReservaException {
     try {
       reservaUsuarioService.eliminarActividad(idReservaUsuario,idUsuario);
-    }catch (Exception e) {
+    } catch (Exception e) {
       throw new CancelarReservaException(e);
     }
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
   
-  
+  @GetMapping(value = "/obtenerPrecio/{idReservaUsuario}")
+  public ResponseEntity<Double> obtenerPrecioActividad(@PathVariable("idReservaUsuario") long idReservaUsuario) throws CancelarReservaException {
+    try {
+      return new ResponseEntity<>(reservaUsuarioService.obtenerPrecioActividad(idReservaUsuario), HttpStatus.OK);
+    } catch (Exception e) {
+      throw new CancelarReservaException(e);
+    }
+  }
 }
