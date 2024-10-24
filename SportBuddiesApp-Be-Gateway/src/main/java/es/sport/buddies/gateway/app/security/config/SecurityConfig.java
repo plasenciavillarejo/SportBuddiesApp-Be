@@ -61,7 +61,8 @@ public class SecurityConfig {
 			    "/api/main/reservaActividad/listadoMunicipios",
 			    "/api/main/reservaActividad/listadoReserva",
 			    "/api/main/borrarCookie",
-			    "/api/main/paypal/estado/pago").permitAll()
+			    "/api/main/paypal/estado/pago",
+			    "/api/main/usuario/crear").permitAll()
 			.pathMatchers("/api/main/listar").hasAnyRole("ADMIN", "USER")
 			//.hasAnyAuthority("SCOPE_read", "SCOPE_write") -> De está format trabaja los roles de Oauth 2
 			//.pathMatchers(HttpMethod.POST, "/crear").hasAuthority("SCOPE_write")

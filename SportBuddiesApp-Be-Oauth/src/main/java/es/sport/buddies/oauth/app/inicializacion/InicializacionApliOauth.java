@@ -39,6 +39,9 @@ public class InicializacionApliOauth {
 	@Value("${client.secret.angular}")
 	private String clientSecretAngular;
 	
+	@Value("${sportbuddies.fe}")
+	private String aplicacionFront;
+	
 	@PostConstruct
 	public void init() {
 		
@@ -62,6 +65,8 @@ public class InicializacionApliOauth {
 	  
 	  ConstantesApp.CLIENTSECRETANGULAR = clientSecretAngular;
 		
+	  ConstantesApp.APLICACIONANGULAR = aplicacionFront;
+	  
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -117,7 +116,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   public void devolverPago(long idReservaUsuario) {
     weblient.build().post()
     .uri("http://SportBuddiesApp-Be-Main/api/main/paypal/devolver/pago?idReservaUsuario=" + idReservaUsuario)
-    .headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN))
+    //.headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN))
     .retrieve().bodyToMono(new ParameterizedTypeReference<Void>() {}).block();
   }
   
