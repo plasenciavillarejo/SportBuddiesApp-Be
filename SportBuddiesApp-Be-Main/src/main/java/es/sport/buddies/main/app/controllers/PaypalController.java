@@ -66,16 +66,21 @@ public class PaypalController {
   
   @Autowired
   private IUsuarioService usuarioService;
-    
+  
+  /**
+   * Servicio encargado de tramitar el pago con paypal
+   * @param paypalDto
+   * @return
+   * @throws PaypalException
+   */
   @PostMapping(value = "/crear/pago")
   public ResponseEntity<Map<String, String>> crearPagoPaypal(@RequestBody PaypalDto paypalDto) throws PaypalException {
     Map<String, String> response = new HashMap<>();
     try {
-      String urlCancel = ConstantesMain.SPORTBUDDIESFE.concat(ConstantesMain.PAYPALCANCEL);
-      String urlSuccess = ConstantesMain.SPORTBUDDIESFE;
-      
       Payment payment = paypalMainService.crearPago(paypalDto.getTotal(), paypalDto.getDivisa(), paypalDto.getMetodo(),
-          paypalDto.getIntencion(), paypalDto.getDescripcion(),urlCancel, urlSuccess);
+          paypalDto.getIntencion(), paypalDto.getDescripcion(),
+          ConstantesMain.SPORTBUDDIESFE.concat(ConstantesMain.PAYPALCANCEL),
+          ConstantesMain.SPORTBUDDIESFE);
       
       Optional<Links> approvalLink = payment.getLinks().stream()
           .filter(link -> link.getRel().equalsIgnoreCase(ConstantesMain.URLAPROBACION))
@@ -110,8 +115,7 @@ public class PaypalController {
     try {
       Payment payment = paypalMainService.ejecutarPago(paymentId, payerId);
 
-      if (payment.getState().equalsIgnoreCase("approved")) {
-        
+      if (payment.getState().equalsIgnoreCase(ConstantesMain.APPROVED)) {
         payment.getTransactions().forEach(transaction -> transaction.getRelatedResources()
             .forEach(related -> {
               Paypal paypal = Paypal.builder()
@@ -122,7 +126,7 @@ public class PaypalController {
                   .build();
 
           Optional<Links> linkRefund = related.getSale().getLinks().stream()
-              .filter(link -> link.getHref().endsWith("refund")).findFirst();
+              .filter(link -> link.getHref().endsWith(ConstantesMain.REFUND)).findFirst();
           
           ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
           Usuario usuario = usuarioService.findById(res.getUsuario().getIdUsuario()).orElse(null);
@@ -137,8 +141,7 @@ public class PaypalController {
               LOGGER.error("Ha sucedido un error a la hora de almacenar los datos en la tabla PAYPAL");
             }
           }
-        }));
-        
+        }));        
         // Una vez que se ha pagado la reserva, se actuliza la tabla
         reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario);
         mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
@@ -150,8 +153,12 @@ public class PaypalController {
       throw new PaypalException();
     }
   }
-  
 
+  /**
+   * Función encargada de guardar los datos recibidos de paypal
+   * @param paypal
+   * @throws PaypalException
+   */
   private void guardarObjetoPaypal(Paypal paypal) throws PaypalException {
     try {
       LOGGER.info("Se procede almacenar los datos en la tabla PAYPAL");
@@ -162,6 +169,12 @@ public class PaypalController {
     }
   }
 
+  /**
+   * Función encargada de devolver el pago
+   * @param idReservaUsuario
+   * @return
+   * @throws PaypalException
+   */
   @PostMapping(value = "/devolver/pago")
   public ResponseEntity<Void> devolucionPaypal(@RequestParam("idReservaUsuario") long idReservaUsuario) throws PaypalException {
     try {
@@ -221,7 +234,8 @@ public class PaypalController {
    * @return
    */
   private Mono<ResponseEntity<ApiPaypalDto>> respuestaApiTokenPaypal(MultiValueMap<String, String> body) {
-    return externalWebClient.build().post().uri(ConstantesMain.URLTOKENAPIPAYPAL).body(BodyInserters.fromValue(body))
+    return externalWebClient.build().post().uri(ConstantesMain.URLTOKENAPIPAYPAL)
+        .body(BodyInserters.fromValue(body))
         .headers(headers -> {
           headers.setAccept((Collections.singletonList(MediaType.APPLICATION_JSON)));
           headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

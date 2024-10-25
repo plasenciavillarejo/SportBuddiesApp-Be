@@ -63,6 +63,10 @@ public class ConstantesMain {
 	
 	public static String TOKEN = "token";
 	
+	public static final String APPROVED = "approved";
+	
+	public static final String REFUND = "refund";
+	
 }
 
 

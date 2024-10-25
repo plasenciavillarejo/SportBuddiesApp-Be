@@ -1,5 +1,6 @@
 package es.sport.buddies.main.app.service.impl;
 
+import java.net.URI;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -11,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
@@ -22,7 +23,6 @@ import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
-import es.sport.buddies.main.app.controllers.PaypalController;
 import es.sport.buddies.main.app.convert.map.struct.IReservaUsuarioMapStruct;
 import es.sport.buddies.main.app.exceptions.CancelarReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
@@ -44,12 +44,9 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   private Utilidades utilidades;
     
   @Autowired
-  @Qualifier("internalWebClient")
-  private WebClient.Builder weblient;
- 
-  @Autowired
-  private PaypalController paypal;
-  
+  @Qualifier("externalWebClient")
+  private WebClient.Builder webClient;
+   
   @Override
   public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idUsuario, boolean historial) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
@@ -66,10 +63,6 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   
   @Override
   public void eliminarActividad(long idReservaUsuario, long idUsuario) throws CancelarReservaException {
-    
-    // Ver que pasa por que devuelve un 403 cuando hace la peticion corecta 
-    // devolverPago(idReservaUsuario);
-    
     try {
       LOGGER.info("Validando que el usuario no haya pagado la reserva");
       ReservaUsuario resUsuario = reservaUsuarioService.validarAbonoReserva(idUsuario, idReservaUsuario);
@@ -99,8 +92,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
       
       if(resUsuario.isAbonado()) {
         LOGGER.info("Se procede a devolver el pago");
-        //devolverPago(idReservaUsuario);
-        paypal.devolucionPaypal(idReservaUsuario);
+        devolverPago(idReservaUsuario);
         LOGGER.info("Pago devuelto exitosamente");
       }
       
@@ -114,15 +106,22 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   }
   
   public void devolverPago(long idReservaUsuario) {
-    weblient.build().post()
-    .uri("http://SportBuddiesApp-Be-Main/api/main/paypal/devolver/pago?idReservaUsuario=" + idReservaUsuario)
-    //.headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN))
-    .retrieve().bodyToMono(new ParameterizedTypeReference<Void>() {}).block();
+    URI uri = UriComponentsBuilder.fromUriString(ConstantesMain.SPORTBUDDIESGTW.concat("/api/main")).path("/paypal/devolver/pago")
+        .queryParam("idReservaUsuario", idReservaUsuario)
+        .build().toUri();
+    webClient.build().post().uri(uri)
+    .headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN)).retrieve()
+    .bodyToMono(Void.class)
+    .doOnSubscribe(
+        subscription -> LOGGER.info("Sending request to URI with idReservaUsuario: {}", idReservaUsuario))
+    .doOnError(error -> LOGGER.error("Error: {}", error.getMessage(), error.getCause()))
+    .block();
   }
 
   @Override
   public double obtenerPrecioActividad(long idReservaUsuario) throws CancelarReservaException {
     return reservaUsuarioService.findByIdReserva(idReservaUsuario);
   }
+  
   
 }
