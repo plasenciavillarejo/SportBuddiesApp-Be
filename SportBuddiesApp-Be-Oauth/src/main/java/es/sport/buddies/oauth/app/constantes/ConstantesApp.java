@@ -48,4 +48,6 @@ public class ConstantesApp {
   
   public static Authentication AUTHENTICATION = null;
   
+  public static long CODIGOVERIFICACION = 0;
+  
 }

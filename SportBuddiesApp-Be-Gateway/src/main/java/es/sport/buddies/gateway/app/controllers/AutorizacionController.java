@@ -46,10 +46,10 @@ public class AutorizacionController {
     if (request.getHeaders().get(HttpHeaders.AUTHORIZATION) != null) {
       SecurityContextHolder.clearContext();
       ResponseCookie res = ResponseCookie.from("JSESSIONID", "")
-          .path("/") // Asegúrate de que la ruta sea la misma que la de la cookie
+          .path("/") // Aseguramos que la ruta sea la misma que la de la cookie
           .maxAge(0) // Establece la edad máxima de la cookie a 0 para eliminarla
-          .httpOnly(true) // Asegúrate de que sea httpOnly si es necesario
-          .secure(true) // Asegúrate de que sea segura si se está usando HTTPS
+          .httpOnly(true) // Aseguramos que sea httpOnly si es necesario
+          .secure(true) // Aseguramos que sea segura si usamos HTTPS
           .sameSite("Lax") // Define el comportamiento de SameSite si es necesario
           .build();
       response.getCookies().set("JSESSIONID", res);

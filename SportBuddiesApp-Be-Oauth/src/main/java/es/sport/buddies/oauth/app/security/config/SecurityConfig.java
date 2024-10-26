@@ -47,6 +47,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import es.sport.buddies.entity.app.models.entity.Usuario;
+import es.sport.buddies.entity.app.models.service.ICodigoVerificacionService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
@@ -69,8 +70,11 @@ public class SecurityConfig {
   @Autowired
   private IUsuarioService usuarioService;
   
+  @Autowired
+  private ICodigoVerificacionService codigoVerificacionService;
+  
   public UserDetailServiceImpl usu() {
-    return new UserDetailServiceImpl(usuarioService);
+    return new UserDetailServiceImpl(usuarioService,codigoVerificacionService);
   }
   
   private AuthenticationSuccessHandler authenticationSuccessHandler() {
