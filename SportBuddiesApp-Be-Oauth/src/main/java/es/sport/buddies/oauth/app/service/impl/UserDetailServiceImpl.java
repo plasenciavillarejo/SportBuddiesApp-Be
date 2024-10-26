@@ -1,4 +1,4 @@
-package es.sport.buddies.oauth.app.services;
+package es.sport.buddies.oauth.app.service.impl;
 
 import java.util.List;
 
@@ -21,14 +21,14 @@ import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 
 @Service
-public class UserDetailService implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailServiceImpl.class);
   
   private IUsuarioService usuarioService;
   
 	// Por defecto no agrega la inyección de las depenencias, para hacerlo, lo inyectamos desde SecurityConfig.java mediante su constructor
-	public UserDetailService(IUsuarioService usuarioService) {
+	public UserDetailServiceImpl(IUsuarioService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
 	

@@ -34,6 +34,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -45,13 +47,15 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import es.sport.buddies.entity.app.dto.DobleFactorDto;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
-import es.sport.buddies.oauth.app.services.UserDetailService;
+import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
+import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -67,8 +71,8 @@ public class SecurityConfig {
   @Autowired
   private IUsuarioService usuarioService;
   
-  public UserDetailService usu() {
-    return new UserDetailService(usuarioService);
+  public UserDetailServiceImpl usu() {
+    return new UserDetailServiceImpl(usuarioService);
   }
   
   private AuthenticationSuccessHandler authenticationSuccessHandler() {
@@ -85,6 +89,11 @@ public class SecurityConfig {
       return new CustomAccessDeniedHandler();
   }
     
+  @Bean
+  AuthenticationSuccessHandler authSuccesHandler() {
+    return new SavedRequestAwareAuthenticationSuccessHandler();
+  }
+  
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -138,8 +147,12 @@ public class SecurityConfig {
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/login","/error/**","/img/**", "/css/**",
             "/assets/**", "/clienteOauth/**").permitAll()
+        .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
-        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN))
+        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
+            .successHandler(new DobleFactorSuccessHandler())
+            //.failureHandler(new SimpleUrlAuthenticationFailureHandler("/falta-por-implementar"))
+            )
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))

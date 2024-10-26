@@ -1,4 +1,4 @@
-package es.sport.buddies.oauth.app.services;
+package es.sport.buddies.oauth.app.service.impl;
 
 import java.time.Duration;
 import java.util.Arrays;

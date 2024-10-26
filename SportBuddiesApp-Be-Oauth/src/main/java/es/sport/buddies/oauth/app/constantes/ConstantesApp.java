@@ -1,5 +1,6 @@
 package es.sport.buddies.oauth.app.constantes;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
@@ -44,5 +45,7 @@ public class ConstantesApp {
   public static final String CUSTOMCONSENTPAGE = "/oauth2/consent";
  
   public static String  APLICACIONANGULAR  = "ANGULAR";
+  
+  public static Authentication AUTHENTICATION = null;
   
 }

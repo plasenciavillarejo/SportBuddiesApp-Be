@@ -1,4 +1,4 @@
-package es.sport.buddies.oauth.app.services;
+package es.sport.buddies.oauth.app.service.impl;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,13 +17,13 @@ import es.sport.buddies.entity.app.models.entity.AutorizacionConsentimento;
 import es.sport.buddies.entity.app.models.service.IAutorizacionConsentimentoService;
 
 @Component
-public class AutorizacionConsentimientoService implements OAuth2AuthorizationConsentService {
+public class AutorizacionConsentimientoServiceImpl implements OAuth2AuthorizationConsentService {
 
   private IAutorizacionConsentimentoService autorizacionConsentimientoService;
   
   private final RegisteredClientRepository registeredClientRepository;
   
-  public AutorizacionConsentimientoService(IAutorizacionConsentimentoService autorizacionService, RegisteredClientRepository registeredClientRepository) {
+  public AutorizacionConsentimientoServiceImpl(IAutorizacionConsentimentoService autorizacionService, RegisteredClientRepository registeredClientRepository) {
     this.autorizacionConsentimientoService = autorizacionService;
     this.registeredClientRepository = registeredClientRepository;
   }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.sport.buddies.entity.app.dto.ClientesOauthDto;
-import es.sport.buddies.oauth.app.services.ClienteOauthServiceImpl;
+import es.sport.buddies.oauth.app.service.impl.ClienteOauthServiceImpl;
 
 @RestController
 @RequestMapping(value = "/clienteOauth")
