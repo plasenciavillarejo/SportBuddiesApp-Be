@@ -35,6 +35,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -153,7 +154,7 @@ public class SecurityConfig {
         .anyRequest().authenticated())
         .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
             .successHandler(new DobleFactorSuccessHandler())
-            //.failureHandler(new SimpleUrlAuthenticationFailureHandler("/falta-por-implementar"))
+            .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
             )
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))

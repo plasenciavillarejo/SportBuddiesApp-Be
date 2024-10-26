@@ -77,7 +77,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
           codigoVerificacionService.guardarCodigoVerificacion(codVerif);
           LOGGER.info("Código almacenado exitosamente");
         } else {
-          codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(5),
+          codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(1),
               usuario.getIdUsuario(), RandomStringUtils.randomAlphanumeric(8));
         }
         ConstantesApp.CODIGOVERIFICACION = cod != null ? usuario.getIdUsuario()

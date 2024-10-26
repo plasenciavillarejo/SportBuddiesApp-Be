@@ -1,9 +1,9 @@
 package es.sport.buddies.oauth.app.controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +17,12 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
 import es.sport.buddies.entity.app.models.entity.CodigoVerificacion;
-import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.service.ICodigoVerificacionService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import jakarta.servlet.ServletException;
@@ -47,17 +46,27 @@ public class DobleFactorController {
   private ICodigoVerificacionService codigoVerificacionService;
   
   @GetMapping("/dobleFactor")
-  public String twofactor() throws Exception {        
+  public String twofactor(@RequestParam(name = "error", required = false) String error, Model model) throws Exception {        
+    if(error != null) {
+      model.addAttribute("error", error);
+    }
     return "dobleFactor";
   }
 
   @PostMapping("/dobleFactor")
-  public void validateCode(@RequestParam("code") String code, HttpServletRequest req, HttpServletResponse res)
+  public void validateCode(@RequestParam("code") String code, HttpServletRequest req, HttpServletResponse res,
+      Model model)
       throws ServletException, IOException {
-    if (code.equals(codigoVerificacionService.findByUsuario_IdUsuario(ConstantesApp.CODIGOVERIFICACION).getCodigo()))
+    CodigoVerificacion cod = codigoVerificacionService.findByUsuario_IdUsuario(ConstantesApp.CODIGOVERIFICACION);
+    if(code.equals(cod.getCodigo()) && cod.getTiempoExpiracion().isAfter(LocalDateTime.now())) {
       this.authenticationSuccessHandler.onAuthenticationSuccess(req, res, getAuthentication(req, res));
-    else
-      authenticationFailureHandler.onAuthenticationFailure(req, res, new BadCredentialsException("invalid code"));
+    } else {
+      String errorMsg = !code.equals(cod.getCodigo()) ? "El código es erróneo, por favor, vuelva a intentarlo" 
+          : "La fecha del token ha expirado, por favor, vuelva a iniciar sesión";
+      //authenticationFailureHandler.onAuthenticationFailure(req, res, new BadCredentialsException("invalid code"));
+      // Redirigir a la página de doble factor con el mensaje de error
+      res.sendRedirect("/dobleFactor?error=" + URLEncoder.encode(errorMsg, "UTF-8"));
+    }
   }
 
   private Authentication getAuthentication(HttpServletRequest req, HttpServletResponse res) {
@@ -69,4 +78,5 @@ public class DobleFactorController {
     return authentication;
   }
 
+  
 }
