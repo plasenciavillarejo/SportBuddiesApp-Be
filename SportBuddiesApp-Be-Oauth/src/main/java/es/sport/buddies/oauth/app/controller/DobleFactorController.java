@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import es.sport.buddies.entity.app.dto.DobleFactorDto;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,8 +32,6 @@ public class DobleFactorController {
 
   @Autowired
   private AuthenticationSuccessHandler authenticationSuccessHandler;
-
-  private DobleFactorDto dobleFactorDto;
 
   @GetMapping("/dobleFactor")
   public String twofactor() {
