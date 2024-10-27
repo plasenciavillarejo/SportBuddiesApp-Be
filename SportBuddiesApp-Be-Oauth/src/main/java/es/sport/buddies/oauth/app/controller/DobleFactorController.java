@@ -61,8 +61,9 @@ public class DobleFactorController {
     if(code.equals(cod.getCodigo()) && cod.getTiempoExpiracion().isAfter(LocalDateTime.now())) {
       this.authenticationSuccessHandler.onAuthenticationSuccess(req, res, getAuthentication(req, res));
     } else {
-      String errorMsg = !code.equals(cod.getCodigo()) ? "El código es erróneo, por favor, vuelva a intentarlo" 
-          : "La fecha del token ha expirado, por favor, vuelva a iniciar sesión";
+      String errorMsg = cod.getTiempoExpiracion().isBefore(LocalDateTime.now())
+          ? "La fecha del token ha expirado, por favor, cierre el navegador vuelva a iniciar sesión" 
+              : "El código es erróneo, por favor, vuelva a intentarlo";
       //authenticationFailureHandler.onAuthenticationFailure(req, res, new BadCredentialsException("invalid code"));
       // Redirigir a la página de doble factor con el mensaje de error
       res.sendRedirect("/dobleFactor?error=" + URLEncoder.encode(errorMsg, "UTF-8"));
