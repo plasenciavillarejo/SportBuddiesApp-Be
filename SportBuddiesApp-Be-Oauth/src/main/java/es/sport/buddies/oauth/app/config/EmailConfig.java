@@ -45,7 +45,7 @@ public class EmailConfig {
   private String mailHostDog;
   
   @Value("${mail.port.mail.dog}")
-  private int mailPortDog;
+  private String mailPortDog;
   
   @Bean
   JavaMailSenderImpl javaMailSenderImpl() throws IOException {
