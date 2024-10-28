@@ -50,4 +50,14 @@ public class ConstantesApp {
   
   public static long CODIGOVERIFICACION = 0;
   
+  public static final String PLANTILLA = "src/main/resources/plantilla-correo/codigo-autenticacion.html";
+  
+  public static final String CODE = "${code}";
+  
+  public static final String USERNAME = "${username}";
+  
+  public static final String CODIFOVERIFICACION = "Codigo Verificación";
+ 
+  public static final String UTF8 = "UTF-8";
+  
 }

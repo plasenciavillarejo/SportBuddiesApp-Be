@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
@@ -33,15 +34,15 @@ public class EmailServiceImpl {
    */
   public void sendEmailCodeVerification(String correoDestinatario, String codigoVerificacion, String nombreUsuario) {
     try {
-      String htmlContent = new String(Files.readAllBytes(Paths.get("src/main/resources/plantilla-correo/codigo-autenticacion.html")), StandardCharsets.UTF_8);
-      htmlContent = htmlContent.replace("${code}", codigoVerificacion).replace("${username}", nombreUsuario);
+      String htmlContent = new String(Files.readAllBytes(Paths.get(ConstantesApp.PLANTILLA)), StandardCharsets.UTF_8);
+      htmlContent = htmlContent.replace(ConstantesApp.CODE, codigoVerificacion).replace(ConstantesApp.USERNAME, nombreUsuario);
       
       MimeMessage mimeMessage = emailSender.createMimeMessage();
-      MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, "UTF-8");
+      MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, ConstantesApp.UTF8);
       
       messageHelper.setFrom(mailUserName);
       messageHelper.setTo(correoDestinatario);
-      messageHelper.setSubject("Codigo Verificación");
+      messageHelper.setSubject(ConstantesApp.CODIFOVERIFICACION);
       messageHelper.setText(htmlContent, true);
 
       emailSender.send(mimeMessage);
