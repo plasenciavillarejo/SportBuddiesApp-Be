@@ -101,6 +101,14 @@
 		</dependency>
 		<!-- ################################################### -->
 		
+		<!-- INI: Dependencia para el envio de correo -->
+		<!-- ################################### -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<!-- FIN: Dependencia para el envio de correo -->
+		<!-- ################################### -->
 	</dependencies>
 
 	<dependencyManagement>

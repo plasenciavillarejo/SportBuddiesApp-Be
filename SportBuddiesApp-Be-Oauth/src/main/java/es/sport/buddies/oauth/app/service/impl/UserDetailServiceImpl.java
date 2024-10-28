@@ -1,13 +1,11 @@
 package es.sport.buddies.oauth.app.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import es.sport.buddies.entity.app.dto.UsernameAuthenticationDto;
 import es.sport.buddies.entity.app.dto.UsuarioDto;
@@ -35,10 +32,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
   
   private ICodigoVerificacionService codigoVerificacionService;
   
+  private EmailServiceImpl emailServiceImpl;
+  
 	// Por defecto no agrega la inyección de las depenencias, para hacerlo, lo inyectamos desde SecurityConfig.java mediante su constructor
-	public UserDetailServiceImpl(IUsuarioService usuarioService,ICodigoVerificacionService codigoVerificacionService) {
+	public UserDetailServiceImpl(IUsuarioService usuarioService,ICodigoVerificacionService codigoVerificacionService,
+	    EmailServiceImpl emailServiceImpl) {
 		this.usuarioService = usuarioService;
 		this.codigoVerificacionService = codigoVerificacionService;
+		this.emailServiceImpl = emailServiceImpl;
 	}
 	
 	@Override
@@ -70,21 +71,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
               .build())
           .build();
 			
-      try {
-        CodigoVerificacion cod = codigoVerificacionService.findByUsuario_IdUsuario(usuario.getIdUsuario());
-        if (cod == null) {
-          LOGGER.info("Se prodece almacenar el codigo de verificacion");
-          codigoVerificacionService.guardarCodigoVerificacion(codVerif);
-          LOGGER.info("Código almacenado exitosamente");
-        } else {
-          codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(1),
-              usuario.getIdUsuario(), RandomStringUtils.randomAlphanumeric(8));
-        }
-        ConstantesApp.CODIGOVERIFICACION = cod != null ? usuario.getIdUsuario()
-            : codVerif.getUsuario().getIdUsuario();
-      } catch (Exception e) {
-        throw new Exception(e);
-      }
+			guardarCodigoVerificacion(codVerif, usuario);
 			
 			return new User(usuario.getNombreUsuario(),usuario.getPassword(),usuario.getEnabled(),true,true,true,authorities);
 		} catch (Exception e) {
@@ -92,4 +79,30 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		}
 	}
 
+	/**
+	 * Función encargada de almacenar el token y enviar el correo
+	 * @param codVerif
+	 * @param usuario
+	 * @throws Exception
+	 */
+	private void guardarCodigoVerificacion(CodigoVerificacion codVerif, Usuario usuario) throws Exception {
+	  try {
+      CodigoVerificacion cod = codigoVerificacionService.findByUsuario_IdUsuario(usuario.getIdUsuario());
+      if (cod == null) {
+        LOGGER.info("Se prodece almacenar el codigo de verificacion");
+        codigoVerificacionService.guardarCodigoVerificacion(codVerif);
+        LOGGER.info("Código almacenado exitosamente");
+      } else {
+        cod.setCodigo(RandomStringUtils.randomAlphanumeric(8));
+        codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(1),
+            usuario.getIdUsuario(), cod.getCodigo());
+      }
+      ConstantesApp.CODIGOVERIFICACION = cod != null ? usuario.getIdUsuario()
+          : codVerif.getUsuario().getIdUsuario();
+      emailServiceImpl.sendEmailCodeVerification(usuario.getEmail(), cod.getCodigo());
+    } catch (Exception e) {
+      throw new Exception(e);
+    }
+	}
+	
 }

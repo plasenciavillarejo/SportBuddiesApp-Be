@@ -54,6 +54,7 @@ import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
+import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
 import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
 
@@ -74,8 +75,11 @@ public class SecurityConfig {
   @Autowired
   private ICodigoVerificacionService codigoVerificacionService;
   
+  @Autowired
+  private EmailServiceImpl emailServiceImpl;
+  
   public UserDetailServiceImpl usu() {
-    return new UserDetailServiceImpl(usuarioService,codigoVerificacionService);
+    return new UserDetailServiceImpl(usuarioService,codigoVerificacionService,emailServiceImpl);
   }
   
   private AuthenticationSuccessHandler authenticationSuccessHandler() {
