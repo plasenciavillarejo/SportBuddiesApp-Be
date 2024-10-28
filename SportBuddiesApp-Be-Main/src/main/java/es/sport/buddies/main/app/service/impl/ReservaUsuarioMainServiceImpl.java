@@ -105,6 +105,10 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
     }
   }
   
+  /**
+   * Función encargada de comunicarse con el endpoint de paypal para devolver el pago
+   * @param idReservaUsuario
+   */
   public void devolverPago(long idReservaUsuario) {
     URI uri = UriComponentsBuilder.fromUriString(ConstantesMain.SPORTBUDDIESGTW.concat("/api/main")).path("/paypal/devolver/pago")
         .queryParam("idReservaUsuario", idReservaUsuario)
