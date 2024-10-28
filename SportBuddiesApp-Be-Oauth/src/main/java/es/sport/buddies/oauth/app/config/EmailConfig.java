@@ -48,7 +48,7 @@ public class EmailConfig {
   private String mailPortDog;
   
   @Bean
-  JavaMailSenderImpl javaMailSenderImpl() throws IOException {
+  JavaMailSenderImpl javaMailSenderImpl() {
     
     JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
 

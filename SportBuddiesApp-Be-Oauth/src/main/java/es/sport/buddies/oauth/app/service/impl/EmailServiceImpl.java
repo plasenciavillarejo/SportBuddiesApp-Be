@@ -25,12 +25,12 @@ public class EmailServiceImpl {
   @Value("${mail.username}")
   private String mailUserName;
   
-  public void sendEmailCodeVerification(String correoDestinatario, String codigoVerificacion) {
+  public void sendEmailCodeVerification(String correoDestinatario, String codigoVerificacion, String nombreUsuario) {
     try {
       String htmlContent = new String(Files.readAllBytes(Paths.get("src/main/resources/plantilla-correo/codigo-autenticacion.html")), StandardCharsets.UTF_8);
 
-      htmlContent = htmlContent.replace("${code}", codigoVerificacion);
-
+      htmlContent = htmlContent.replace("${code}", codigoVerificacion).replace("${username}", nombreUsuario);
+      
       MimeMessage mimeMessage = emailSender.createMimeMessage();
       MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, "UTF-8");
       

@@ -99,7 +99,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
       }
       ConstantesApp.CODIGOVERIFICACION = cod != null ? usuario.getIdUsuario()
           : codVerif.getUsuario().getIdUsuario();
-      emailServiceImpl.sendEmailCodeVerification(usuario.getEmail(), cod.getCodigo());
+      emailServiceImpl.sendEmailCodeVerification(usuario.getEmail(), cod.getCodigo(), usuario.getNombreUsuario());
     } catch (Exception e) {
       throw new Exception(e);
     }
