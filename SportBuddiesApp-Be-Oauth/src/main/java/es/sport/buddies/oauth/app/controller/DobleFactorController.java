@@ -46,10 +46,15 @@ public class DobleFactorController {
   private ICodigoVerificacionService codigoVerificacionService;
   
   @GetMapping("/dobleFactor")
-  public String twofactor(@RequestParam(name = "error", required = false) String error, Model model) throws Exception {        
-    if(error != null) {
+  public String twofactor(@RequestParam(name = "error", required = false) String error, Model model) {        
+    boolean tiempoExpirado = false;
+    if(error != null && !error.contains("fecha")) {
+      model.addAttribute("error", error);
+    } else if(error!= null && error.contains("fecha")) {
+      tiempoExpirado = true;
       model.addAttribute("error", error);
     }
+    model.addAttribute("tiempoExpirado", tiempoExpirado);
     return "dobleFactor";
   }
 

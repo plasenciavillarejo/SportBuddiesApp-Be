@@ -94,7 +94,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         LOGGER.info("Código almacenado exitosamente");
       } else {
         cod.setCodigo(RandomStringUtils.randomAlphanumeric(8));
-        codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(1),
+        codigoVerificacionService.actualizarTiempoExpiracion(LocalDateTime.now().plusMinutes(5),
             usuario.getIdUsuario(), cod.getCodigo());
       }
       ConstantesApp.CODIGOVERIFICACION = cod != null ? usuario.getIdUsuario()

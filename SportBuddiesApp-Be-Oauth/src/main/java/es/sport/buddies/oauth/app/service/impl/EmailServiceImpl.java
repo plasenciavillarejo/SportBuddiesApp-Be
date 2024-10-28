@@ -25,10 +25,15 @@ public class EmailServiceImpl {
   @Value("${mail.username}")
   private String mailUserName;
   
+  /**
+   * Función encargada de envíar el correo electrónico al usuario con el código de doble factor
+   * @param correoDestinatario
+   * @param codigoVerificacion
+   * @param nombreUsuario
+   */
   public void sendEmailCodeVerification(String correoDestinatario, String codigoVerificacion, String nombreUsuario) {
     try {
       String htmlContent = new String(Files.readAllBytes(Paths.get("src/main/resources/plantilla-correo/codigo-autenticacion.html")), StandardCharsets.UTF_8);
-
       htmlContent = htmlContent.replace("${code}", codigoVerificacion).replace("${username}", nombreUsuario);
       
       MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -38,7 +43,6 @@ public class EmailServiceImpl {
       messageHelper.setTo(correoDestinatario);
       messageHelper.setSubject("Codigo Verificación");
       messageHelper.setText(htmlContent, true);
-
 
       emailSender.send(mimeMessage);
     } catch (Exception e) {
