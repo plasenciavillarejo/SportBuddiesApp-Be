@@ -157,9 +157,9 @@ public class SecurityConfig {
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
         .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
-            .successHandler(new DobleFactorSuccessHandler())
-            .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
-            )
+            // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
+            //.successHandler(new DobleFactorSuccessHandler())
+            .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
