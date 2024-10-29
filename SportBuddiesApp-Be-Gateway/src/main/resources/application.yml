@@ -7,6 +7,24 @@ spring:
           issuer-uri: "http://127.0.0.1:9000"
       client:
         registration:
+          client-app:
+            # Proveedor para iniciar el login
+            provider: spring
+            # Nombre del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
+            client-id: client-angular
+            # Passwrod del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
+            client-secret: 12345
+            authorization-grant-type: authorization_code
+            # EndPoint donde está configurado el servicio REST AutorizacionController.class (SportBuddiesApp-Be-Gateway) 
+            redirect-uri: "http://localhost:4200/authorize"
+            # Los roles que 
+            scope:
+              - openid
+              - profile
+              #- read
+              #- write
+            # Nombre del cliente que vamosa registrar (client-app) ubicado en la linea 10
+            client-name: client-app
           client-be:
             provider: spring
             client-id: gateway-app
@@ -17,6 +35,27 @@ spring:
               - openid
               - profile
             client-name: client-be
+          #oauth-sportbuddies-client:
+          #  provider: google
+          #  client-id: ${GOOGLE_CLIENT_ID:63154317662-tmbv229bcf0cvp8nbnevvhmml9t4r3ph.apps.googleusercontent.com}
+          #  client-secret: ${GOOGLE_CLIENT_SECRET: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}
+          #  redirect-uri: "http://localhost:4200/authorize"
+          #  scope: 
+          #    - openid 
+          #    - profile 
+            #https://www.googleapis.com/auth/userinfo.profile, https://www.googleapis.com/auth/userinfo.email
+          #  client-name: oauth-sportbuddies-client
+          #github-idp:
+          #  provider: github
+          #  client-id: ${GITHUB_CLIENT_ID:github-client-id}
+          #  client-secret: ${GITHUB_CLIENT_SECRET:github-client-secret}
+          #  scope: user:email, read:user
+          #  client-name: Sign in with GitHub
         provider:
           spring:
             issuer-uri: "http://127.0.0.1:9000"
+          #google:
+          #  user-name-attribute: email
+          #github:
+          #  user-name-attribute: login        
+          
