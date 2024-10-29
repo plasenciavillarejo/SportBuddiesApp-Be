@@ -30,7 +30,7 @@ public class SportBuddieMainExceptionHandler {
     String [] separaCadena = ex.getCause() != null ? ex.getCause().toString().split(":") : null;
     AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
         .codigo(HttpStatus.CONFLICT.value())
-        .mensaje(ex.getLocalizedMessage() != null ? ex.getLocalizedMessage() : separaCadena[1])
+        .mensaje(separaCadena[1])
         .causa(HttpStatus.CONFLICT.getReasonPhrase())
         .build();
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
