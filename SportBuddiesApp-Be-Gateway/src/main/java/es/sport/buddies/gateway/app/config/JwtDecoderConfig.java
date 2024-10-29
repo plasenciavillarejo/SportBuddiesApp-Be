@@ -14,7 +14,7 @@ import es.sport.buddies.gateway.app.constantes.ConstantesGateway;
 
 @Configuration
 public class JwtDecoderConfig {
-
+/*
 	@Bean
 	JwtDecoder jwtDecoder() {
 		RSAPublicKey publicKey = importPublicKey();
@@ -32,4 +32,5 @@ public class JwtDecoderConfig {
 			return null;
 		}
 	}
+	*/
 }

@@ -1,6 +1,5 @@
 package es.sport.buddies.oauth.app.config;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
