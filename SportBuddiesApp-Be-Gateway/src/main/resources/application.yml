@@ -2,50 +2,50 @@ spring:
   security:
     oauth2:
       resourceserver:
-        # Ruta donde se va a validar el toquen (SportBuddiesApp-Be-Oauth)
+#        # Ruta donde se va a validar el toquen (SportBuddiesApp-Be-Oauth)
         jwt:
           issuer-uri: "http://127.0.0.1:9000"
-      client:
-        registration:
-          client-app:
-            # Proveedor para iniciar el login
-            provider: spring
-            # Nombre del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
-            client-id: client-angular
-            # Passwrod del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
-            client-secret: 12345
-            authorization-grant-type: authorization_code
-            # EndPoint donde está configurado el servicio REST AutorizacionController.class (SportBuddiesApp-Be-Gateway) 
-            redirect-uri: "http://localhost:4200/authorize"
-            # Los roles que 
-            scope:
-              - openid
-              - profile
-              #- read
-              #- write
-            # Nombre del cliente que vamosa registrar (client-app) ubicado en la linea 10
-            client-name: client-app
-          client-be:
-            provider: spring
-            client-id: gateway-app
-            client-secret: 12345
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:8090/authorized"
-            scope:
-              - openid
-              - profile
-            client-name: client-be
-          # Ejemplo prueba cliente BE
-          prueba-cliente:
-            provider: spring
-            client-id: prueba-id
-            client-secret: 12345
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:8090/authorized"
-            scope:
-              - openid
-              - profile
-            client-name: prueba-cliente          
+#      client:
+#        registration:
+#          client-app:
+#            # Proveedor para iniciar el login
+#            provider: spring
+#            # Nombre del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
+#            client-id: client-angular
+#            # Passwrod del cliente-id que hemos indicando dentro de la clase SecurityConfig.java (SportBuddiesApp-Be-Oauth)
+#            client-secret: 12345
+#            authorization-grant-type: authorization_code
+#            # EndPoint donde está configurado el servicio REST AutorizacionController.class (SportBuddiesApp-Be-Gateway) 
+#            redirect-uri: "http://localhost:4200/authorize"
+#            # Los roles que 
+#            scope:
+#              - openid
+#              - profile
+#              #- read
+#              #- write
+#            # Nombre del cliente que vamosa registrar (client-app) ubicado en la linea 10
+#            client-name: client-app
+#          client-be:
+#            provider: spring
+#            client-id: gateway-app
+#            client-secret: 12345
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://127.0.0.1:8090/authorized"
+#            scope:
+#              - openid
+#              - profile
+#            client-name: client-be
+#          # Ejemplo prueba cliente BE
+#          prueba-cliente:
+#            provider: spring
+#            client-id: prueba-id
+#            client-secret: 12345
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://127.0.0.1:8090/authorized"
+#            scope:
+#              - openid
+#              - profile
+#            client-name: prueba-cliente          
         provider:
           spring:
             issuer-uri: "http://127.0.0.1:9000"          

@@ -30,12 +30,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
@@ -46,17 +40,10 @@
 		</dependency> 
 
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 
 		<!-- INI: Dependencias para trabajar con OAUTH2 -->
 		<!-- ########################################## -->
@@ -114,6 +101,22 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+
+		<!-- INI: Dependencia Aplicaciones -->
+		<!-- ############################# -->
+		<dependency>
+			<groupId>es.sport.buddies.entity.app</groupId>
+			<artifactId>SportBuddiesApp-Be-Entity</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<!-- FIN: Dependencia Aplicaciones -->
+		<!-- ############################# -->
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
 		</dependency>
 
 	</dependencies>

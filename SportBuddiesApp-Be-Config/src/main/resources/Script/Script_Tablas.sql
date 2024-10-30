@@ -381,7 +381,8 @@ INSERT INTO clientes_oauth (id_cliente_oauth,client_id,client_secret,nombre_clie
 VALUES
 (4,'gateway-app','$2a$10$.Ud6UXjF6ScEieX7erFVU.dWPYyfnhYSjbSqVRpRR4k2r68GVMQeO','client-be','client_secret_basic','refresh_token,authorization_code','http://127.0.0.1:8090/authorized,http://127.0.0.1:8090/login/oauth2/code/client-be','http://127.0.0.1:8090/logout','openid,profile',12,1),
 (5,'client-angular','$2a$10$3M0wg0e2LAKomzpTIjaJWOIKOjMFCRvpOinc6RG2WQhwNdIsMzjcu','client-angular','client_secret_basic','refresh_token,authorization_code','http://localhost:4200/authorize','http://127.0.0.1:8090/logout','openid,profile',12,1),
-(6,'prueba_id','$2a$10$5WBAhfQ/3gCWhuNyBFFYJ.FUS6mrGFfWJUM13K7KNwEG1hBo9wz4m','pureba_cliente','http://localhost:8090/prueba/oauth','authorization_code,refresh_token','http://localhost:8090/prueba/oauth,http://localhost:8090/prueba/','http://localhost:8090/prueba/redorect','openid,profile',12,12);
+(6, 'prueba-id', '$2a$10$.Ud6UXjF6ScEieX7erFVU.dWPYyfnhYSjbSqVRpRR4k2r68GVMQeO', 'pureba-cliente', 'client_secret_basic', 'refresh_token,authorization_code', 'http://127.0.0.1:8090/authorized,http://127.0.0.1:8090/login/oauth2/code/prueba-cliente', 'http://127.0.0.1:8090/logout', 'openid,profile', 12, 12);
+
 
 INSERT INTO codigo_verificacion (codigo, tiempo_expiracion, usuario_fk)
 VALUES ('ABC123', DATE_ADD(NOW(), INTERVAL 5 MINUTE),3);

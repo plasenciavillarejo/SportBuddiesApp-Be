@@ -1,5 +1,6 @@
 package es.sport.buddies.entity.app.models.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class ClientesOauthServiceImpl implements IClientesOauthService {
   @Transactional
   public void guardarClienteOauth(ClientesOauth clientesOauth) {
     clientesOauthDao.save(clientesOauth);
+  }
+
+  @Override
+  public List<ClientesOauth> findAll() {
+    return clientesOauthDao.findAll();
   }
   
 }
