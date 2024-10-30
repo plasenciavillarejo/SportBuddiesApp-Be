@@ -46,6 +46,6 @@ spring:
 #              - openid
 #              - profile
 #            client-name: prueba-cliente          
-        provider:
-          spring:
-            issuer-uri: "http://127.0.0.1:9000"          
+#        provider:
+#          spring:
+#            issuer-uri: "http://127.0.0.1:9000"          
