@@ -12,9 +12,15 @@ public class InicializacionApliGateway {
 	@Value("${pass.public.key}")
 	private String publicKey;
 
+	@Value("${sportbuddies.oauth}")
+	private String appSportBuddiesOauth;
+	
 	@PostConstruct
 	public void init() {		
-		ConstantesGateway.FICHERPEMPLUBLIKEY = publicKey;		
+		ConstantesGateway.FICHERPEMPLUBLIKEY = publicKey;
+		
+		ConstantesGateway.APPSPORTBUDDIOAUTH = appSportBuddiesOauth;
+				
 	}
 	
 }

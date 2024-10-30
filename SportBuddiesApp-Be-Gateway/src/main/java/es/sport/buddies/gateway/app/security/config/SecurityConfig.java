@@ -35,6 +35,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import es.sport.buddies.entity.app.models.entity.ClientesOauth;
 import es.sport.buddies.entity.app.models.service.IClientesOauthService;
+import es.sport.buddies.gateway.app.constantes.ConstantesGateway;
 import reactor.core.publisher.Mono;
 
 /**
@@ -133,9 +134,9 @@ public class SecurityConfig {
                 .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
                 .findFirst()
                 .orElse("http://default-redirect-uri.com"))
-            .authorizationUri("http://127.0.0.1:9000/oauth2/authorize")
-            .tokenUri("http://127.0.0.1:9000/oauth2/token")
-            .jwkSetUri("http://127.0.0.1:9000/.well-known/jwks.json")
+            .authorizationUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
+            .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))
+            .jwkSetUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/.well-known/jwks.json"))
             .build())
         .toList();
 
