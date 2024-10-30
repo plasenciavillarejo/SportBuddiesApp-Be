@@ -120,43 +120,45 @@ public class SecurityConfig {
   @Bean
   ReactiveClientRegistrationRepository clientRegistrationRepository() {
     List<ClientesOauth> clientRegis = clientOauthService.findAll();
-    List<ClientRegistration> listClient = new ArrayList<>();
-    clientRegis.forEach(
-        cli -> listClient.add(ClientRegistration.withRegistrationId(cli.getClientName())
+
+    List<ClientRegistration> listClient = clientRegis.stream()
+        .map(cli -> ClientRegistration.withRegistrationId(cli.getClientName())
             .clientId(cli.getClientId())
             .clientSecret(cli.getClientSecret())
             .clientName(cli.getClientName())
             .scope(Arrays.asList(cli.getScopes().split(",")))
             .clientAuthenticationMethod(new ClientAuthenticationMethod(cli.getAuthenticationMethods()))
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .redirectUri("http://127.0.0.1:8090/authorized")
+            .redirectUri(Arrays.stream(cli.getRedirectUris().split(","))
+                .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
+                .findFirst()
+                .orElse("http://default-redirect-uri.com"))
             .authorizationUri("http://127.0.0.1:9000/oauth2/authorize")
             .tokenUri("http://127.0.0.1:9000/oauth2/token")
-            .jwkSetUri("http://127.0.0.1:9000/.well-known/jwks.json").build()));
-    return new InMemoryReactiveClientRegistrationRepository(listClient);
-    //return new CustomReactiveClientRegistrationRepository(clientOauthService);
+            .jwkSetUri("http://127.0.0.1:9000/.well-known/jwks.json")
+            .build())
+        .toList();
+
+    // Creamos repositorio reactivo
+    return registrationId -> Mono.justOrEmpty(listClient.stream()
+        .filter(clientRegistration -> clientRegistration.getRegistrationId().equals(registrationId))
+        .findFirst());
   }
 	
   @Bean
   ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
-          ReactiveClientRegistrationRepository clientRegistrationRepository,
-          ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+      ReactiveClientRegistrationRepository clientRegistrationRepository,
+      ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
 
-      ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
-              ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
-                      .authorizationCode()
-                      .refreshToken()
-                      .clientCredentials()
-                      .password()
-                      .build();
+    ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider = ReactiveOAuth2AuthorizedClientProviderBuilder
+        .builder().authorizationCode().refreshToken().clientCredentials().build();
 
-      DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager =
-              new DefaultReactiveOAuth2AuthorizedClientManager(
-                      clientRegistrationRepository, authorizedClientRepository);
+    DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager = new DefaultReactiveOAuth2AuthorizedClientManager(
+        clientRegistrationRepository, authorizedClientRepository);
 
-      authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
-      return authorizedClientManager;
+    return authorizedClientManager;
   }
 
   
