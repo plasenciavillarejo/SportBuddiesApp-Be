@@ -62,7 +62,7 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   @Override
   @Transactional(readOnly = true)
   public ReservaUsuario findById(long idReservaUsuario) {
-    return reservaUsuarioDao.findById(idReservaUsuario).orElse(null);
+    return reservaUsuarioDao.findById(idReservaUsuario);
   }
 
   @Override

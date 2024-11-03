@@ -1,10 +1,14 @@
 package es.sport.buddies.main.app.service;
 
+import java.util.Map;
+
 import es.sport.buddies.entity.app.dto.UsuarioDto;
 import es.sport.buddies.main.app.exceptions.UsuarioException;
 
 public interface IUsuarioMainService {
 
   public void crearNuevoUsuario(UsuarioDto usuarioDto) throws UsuarioException;
+ 
+  public Map<String, String> confirmacionPago(long idReservaUsuario,Map<String, String> mapResponse);
   
 }

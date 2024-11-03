@@ -1,6 +1,7 @@
 package es.sport.buddies.main.app.service.impl;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.dto.UsuarioDto;
-import es.sport.buddies.entity.app.models.entity.Role;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.Usuario;
-import es.sport.buddies.entity.app.models.entity.UsuarioInRol;
-import es.sport.buddies.entity.app.models.entity.UsuarioInRolPk;
+import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IRoleService;
-import es.sport.buddies.entity.app.models.service.IUsuarioInRolService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.convert.map.struct.IUsuarioMapStruct;
@@ -34,9 +33,9 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
   
   @Autowired
   private IRoleService roleServie;
-  
+    
   @Autowired
-  private IUsuarioInRolService usuarioInRolService;
+  private IReservaUsuarioService reservaUsuarioService;
   
   @Override
   public void crearNuevoUsuario(UsuarioDto usuarioDto) throws UsuarioException {
@@ -76,5 +75,22 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
       throw new UsuarioException(e);
     }
   }
- 
+
+  /**
+   * Función encargada de confirmar la rececpción del pago
+   */
+  @Override
+  public Map<String, String> confirmacionPago(long idReservaUsuario, Map<String, String> mapResponse) {
+    LOGGER.info("Se procede a obtener los datos de la ReservaUsuario: ");
+    ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
+    if (res != null) {
+      LOGGER.info("Reserva obtenida correctamente, se procede a confirmar el pago");
+      reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario);
+      mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
+    } else {
+      mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");
+    }
+    return mapResponse;
+  }
+
 }

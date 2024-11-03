@@ -142,7 +142,7 @@ public class PaypalController {
             }
           }
         }));        
-        // Una vez que se ha pagado la reserva, se actuliza la tabla
+        // Una vez que se ha pagado la reserva, se actualiza la tabla
         reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario);
         mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
       } else {

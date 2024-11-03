@@ -158,7 +158,7 @@ public class SecurityConfig {
         .anyRequest().authenticated())
         .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
-            .successHandler(new DobleFactorSuccessHandler())
+            //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))

@@ -21,7 +21,7 @@ import es.sport.buddies.entity.app.models.entity.ClientesOauth;
 import es.sport.buddies.entity.app.models.service.IClientesOauthService;
 
 @Service
-public class ClienteOauthServiceImpl implements RegisteredClientRepository{
+public class ClienteOauthServiceImpl implements RegisteredClientRepository {
 
   @Autowired
   private IClientesOauthService clientOauthService;
