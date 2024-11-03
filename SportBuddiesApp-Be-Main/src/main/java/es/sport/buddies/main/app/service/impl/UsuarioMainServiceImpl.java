@@ -76,21 +76,4 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
     }
   }
 
-  /**
-   * Función encargada de confirmar la rececpción del pago
-   */
-  @Override
-  public Map<String, String> confirmacionPago(long idReservaUsuario, Map<String, String> mapResponse) {
-    LOGGER.info("Se procede a obtener los datos de la ReservaUsuario: ");
-    ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
-    if (res != null) {
-      LOGGER.info("Reserva obtenida correctamente, se procede a confirmar el pago");
-      reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario);
-      mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
-    } else {
-      mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");
-    }
-    return mapResponse;
-  }
-
 }

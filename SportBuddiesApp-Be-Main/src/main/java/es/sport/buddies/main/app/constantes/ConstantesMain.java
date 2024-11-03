@@ -67,6 +67,10 @@ public class ConstantesMain {
 	
 	public static final String REFUND = "refund";
 	
+	public static final String METODOPAGOPAYPAL = "Paypal";
+	
+	public static final String METODOPAGOEFECTIVO = "Efectivo";
+	
 }
 
 

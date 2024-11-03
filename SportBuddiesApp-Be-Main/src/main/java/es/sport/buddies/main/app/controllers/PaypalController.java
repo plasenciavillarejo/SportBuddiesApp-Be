@@ -142,8 +142,8 @@ public class PaypalController {
             }
           }
         }));        
-        // Una vez que se ha pagado la reserva, se actualiza la tabla
-        reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario);
+        // Una vez que se ha pagado la reserva, se actualiza la tabla y se indica el metodo de pago con el que se ha realiado 'Paypal'
+        reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario, ConstantesMain.METODOPAGOPAYPAL);
         mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
       } else {
         mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");

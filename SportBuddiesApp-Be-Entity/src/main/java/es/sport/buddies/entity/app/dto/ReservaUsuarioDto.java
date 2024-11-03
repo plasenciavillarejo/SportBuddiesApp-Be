@@ -25,6 +25,8 @@ public class ReservaUsuarioDto implements Serializable {
 
   private boolean abonado;
   
+  private String metodoPago;
+  
   private static final long serialVersionUID = -3497616209985551630L;
 
 }

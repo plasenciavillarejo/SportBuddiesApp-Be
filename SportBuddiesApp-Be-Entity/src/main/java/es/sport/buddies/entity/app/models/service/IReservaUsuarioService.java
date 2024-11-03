@@ -20,7 +20,7 @@ public interface IReservaUsuarioService {
  
   public void borrarReservaActividad(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   
-  public void actualizarAbonoReserva(@Param("idReserva") long idReserva);
+  public void actualizarAbonoReserva(@Param("idReserva") long idReserva, @Param("metodoPago") String metodoPago);
  
   public ReservaUsuario validarAbonoReserva(@Param("idUsuario") long idUsuario, @Param("idReserva") long idReserva);
   

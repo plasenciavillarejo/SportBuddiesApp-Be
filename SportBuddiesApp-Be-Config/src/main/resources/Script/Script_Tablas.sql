@@ -91,6 +91,7 @@ CREATE TABLE reservas_usuario (
 	deporte_reserva_fk bigint NOT NULL,
 	reserva_actividad_fk bigint NOT NULL,
 	abonado tinyint(1) NOT NULL,
+	metodo_pago VARCHAR(100),
 	PRIMARY KEY (`id_reserva`),
     FOREIGN KEY (usuario_reserva_fk) REFERENCES usuarios(id_usuario),
 	FOREIGN KEY (deporte_reserva_fk) REFERENCES deportes(id_deporte),

@@ -49,8 +49,8 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
 
   @Override
   @Transactional
-  public void actualizarAbonoReserva(long idReserva) {
-    reservaUsuarioDao.actualizarAbonoReserva(idReserva);
+  public void actualizarAbonoReserva(long idReserva, String metodoPago) {
+    reservaUsuarioDao.actualizarAbonoReserva(idReserva, metodoPago);
   }
 
   @Override

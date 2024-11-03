@@ -60,6 +60,9 @@ public class ReservaUsuario implements Serializable {
   @Column(name = "abonado")
   private boolean abonado;
   
+  @Column(name = "metodo_pago", length = 100)
+  private String metodoPago;
+  
   private static final long serialVersionUID = 4230007596971428886L;
 
 }

@@ -9,6 +9,5 @@ public interface IUsuarioMainService {
 
   public void crearNuevoUsuario(UsuarioDto usuarioDto) throws UsuarioException;
  
-  public Map<String, String> confirmacionPago(long idReservaUsuario,Map<String, String> mapResponse);
   
 }
