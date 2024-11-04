@@ -221,7 +221,7 @@ CREATE TABLE codigo_verificacion (
 
 CREATE TABLE PAGO_TARJETA( 
 	id_pago_tarjeta BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	id_devolucion BIGINT NOT NULL COMMENT 'El id que es generado por la aplicacion stripe para realizar las devoluciones',
+	id_devolucion VARCHAR(100) NOT NULL COMMENT 'El id que es generado por la aplicacion stripe para realizar las devoluciones',
 	moneda VARCHAR(10) NOT NULL,
 	fecha_cobro DATE COMMENT 'Fecha en la que se realizao el cobro',
 	usuario_fk BIGINT COMMENT 'ID del usuario que realizar el pago',

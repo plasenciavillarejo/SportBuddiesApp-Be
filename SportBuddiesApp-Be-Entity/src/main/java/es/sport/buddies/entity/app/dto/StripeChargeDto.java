@@ -15,6 +15,8 @@ public class StripeChargeDto implements Serializable {
   
   private String descripcion;
   
+  private long idUsuario;
+  
   private static final long serialVersionUID = 366227233608321036L;
 
 }

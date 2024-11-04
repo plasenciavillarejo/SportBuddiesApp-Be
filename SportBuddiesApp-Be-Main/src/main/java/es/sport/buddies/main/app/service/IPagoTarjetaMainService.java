@@ -7,7 +7,7 @@ import com.stripe.exception.StripeException;
 import es.sport.buddies.entity.app.dto.StripeChargeDto;
 import es.sport.buddies.main.app.exceptions.PagoTarjetaException;
 
-public interface IPagoTarjetaService {
+public interface IPagoTarjetaMainService {
  
   public Map<String, String> realizarCargo(StripeChargeDto stripeChargeDto) throws PagoTarjetaException, StripeException;
   

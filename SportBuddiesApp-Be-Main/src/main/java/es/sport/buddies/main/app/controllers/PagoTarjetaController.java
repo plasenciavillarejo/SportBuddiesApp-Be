@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentIntentCollection;
-import com.stripe.param.PaymentIntentListParams;
 
 import es.sport.buddies.entity.app.dto.StripeChargeDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PagoTarjetaException;
-import es.sport.buddies.main.app.service.IPagoTarjetaService;
+import es.sport.buddies.main.app.service.IPagoTarjetaMainService;
 
 
 @RestController
@@ -30,7 +28,7 @@ import es.sport.buddies.main.app.service.IPagoTarjetaService;
 public class PagoTarjetaController {
 
   @Autowired
-  private IPagoTarjetaService pagoTarjetaService;
+  private IPagoTarjetaMainService pagoTarjetaService;
 
   @Autowired
   @Qualifier("externalWebClient")
@@ -58,7 +56,7 @@ public class PagoTarjetaController {
     return new ResponseEntity<>(devolverPago, HttpStatus.OK);
   }
 
-
+  // PLASENCIA - FALTA POR REVISAR
   @GetMapping(value = "/listar/pagos")
   public ResponseEntity<Object> listarPagos(@RequestParam long numeroLimite) throws PagoTarjetaException{
     PaymentIntentCollection paymentIntents = null;
