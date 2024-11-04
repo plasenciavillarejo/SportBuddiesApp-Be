@@ -33,7 +33,7 @@ public class SportBuddieMainExceptionHandler {
         .mensaje(separaCadena[1])
         .causa(HttpStatus.CONFLICT.getReasonPhrase())
         .build();
-    return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(avisoErro, HttpStatus.CONFLICT);
   }
    
   @ExceptionHandler(CancelarReservaException.class)
@@ -44,7 +44,7 @@ public class SportBuddieMainExceptionHandler {
         .mensaje(separaCadena[2])
         .causa(HttpStatus.CONFLICT.getReasonPhrase())
         .build();
-    return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(avisoErro, HttpStatus.CONFLICT);
   }
     
   @ExceptionHandler(PaypalException.class)
@@ -66,6 +66,17 @@ public class SportBuddieMainExceptionHandler {
         .codigo(HttpStatus.CONFLICT.value())
         .mensaje(separaCadena[1])
         .causa(HttpStatus.CONFLICT.getReasonPhrase())
+        .build();
+    return new ResponseEntity<>(avisoErro, HttpStatus.CONFLICT);
+  }
+  
+  @ExceptionHandler(PagoTarjetaException.class)
+  public ResponseEntity<Object> handlePagoTarjetaExceptions(PagoTarjetaException ex) {
+    String [] separaCadena = ex.getCause() != null ? ex.getCause().toString().split(":") : null;
+    AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
+        .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .mensaje(separaCadena[1])
+        .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
         .build();
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
   }

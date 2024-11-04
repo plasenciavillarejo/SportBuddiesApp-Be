@@ -71,6 +71,12 @@ public class ReservaUsuarioController {
     }
   }
   
+  /**
+   * Método encargado de realizar el pago por Bizúm o tarjeta
+   * @param idReservaUsuario
+   * @return
+   * @throws UsuarioException
+   */
   @PostMapping(value = "/confirmacion/pago/{idReservaUsuario}")
   public ResponseEntity<Map<String, String>> confirmacionPago(@PathVariable("idReservaUsuario") long idReservaUsuario) throws UsuarioException {
     Map<String, String> mapResponse = new HashMap<>();

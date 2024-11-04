@@ -215,6 +215,27 @@ CREATE TABLE codigo_verificacion (
     constraint fk_codigo_verificacion_usuario FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario)
 );
 
+-- #################### --
+-- ### PAGO_TARJETA ### --
+-- #################### --
+
+CREATE TABLE PAGO_TARJETA( 
+	id_pago_tarjeta BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	id_devolucion BIGINT NOT NULL COMMENT 'El id que es generado por la aplicacion stripe para realizar las devoluciones',
+	moneda VARCHAR(10) NOT NULL,
+	fecha_cobro DATE COMMENT 'Fecha en la que se realizao el cobro',
+	usuario_fk BIGINT COMMENT 'ID del usuario que realizar el pago',
+	fecha_devolucion DATE COMMENT 'Fecha en la que se realizao la devolucion',
+	reembolsado tinyint(1),
+	constraint fk_usuario_pago_tarjeta FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario)
+);
+
+
+
+
+
+
+
 -- ############## --
 -- ### INSERT ### --
 -- ############## --

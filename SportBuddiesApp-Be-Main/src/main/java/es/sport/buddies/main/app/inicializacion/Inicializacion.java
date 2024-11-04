@@ -42,6 +42,9 @@ public class Inicializacion {
   @Value("${paypal.url.estado}")
   private String urlConfirmTransaccionPaypal;
   
+  @Value("${stripe.secret.key}")
+  private String stripeSecretKey;
+  
 	@PostConstruct
 	public void inicializacion() {
 	  
@@ -60,6 +63,8 @@ public class Inicializacion {
 	  ConstantesMain.URLTOKENAPIPAYPAL = urlTokenApiPaypal;
 	 	  
 	  ConstantesMain.URLESTADOTRANSACCIONPAYPAL = urlConfirmTransaccionPaypal;
+	  	  
+	  ConstantesMain.STRIPESECRETKEY = stripeSecretKey;
 	  
 		String password = "12345";
 		
