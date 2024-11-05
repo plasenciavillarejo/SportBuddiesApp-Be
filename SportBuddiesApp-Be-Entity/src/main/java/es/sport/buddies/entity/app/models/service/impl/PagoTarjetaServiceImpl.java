@@ -34,4 +34,10 @@ public class PagoTarjetaServiceImpl implements IPagoTarjetaService {
     pagoTarjetaDao.actualizarPagoReembolso(fechaDevolucion, idDevolucion);
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public PagoTarjeta findByReservaUsuario_IdReserva(long idReservaUsuario) {
+    return pagoTarjetaDao.findByReservaUsuario_IdReserva(idReservaUsuario);
+  }
+
 }

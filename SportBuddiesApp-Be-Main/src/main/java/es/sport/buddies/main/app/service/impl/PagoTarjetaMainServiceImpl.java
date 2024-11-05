@@ -69,6 +69,7 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
         .usuario(Usuario.builder()
             .idUsuario(stripeChargeDto.getIdUsuario())
             .build())
+        .reservaUsuario(ReservaUsuario.builder().idReserva(stripeChargeDto.getIdReservaUsuario()).build())
         .fechaDevolucion(null)
         .reembolsado(false)
         .build(); 
@@ -118,11 +119,13 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
     if(pagoTarjeta != null && !pagoTarjeta.isReembolsado() && pagoTarjeta.getFechaDevolucion() == null) {
       // Creación del reembolso
       RefundCreateParams params = RefundCreateParams.builder()
-          .setPaymentIntent(paymentIntentId) // También puedes usar .setCharge(chargeId) si tienes el charge_id
+          .setPaymentIntent(paymentIntentId) // También puedo usar .setCharge(chargeId) si recibo el charge_id
           .build();
 
       refund = Refund.create(params);
       pagoTarjeta.setFechaDevolucion(LocalDate.now());
+      // Borramos el id de la reserva ya que se borrará de la tabla ReservaUsuario y no existirá
+      pagoTarjeta.setReservaUsuario(null);
       actualizarPagoTarjeta(pagoTarjeta.getFechaDevolucion(), paymentIntentId);
     }
 

@@ -18,4 +18,6 @@ public interface IPagoTarjetaDao extends JpaRepository<PagoTarjeta, Long> {
       + " where idDevolucion = :idDevolucion")
   public void actualizarPagoReembolso(@Param("fechaDevolucion") LocalDate fechaDevolucion, @Param("idDevolucion") String idDevolucion);
   
+  public PagoTarjeta findByReservaUsuario_IdReserva(@Param("idReservaUsuario") long idReservaUsuario);
+  
 }

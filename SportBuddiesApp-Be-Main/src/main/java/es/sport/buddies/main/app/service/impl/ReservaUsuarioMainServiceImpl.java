@@ -18,8 +18,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
+import es.sport.buddies.entity.app.models.entity.PagoTarjeta;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
+import es.sport.buddies.entity.app.models.service.IPagoTarjetaService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
@@ -47,6 +49,9 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   @Qualifier("externalWebClient")
   private WebClient.Builder webClient;
    
+  @Autowired
+  private IPagoTarjetaService pagoTarjetaService;
+  
   @Override
   public List<ReservaUsuarioDto> listarReservas(LocalDate fechaReserva, long idUsuario, boolean historial) throws ReservaException {
     List<ReservaUsuarioDto> res = null;
@@ -90,10 +95,15 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
           usuPlanPago.getIdUsuarioPlanPago());
       LOGGER.info("Reserva restante actualizada correctamente");
       
-      if(resUsuario.isAbonado()) {
+      if(resUsuario.isAbonado() && resUsuario.getMetodoPago().equalsIgnoreCase(ConstantesMain.METODOPAGOPAYPAL)) {
         LOGGER.info("Se procede a devolver el pago");
-        devolverPago(idReservaUsuario);
+        devolverPagoPaypal(idReservaUsuario);
         LOGGER.info("Pago devuelto exitosamente");
+      } else if(resUsuario.isAbonado() && resUsuario.getMetodoPago().equalsIgnoreCase(ConstantesMain.METODOPAGOTARJETA)){
+        PagoTarjeta tarjeta = pagoTarjetaService.findByReservaUsuario_IdReserva(resUsuario.getIdReserva()); 
+        if(tarjeta != null) {
+          devolverPagoTarjeta(tarjeta.getIdDevolucion());
+        }
       }
       
       LOGGER.info("Se procede a borrar la reserva con ID: {}", idReservaUsuario);
@@ -109,7 +119,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
    * Función encargada de comunicarse con el endpoint de paypal para devolver el pago
    * @param idReservaUsuario
    */
-  public void devolverPago(long idReservaUsuario) {
+  private void devolverPagoPaypal(long idReservaUsuario) {
     URI uri = UriComponentsBuilder.fromUriString(ConstantesMain.SPORTBUDDIESGTW.concat("/api/main")).path("/paypal/devolver/pago")
         .queryParam("idReservaUsuario", idReservaUsuario)
         .build().toUri();
@@ -122,6 +132,23 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
     .block();
   }
 
+  /**
+   * Función encargada de comunicarse con el endpoint de pago-tarjeta para devolver el pago
+   * @param paymentIntentId
+   */
+  private void devolverPagoTarjeta(String paymentIntentId) {
+    URI uri = UriComponentsBuilder.fromUriString(ConstantesMain.SPORTBUDDIESGTW.concat("/api/main")).path("/tarjeta/devolver/pago")
+        .queryParam("paymentIntentId", paymentIntentId)
+        .build().toUri();
+    webClient.build().post().uri(uri)
+    .headers(headers -> headers.setBearerAuth(ConstantesMain.TOKEN)).retrieve()
+    .bodyToMono(Void.class)
+    .doOnSubscribe(
+        subscription -> LOGGER.info("Sending request to URI with paymentIntentId: {}", paymentIntentId))
+    .doOnError(error -> LOGGER.error("Error: {}", error.getMessage(), error.getCause()))
+    .block();
+  }
+  
   @Override
   public double obtenerPrecioActividad(long idReservaUsuario) throws CancelarReservaException {
     return reservaUsuarioService.findByIdReserva(idReservaUsuario);

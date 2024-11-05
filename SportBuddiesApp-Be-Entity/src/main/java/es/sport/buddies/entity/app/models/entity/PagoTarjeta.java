@@ -41,16 +41,20 @@ public class PagoTarjeta implements Serializable {
   @Column(name = "fecha_cobro")
   private LocalDate fechaCobro;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "usuario_fk")
-  private Usuario usuario;
-  
   @Column(name = "fecha_devolucion")
   private LocalDate fechaDevolucion;
   
   @Column(name = "reembolsado")
   private boolean reembolsado;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "usuario_fk")
+  private Usuario usuario;
     
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "reserva_usuario_fk")
+  private ReservaUsuario reservaUsuario;
+  
   private static final long serialVersionUID = 8573793276849355159L;
   
 }

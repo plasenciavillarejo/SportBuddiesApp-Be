@@ -224,9 +224,11 @@ CREATE TABLE PAGO_TARJETA(
 	id_devolucion VARCHAR(100) NOT NULL COMMENT 'El id que es generado por la aplicacion stripe para realizar las devoluciones',
 	moneda VARCHAR(10) NOT NULL,
 	fecha_cobro DATE COMMENT 'Fecha en la que se realizao el cobro',
-	usuario_fk BIGINT COMMENT 'ID del usuario que realizar el pago',
 	fecha_devolucion DATE COMMENT 'Fecha en la que se realizao la devolucion',
 	reembolsado tinyint(1),
+	usuario_fk BIGINT COMMENT 'ID del usuario que realizar el pago',
+	reserva_usuario_fk BIGINT COMMENT 'ID de la reservas del usuario inscrita',
+	constraint fk_reserva_usuario_pago_tarjeta FOREIGN KEY (reserva_usuario_fk) REFERENCES RESERVAS_USUARIO(id_reserva),
 	constraint fk_usuario_pago_tarjeta FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario)
 );
 
