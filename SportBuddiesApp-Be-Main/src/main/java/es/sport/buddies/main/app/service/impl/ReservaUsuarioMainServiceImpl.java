@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -127,25 +126,5 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
   public double obtenerPrecioActividad(long idReservaUsuario) throws CancelarReservaException {
     return reservaUsuarioService.findByIdReserva(idReservaUsuario);
   }
-
-
-  /**
-   * Función encargada de confirmar la rececpción del pago
-   */
-  @Override
-  public Map<String, String> confirmacionPago(long idReservaUsuario, Map<String, String> mapResponse) {
-    LOGGER.info("Se procede a obtener los datos de la ReservaUsuario: ");
-    ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
-    if (res != null) {
-      // PLASENCIA - Cuando se desea pagar en mano se debe mantener algún check para avisar antes de la hora del partido que debe pagar. Falta lógica de negocio
-      LOGGER.info("Reserva obtenida correctamente, se procede a confirmar el pago");
-      reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario, ConstantesMain.METODOPAGOEFECTIVO);
-      mapResponse.put(ConstantesMain.SUCCESS, "Pago realizado correctamente");
-    } else {
-      mapResponse.put(ConstantesMain.ERRROR, "Pago incorrecto");
-    }
-    return mapResponse;
-  }
-  
-  
+   
 }

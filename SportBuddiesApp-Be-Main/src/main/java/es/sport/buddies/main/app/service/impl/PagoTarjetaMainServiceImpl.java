@@ -17,8 +17,10 @@ import com.stripe.param.RefundCreateParams;
 
 import es.sport.buddies.entity.app.dto.StripeChargeDto;
 import es.sport.buddies.entity.app.models.entity.PagoTarjeta;
+import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.service.IPagoTarjetaService;
+import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PagoTarjetaException;
 import es.sport.buddies.main.app.service.IPagoTarjetaMainService;
@@ -30,6 +32,9 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
 
   @Autowired
   private IPagoTarjetaService pagoTarjetaService;
+
+  @Autowired
+  private IReservaUsuarioService reservaUsuarioService;
   
   public PagoTarjetaMainServiceImpl() {
     Stripe.apiKey = ConstantesMain.STRIPESECRETKEY;
@@ -42,7 +47,7 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
     LOGGER.info("Se procede a generar el PaymentIntentCreateParams con los datos de la tarjeta");
     PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
         // Convertimos el monto a centavos ya que Stripe lo proceso de está forma
-        .setAmount(stripeChargeDto.getCantidad() * 100)
+        .setAmount((long) (stripeChargeDto.getCantidad() * 100))
         .setCurrency(stripeChargeDto.getDivisa())
         .setPaymentMethod(stripeChargeDto.getMetodoPago())
         .setConfirm(true)
@@ -54,7 +59,7 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
                 .setAllowRedirects(PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects.NEVER)
                 .build())
         .build();
-    
+
     PaymentIntent paymentIntent = PaymentIntent.create(params);
     
     PagoTarjeta pagoTarjeta = PagoTarjeta.builder()
@@ -70,6 +75,8 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
     
     guardarPago(pagoTarjeta);
 
+    actualizarReservaUsuario(stripeChargeDto.getIdReservaUsuario());
+    
     return Map.of(
         "clientSecret", paymentIntent.getClientSecret());
   }
@@ -89,6 +96,21 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
     }
   }
 
+  /**
+   * Obtiene el idReservaUsuario para actualizar el registro en la base de datos
+   * @param idUsuario
+   * @throws PagoTarjetaException
+   */
+  private void actualizarReservaUsuario(long idReservaUsuario) throws PagoTarjetaException {
+    ReservaUsuario res = reservaUsuarioService.findById(idReservaUsuario);
+    if(res != null) {
+      res.setAbonado(true);
+      reservaUsuarioService.actualizarAbonoReserva(idReservaUsuario, ConstantesMain.METODOPAGOTARJETA);
+    } else {
+      throw new PagoTarjetaException("La reserva con ID: " + idReservaUsuario + " no existe");
+    }
+  }
+  
   @Override
   public Map<String, String> devolver(String paymentIntentId) throws PagoTarjetaException, StripeException {    
     PagoTarjeta pagoTarjeta = pagoTarjetaService.findByIdDevolucion(paymentIntentId);

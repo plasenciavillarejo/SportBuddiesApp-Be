@@ -69,7 +69,7 @@ public class ConstantesMain {
 	
 	public static final String METODOPAGOPAYPAL = "Paypal";
 	
-	public static final String METODOPAGOEFECTIVO = "Efectivo";
+	public static final String METODOPAGOTARJETA = "Tarjeta";
 		
 	public static String STRIPESECRETKEY = "SECRETKEY";
 	

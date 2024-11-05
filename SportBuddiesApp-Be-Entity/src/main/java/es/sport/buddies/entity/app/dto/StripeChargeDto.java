@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class StripeChargeDto implements Serializable {
  
-  private long cantidad;
+  private double cantidad;
  
   private String divisa;
   
@@ -16,6 +16,8 @@ public class StripeChargeDto implements Serializable {
   private String descripcion;
   
   private long idUsuario;
+  
+  private long idReservaUsuario;
   
   private static final long serialVersionUID = 366227233608321036L;
 

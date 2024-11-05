@@ -1,9 +1,7 @@
 package es.sport.buddies.main.app.controllers;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +20,6 @@ import es.sport.buddies.entity.app.dto.ReservaUsuarioDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.CancelarReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
-import es.sport.buddies.main.app.exceptions.UsuarioException;
 import es.sport.buddies.main.app.service.IReservaUsuarioMainService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -69,24 +65,6 @@ public class ReservaUsuarioController {
     } catch (Exception e) {
       throw new CancelarReservaException(e);
     }
-  }
-  
-  /**
-   * Método encargado de realizar el pago por Bizúm o tarjeta
-   * @param idReservaUsuario
-   * @return
-   * @throws UsuarioException
-   */
-  @PostMapping(value = "/confirmacion/pago/{idReservaUsuario}")
-  public ResponseEntity<Map<String, String>> confirmacionPago(@PathVariable("idReservaUsuario") long idReservaUsuario) throws UsuarioException {
-    Map<String, String> mapResponse = new HashMap<>();
-    try {
-      LOGGER.info("Recibiendo el IdReservaUsuario: {}", idReservaUsuario);
-      reservaUsuarioService.confirmacionPago(idReservaUsuario,mapResponse);
-    } catch (Exception e) {
-      throw new UsuarioException(e);
-    }
-    return new ResponseEntity<>(mapResponse,HttpStatus.OK);
   }
   
 }
