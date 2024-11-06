@@ -134,7 +134,12 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
         "status", refund.getStatus());
   }
 
-  
+  /**
+   * Funcíon encargada de actualizar el pago de tarjeta
+   * @param fechaReembolso
+   * @param paymentIntentId
+   * @throws PagoTarjetaException
+   */
   private void actualizarPagoTarjeta(LocalDate fechaReembolso, String paymentIntentId) throws PagoTarjetaException {
     try {
       LOGGER.info("Se procede a actualizar la fecha de reembolso");

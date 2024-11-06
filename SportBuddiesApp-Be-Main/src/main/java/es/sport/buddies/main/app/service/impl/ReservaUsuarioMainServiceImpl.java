@@ -80,8 +80,8 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
         } else {
           localDateReserva = LocalDate.ofInstant(resUsuario.getFechaReserva().toInstant(), ZoneId.systemDefault()); 
         }
-        if(localDateReserva.isEqual(LocalDate.now())) {
-          throw new CancelarReservaException("Lo sentimos, no se puede cancelar la reserva el mismo día.");
+        if(localDateReserva.isEqual(LocalDate.now()) || localDateReserva.isEqual(LocalDate.now().plusDays(1))) {
+          throw new CancelarReservaException("Lo sentimos, no se puede cancelar la reserva el mismo día o el día antes de la actividad.");
         }
       }
       
