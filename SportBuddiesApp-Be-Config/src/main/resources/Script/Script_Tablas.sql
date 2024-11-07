@@ -11,7 +11,13 @@ CREATE TABLE `usuarios` (
   `enabled` tinyint(1) NOT NULL,
   `apellido` varchar(50) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
-  `url_imagen` VARCHAR(255)
+  `url_imagen` VARCHAR(255),
+  `direccion` VARCHAR(255),
+  `provincia` VARCHAR(255),
+  `municipio` VARCHAR(255),
+  `codigo_postal` VARCHAR(5),
+  `pais` VARCHAR(255), 
+  `numero_telefono` VARCHAR(9),   
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `idusuarios_UNIQUE` (`id_usuario`),
   UNIQUE KEY `email_UNIQUE` (`email`)

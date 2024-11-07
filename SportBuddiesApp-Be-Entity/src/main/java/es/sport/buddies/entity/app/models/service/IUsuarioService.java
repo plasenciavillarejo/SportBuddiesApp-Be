@@ -16,4 +16,8 @@ public interface IUsuarioService {
 	
 	public void guardarUsuario(Usuario usuario);
 	
+  public void actualizarUsuario(@Param("direccion") String direccion, @Param("provincia") String provincia, @Param("municipio") String municipio,
+      @Param("codigoPostal") String codigoPostal, @Param("pais") String pais, @Param("numeroTelefono") String numeroTelefono,
+      @Param("idUsuario") long idUsuario);
+	
 }

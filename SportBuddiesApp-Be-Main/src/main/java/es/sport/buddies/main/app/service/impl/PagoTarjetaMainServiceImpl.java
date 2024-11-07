@@ -51,6 +51,8 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
         .setCurrency(stripeChargeDto.getDivisa())
         .setPaymentMethod(stripeChargeDto.getMetodoPago())
         .setConfirm(true)
+        // Agregar el correo de envio del recibo una vez que ha sido cobrado
+        //.setReceiptEmail(null)
         .setDescription(stripeChargeDto.getDescripcion())
         //.setReturnUrl("front-angular para devolver el retorno")
         .setAutomaticPaymentMethods(

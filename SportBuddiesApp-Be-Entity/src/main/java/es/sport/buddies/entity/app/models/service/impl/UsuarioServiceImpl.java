@@ -40,4 +40,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
     usuarioDao.save(usuario);
   }
 
+  @Override
+  @Transactional
+  public void actualizarUsuario(String direccion, String provincia, String municipio, String codigoPostal, String pais,
+      String numeroTelefono, long idUsuario) {
+    usuarioDao.actualizarUsuario(direccion, provincia, municipio, codigoPostal, pais, numeroTelefono, idUsuario);
+  }
+
 }

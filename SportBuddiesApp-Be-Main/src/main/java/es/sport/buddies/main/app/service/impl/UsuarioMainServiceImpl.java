@@ -1,7 +1,6 @@
 package es.sport.buddies.main.app.service.impl;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.dto.UsuarioDto;
-import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.Usuario;
-import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
 import es.sport.buddies.entity.app.models.service.IRoleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
@@ -33,9 +30,6 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
   
   @Autowired
   private IRoleService roleServie;
-    
-  @Autowired
-  private IReservaUsuarioService reservaUsuarioService;
   
   @Override
   public void crearNuevoUsuario(UsuarioDto usuarioDto) throws UsuarioException {
@@ -54,11 +48,9 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
     usuarioDto.setPassword(bCryptPass.encode(usuarioDto.getPassword()));
     usuario = IUsuarioMapStruct.mapper.crearUsuarioEntity(usuarioDto);
     usuario.setRoles(Arrays.asList(roleServie.findByNombreRol("USER")));
-    usuario.setEnabled(true);
-    
+    usuario.setEnabled(true);    
     // Al guardar al usario, se almacena en la tabla UsuarioInRol su relación entre usuario y el rol
-    guardarUsuario(usuario);
-    
+    guardarUsuario(usuario);    
   }
 
   /**
@@ -74,6 +66,23 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
     } catch (Exception e) {
       throw new UsuarioException(e);
     }
+  }
+
+  @Override
+  public void actualizarUsuario(UsuarioDto usuarioDto) throws UsuarioException {
+    try {
+       LOGGER.info("Actualizando usuario");
+       usuariosService.actualizarUsuario(usuarioDto.getDireccion(), usuarioDto.getProvincia(), 
+           usuarioDto.getMunicipio(), usuarioDto.getCodigoPostal(), usuarioDto.getPais(), usuarioDto.getNumeroTelefono(), usuarioDto.getIdUsuario());
+       LOGGER.info("Usuario actualizado exitosamente");
+    } catch (Exception e) {
+      throw new UsuarioException(e);
+    }
+  }
+
+  @Override
+  public UsuarioDto localizarUsuario(long idUsuario) throws UsuarioException {
+    return IUsuarioMapStruct.mapper.usuarioToUsuarioDto(usuariosService.findById(idUsuario).orElse(null));
   }
 
 }

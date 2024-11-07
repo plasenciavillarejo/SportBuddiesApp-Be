@@ -13,4 +13,6 @@ public interface IUsuarioMapStruct {
   
   public Usuario crearUsuarioEntity(UsuarioDto usuarioDto);
   
+  public UsuarioDto usuarioToUsuarioDto(Usuario usuario);
+  
 }

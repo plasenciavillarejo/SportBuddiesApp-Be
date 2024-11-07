@@ -69,6 +69,24 @@ public class Usuario implements Serializable {
   @Column(name = "url_imagen")
   private String pictureUrl;
 	
+  @Column(name = "direccion")
+  private String direccion;
+  
+  @Column(name = "provincia")
+  private String provincia;
+  
+  @Column(name = "municipio")
+  private String municipio;
+  
+  @Column(name = "codigo_postal")
+  private String codigoPostal;
+  
+  @Column(name = "pais")
+  private String pais;
+  
+  @Column(name = "numero_telefono")
+  private String numeroTelefono;
+  
 	private static final long serialVersionUID = 3877502676666789805L;
 
 }
