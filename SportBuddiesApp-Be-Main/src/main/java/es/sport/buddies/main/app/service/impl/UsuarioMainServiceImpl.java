@@ -72,7 +72,7 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
   public void actualizarUsuario(UsuarioDto usuarioDto) throws UsuarioException {
     try {
        LOGGER.info("Actualizando usuario");
-       usuariosService.actualizarUsuario(usuarioDto.getDireccion(), usuarioDto.getProvincia(), 
+       usuariosService.actualizarUsuario(usuarioDto.getEmail(),usuarioDto.getDireccion(), usuarioDto.getProvincia(), 
            usuarioDto.getMunicipio(), usuarioDto.getCodigoPostal(), usuarioDto.getPais(), usuarioDto.getNumeroTelefono(), usuarioDto.getIdUsuario());
        LOGGER.info("Usuario actualizado exitosamente");
     } catch (Exception e) {

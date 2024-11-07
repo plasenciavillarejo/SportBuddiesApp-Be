@@ -19,10 +19,10 @@ public interface IUsuariosDao extends JpaRepository<Usuario, Long> {
   public Usuario findByEmail(@Param("email") String email);
   
   @Modifying
-  @Query(value = "update Usuario set direccion = :direccion, provincia = :provincia, municipio = :municipio,"
+  @Query(value = "update Usuario set email= :email, direccion = :direccion, provincia = :provincia, municipio = :municipio,"
       + " codigoPostal = :codigoPostal, pais = :pais, numeroTelefono = :numeroTelefono where idUsuario = :idUsuario")
-  public void actualizarUsuario(@Param("direccion") String direccion, @Param("provincia") String provincia, @Param("municipio") String municipio,
-      @Param("codigoPostal") String codigoPostal, @Param("pais") String pais, @Param("numeroTelefono") String numeroTelefono,
-      @Param("idUsuario") long idUsuario);
+  public void actualizarUsuario(@Param("email") String email, @Param("direccion") String direccion, @Param("provincia") String provincia,
+      @Param("municipio") String municipio,@Param("codigoPostal") String codigoPostal, @Param("pais") String pais,
+      @Param("numeroTelefono") String numeroTelefono, @Param("idUsuario") long idUsuario);
   
 }
