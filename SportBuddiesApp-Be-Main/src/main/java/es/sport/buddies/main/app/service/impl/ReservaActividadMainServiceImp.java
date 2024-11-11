@@ -124,11 +124,11 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   }
 
   @Override
-  public Map<String, Object> listarCombosPaginaInicial() throws ReservaException {
-    Map<String, Object> mapResult = new HashMap<>();
-    mapResult.put("listadoDeportes", deporteService.listarDeportes());
-    mapResult.put("listaProvincias", provinciaService.listarProvincias());
-    return mapResult;
+  public Map<String, Object> listarCombosPaginaInicial(boolean provincias) throws ReservaException {
+    return provincias ? Map.ofEntries(Map.entry("listaProvincias", provinciaService.listarProvincias()))
+        : Map.ofEntries(
+            Map.entry("listadoDeportes", deporteService.listarDeportes()),
+            Map.entry("listaProvincias", provinciaService.listarProvincias()));
   }
 
   @Override

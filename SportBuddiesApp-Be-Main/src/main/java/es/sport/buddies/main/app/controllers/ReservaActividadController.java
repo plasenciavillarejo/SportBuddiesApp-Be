@@ -36,11 +36,11 @@ public class ReservaActividadController {
   private IReservaActividadMainService reservaActividadMainService;
   
   @GetMapping(value = "/comboInicio")
-  public ResponseEntity<Map<String, Object>> comboListadoInicial() throws ReservaException {
+  public ResponseEntity<Map<String, Object>> comboListadoInicial(@RequestParam("provincias") boolean provincias) throws ReservaException {
     Map<String, Object> mapResult = null;
     try {
       LOGGER.info("Se procede a listar el combon de la página inicial");
-      mapResult = reservaActividadMainService.listarCombosPaginaInicial();
+      mapResult = reservaActividadMainService.listarCombosPaginaInicial(provincias);
       LOGGER.info("Combo cargado correcamente");
     } catch (Exception e) {
       throw new ReservaException(e);

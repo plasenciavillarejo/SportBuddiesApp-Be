@@ -16,7 +16,7 @@ public interface IReservaActividadMainService {
   
   public void crearReservaActivdad(CrearReservaActividadDto reservaActividadDto) throws CrearReservaException;
     
-  public Map<String, Object> listarCombosPaginaInicial() throws ReservaException;
+  public Map<String, Object> listarCombosPaginaInicial(boolean provincias) throws ReservaException;
   
   public List<String> listaMunicipiosPorProvinca(String nombreProvincia);
   
