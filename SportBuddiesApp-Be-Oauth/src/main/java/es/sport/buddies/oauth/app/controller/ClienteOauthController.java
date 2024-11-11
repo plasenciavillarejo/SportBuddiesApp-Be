@@ -33,7 +33,7 @@ public class ClienteOauthController {
     Map<String, String> result = new HashMap<>();
     RegisteredClient clienteExistente = clientOauthServiceImpl.findById(clienDto.getClientId());
     if(clienteExistente != null) {
-      result.put("Error", "El usuario con ID: '"+ clienDto.getClientId() + "' ya está registrado en la aplicación, por favor, registre un nuevo usuario.");
+      result.put("message", "El usuario con ID: '"+ clienDto.getClientId() + "' ya está registrado en la aplicación, por favor, registre un nuevo usuario.");
       return new ResponseEntity<>(result,HttpStatus.CONFLICT);
     }
     clienDto.setClientSecret(passEnconder.encode(clienDto.getClientSecret()));
