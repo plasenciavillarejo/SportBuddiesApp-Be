@@ -41,5 +41,11 @@ public class ReservaActividadServiceImpl implements IReservaActividadService {
         .findByProvinciaAndMunicipioAndFechaReservaAndHoraInicioAndHoraFinAndUsuarioActividad_IdUsuario(provincia,
             municpio, fechaReserva, horaInicio, horaFin, idUsuario);
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<ReservaActividad> findByUsuarioActividad_IdUsuario(long idUsuario) {
+    return reservaActividadDao.findByUsuarioActividad_IdUsuario(idUsuario);
+  }
   
 }

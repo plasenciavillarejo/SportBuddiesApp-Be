@@ -21,5 +21,7 @@ public interface IReservaActividadDao extends JpaRepository<ReservaActividad, Lo
       @Param("provincia") String provincia, @Param("muncipio") String municpio,
       @Param("fechaReserva") LocalDate fechaReserva, @Param("horaInicio") LocalTime horaInicio,
       @Param("horaFIn") LocalTime horaFin, @Param("idUsuario") long idUsuario);
-   
+ 
+  public List<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario);
+  
 }

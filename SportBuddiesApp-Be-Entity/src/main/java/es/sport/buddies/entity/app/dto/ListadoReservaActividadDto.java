@@ -3,9 +3,11 @@ package es.sport.buddies.entity.app.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ListadoReservaActividadDto implements Serializable {
 
   //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

@@ -21,4 +21,6 @@ public interface IReservaActividadService {
       @Param("fechaReserva") LocalDate fechaReserva, @Param("horaInicio") LocalTime horaInicio,
       @Param("horaFIn") LocalTime horaFin, @Param("idUsuario") long idUsuario);
   
+  public List<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario);
+  
 }

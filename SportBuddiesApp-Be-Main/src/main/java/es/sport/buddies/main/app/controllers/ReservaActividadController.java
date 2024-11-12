@@ -1,5 +1,6 @@
 package es.sport.buddies.main.app.controllers;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +62,16 @@ public class ReservaActividadController {
     return new ResponseEntity<>(listMunicipio,HttpStatus.OK);
   }
     
-  @PostMapping(value = "/listadoReserva")
-  public ResponseEntity<List<ReservaActividadDto>> listarReservaActividad (@RequestBody ListadoReservaActividadDto listadoDto) throws ReservaException {
+  @GetMapping(value = "/listadoReserva")
+  public ResponseEntity<List<ReservaActividadDto>> listarReservaActividad(@RequestParam(name = "fechaReserva", required = false) LocalDate fechaReserva,
+      @RequestParam(name = "actividad", required = false) String actividad,@RequestParam(name = "provincia", required = false) String provincia,
+      @RequestParam(name = "municipio", required = false) String municipio, @RequestParam(name ="idUsuario", required = false, defaultValue = "0") long idUsuario) throws ReservaException {
     List<ReservaActividadDto> listReservaDto = null;
     try {
-      listReservaDto = reservaActividadMainService.listadoReservaActividad(listadoDto);
+     
+      listReservaDto = idUsuario == 0 ? reservaActividadMainService.listadoReservaActividad(ListadoReservaActividadDto.builder().fechaReserva(fechaReserva)
+          .actividad(actividad).provincia(provincia).municipio(municipio).build())
+          : reservaActividadMainService.listarReservaActividaPorId(idUsuario);
     } catch (Exception e) {
       throw new ReservaException(e);
     }

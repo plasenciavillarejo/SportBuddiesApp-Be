@@ -24,4 +24,6 @@ public interface IReservaActividadMainService {
  
   public List<Long> listarActividadInscritas(long idUsuario);
 
+  public List<ReservaActividadDto> listarReservaActividaPorId(long idUsuario) throws ReservaException; 
+  
 }

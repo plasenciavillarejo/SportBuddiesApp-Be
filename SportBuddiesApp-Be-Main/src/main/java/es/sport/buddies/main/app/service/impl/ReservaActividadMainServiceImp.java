@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -190,6 +189,12 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   @Override
   public List<Long> listarActividadInscritas(long idUsuario) {
     return reservaUsuarioService.obtenerReservasPorUsuario(idUsuario);
+  }
+
+  @Override
+  public List<ReservaActividadDto> listarReservaActividaPorId(long idUsuario) throws ReservaException {
+    return reservaActividadService.findByUsuarioActividad_IdUsuario(idUsuario).stream()
+        .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
   }
   
 }
