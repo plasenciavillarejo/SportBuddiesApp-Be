@@ -47,5 +47,17 @@ public class ReservaActividadServiceImpl implements IReservaActividadService {
   public List<ReservaActividad> findByUsuarioActividad_IdUsuario(long idUsuario) {
     return reservaActividadDao.findByUsuarioActividad_IdUsuario(idUsuario);
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ReservaActividad findById(long idReservaActividad) {
+    return reservaActividadDao.findById(idReservaActividad).orElse(null);
+  }
+
+  @Override
+  @Transactional
+  public void actualizarPlazaRestantes(long idReservaActividad, long plazaRestante) {
+    reservaActividadDao.actualizarPlazaRestantes(idReservaActividad, plazaRestante);
+  }
   
 }

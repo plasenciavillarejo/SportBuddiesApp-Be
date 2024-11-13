@@ -73,7 +73,8 @@ CREATE TABLE reservas_actividad (
     hora_fin TIME NOT NULL,
     requerimientos JSON,
     usuarios_max_requeridos BIGINT NOT NULL,
-    actividad VARCHAR(255) NOT NULL,
+    plazas_restantes BIGINT NOT NULL COMMENT 'Indica el numero de plazas que queda para la reserva',
+	actividad VARCHAR(255) NOT NULL,
     usuario_actividad_fk BIGINT NOT NULL COMMENT 'Id del usuario que ha creado la reserva de la actividad',
     direccion VARCHAR(255),
     provincia VARCHAR(255),
@@ -81,6 +82,7 @@ CREATE TABLE reservas_actividad (
     codigo_postal BIGINT,
 	urgencia Varchar(20),
 	abono_pista DECIMAL(5,2),
+	
     CONSTRAINT fk_usuario_actividad FOREIGN KEY (usuario_actividad_fk) REFERENCES usuarios(id_usuario)
 );
 

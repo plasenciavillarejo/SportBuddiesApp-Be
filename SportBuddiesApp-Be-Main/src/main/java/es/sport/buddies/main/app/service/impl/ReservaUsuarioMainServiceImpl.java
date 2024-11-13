@@ -110,6 +110,10 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
       reservaUsuarioService.borrarReservaActividad(idUsuario,idReservaUsuario);
       LOGGER.info("Reserva borrada exitosamente");
       
+      LOGGER.info("Se procede a aumentar la vacantes restantes en 1 en la Reserva Actividad");
+      // Llamar Utils plasencia
+      utilidades.actualizarReservasRestantes(false, resUsuario.getReservaActividad().getIdReservaActividad());
+      
     } catch (Exception e) {
       throw new CancelarReservaException(e);
     }

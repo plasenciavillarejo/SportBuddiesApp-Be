@@ -23,4 +23,8 @@ public interface IReservaActividadService {
   
   public List<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario);
   
+  public ReservaActividad findById(@Param("idReservaActividad") long idReservaActividad);
+  
+  public void actualizarPlazaRestantes(@Param("idReservaActividad") long idReservaActividad, @Param("plazaRestante") long plazaRestante);
+  
 }

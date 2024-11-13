@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import es.sport.buddies.entity.app.models.entity.ReservaActividad;
@@ -23,5 +25,9 @@ public interface IReservaActividadDao extends JpaRepository<ReservaActividad, Lo
       @Param("horaFIn") LocalTime horaFin, @Param("idUsuario") long idUsuario);
  
   public List<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario);
+  
+  @Modifying
+  @Query(value = "update ReservaActividad set plazasRestantes = :plazaRestante where idReservaActividad = :idReservaActividad")
+  public void actualizarPlazaRestantes(@Param("idReservaActividad") long idReservaActividad, @Param("plazaRestante") long plazaRestante);
   
 }

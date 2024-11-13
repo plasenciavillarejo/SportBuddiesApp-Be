@@ -28,6 +28,8 @@ public class ReservaActividadDto implements Serializable {
   
   private long usuariosMaxRequeridos;
   
+  private long plazasRestantes;
+  
   private List<String> requerimientos;
 
   private String urgencia;

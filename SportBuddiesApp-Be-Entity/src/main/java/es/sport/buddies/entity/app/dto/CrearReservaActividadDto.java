@@ -20,6 +20,8 @@ public class CrearReservaActividadDto {
   
   private long usuariosMaxRequeridos;
   
+  private long plazasRestantes;
+  
   private long idUsuarioActividadDto;
   
   private String actividad;

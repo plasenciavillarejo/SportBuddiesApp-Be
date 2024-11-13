@@ -54,6 +54,9 @@ public class ReservaActividad implements Serializable {
   @Column(name = "usuarios_max_requeridos")
   private long usuariosMaxRequeridos;
 
+  @Column(name = "plazas_restantes")
+  private long plazasRestantes;
+  
   @Column(name = "actividad")
   private String actividad;
 

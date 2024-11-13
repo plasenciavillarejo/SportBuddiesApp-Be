@@ -21,6 +21,7 @@ import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
+import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
 import es.sport.buddies.entity.app.models.service.IDeporteService;
@@ -114,6 +115,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       if(resDto != null) {
         throw new CrearReservaException("El usuario ya contiene una reserva para el mismo día");
       } 
+      
       reservaActividadService.guardarReservaActividad(IReservaActividadMapStruct.mapper.crearReservaActividadToEntity(reservaActividadDto));
       
       LOGGER.info("Se ha creado la reserva correctamente para el usuario {}",reservaActividadDto.getIdUsuarioActividadDto());
@@ -149,7 +151,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       if(reservaUsuario != null) {
         throw new CrearReservaException("Ya estás inscrito en la actividad");
       }
-      
+
       LOGGER.info("Validando el tipo de plan que contiene el usuario y sus reservas restantes");
       UsuarioPlanPago usuPlanPago = utilidades.obtenerUsuarioPlanPago(suscripcionDto.getIdSuscripcion());
       AtomicLong reserva = new AtomicLong(usuPlanPago.getReservasRestantes());
@@ -159,9 +161,13 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
             usuPlanPago.getSuscripcion().getUsuario().getNombreUsuario(), usuPlanPago.getReservasRestantes(),
             inscripcionReservaActividad.getIdReservaActividad());
         usuPlanPago.setReservasRestantes(reserva.decrementAndGet());
-        LOGGER.info("Se procede a realizar la actulización y la insercción en la BBDD");
+        LOGGER.info("Se procede a realizar la actualización y la insercción en la BBDD");
         guardarReservaUsuario(usuPlanPago,inscripcionReservaActividad);
         LOGGER.info("Se ha realizado la reserva existosamente");
+        
+        // Recuperamos la ReservaActividad para restar una reserva a las plazasRestantes.
+        utilidades.actualizarReservasRestantes(true, inscripcionReservaActividad.getIdReservaActividad());
+        
       } else {
         throw new ReservaException(messageSource.getMessage(ConstantesMessages.RESERVASAGOTADAS, null, LocaleContextHolder.getLocale()));
       }
@@ -171,8 +177,14 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
       throw e2;
     } 
   }
-
-  public void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,
+  
+  /**
+   * Función encargada de guardar la Reserva Usuario
+   * @param usuPlanPago
+   * @param inscripcionReservaActividad
+   * @throws ReservaException
+   */
+  private void guardarReservaUsuario(UsuarioPlanPago usuPlanPago,
       InscripcionReservaActividadDto inscripcionReservaActividad) throws ReservaException {
     try {
       usuarioPlanPagoService.actualizarReservasRestantes(usuPlanPago.getReservasRestantes(),

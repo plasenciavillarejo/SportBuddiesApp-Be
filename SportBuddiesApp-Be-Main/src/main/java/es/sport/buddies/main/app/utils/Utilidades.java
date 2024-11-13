@@ -1,18 +1,19 @@
 package es.sport.buddies.main.app.utils;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
+import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
+import es.sport.buddies.entity.app.models.service.IReservaActividadService;
 import es.sport.buddies.entity.app.models.service.ISuscripcionService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.convert.map.struct.ISuscripcionMapStruct;
+import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 
 @Component
@@ -26,6 +27,8 @@ public class Utilidades {
   @Autowired
   private IUsuarioPlanPagoService usuarioPlanPagoService;
 
+  @Autowired
+  private IReservaActividadService reservaActividadService;
   
   /**
    * Función encargada de validar una sucripción activa
@@ -50,6 +53,46 @@ public class Utilidades {
    */
   public UsuarioPlanPago obtenerUsuarioPlanPago(long idSuscripcion) {
     return usuarioPlanPagoService.findBySuscripcion_IdSuscripcion(idSuscripcion);
+  }
+  
+  /**
+   * Función encargada de restar o sumar una plaza restante dentro de las ReservaActividad
+   * @param restarPlaza
+   * @param idReservaActividad
+   * @return
+   * @throws CrearReservaException
+   * @throws ReservaException 
+   */
+  public void actualizarReservasRestantes(boolean restarPlaza, long idReservaActividad) throws CrearReservaException, ReservaException {
+    LOGGER.info("Recuperando la reserva actividad por su ID: {}", idReservaActividad);
+    ReservaActividad reservaActividad = reservaActividadService.findById(idReservaActividad);
+    
+    if(reservaActividad == null) {
+      throw new CrearReservaException("No existe la reserva con ID: " + idReservaActividad);
+    } 
+    if(restarPlaza && reservaActividad.getPlazasRestantes() - 1 >= 0) {
+      LOGGER.info("Se procede a restar una plaza");
+      reservaActividad.setPlazasRestantes(reservaActividad.getPlazasRestantes() - 1);
+    } else {
+      LOGGER.info("Se procede a sumar una plaza");
+      reservaActividad.setPlazasRestantes(reservaActividad.getPlazasRestantes() + 1);
+    }
+    
+    LOGGER.info("Se procede actualizar las reservas de las actividades restantes");
+    actualizarReservaRestante(reservaActividad);
+    LOGGER.info("Reservas actualizadas exitosamente");
+  }
+  
+  /**
+   * Función encargada de restar una plaza al total existente
+   * @throws ReservaException
+   */
+  private void actualizarReservaRestante(ReservaActividad reservaActividad) throws ReservaException {
+    try {
+      reservaActividadService.actualizarPlazaRestantes(reservaActividad.getIdReservaActividad(), reservaActividad.getPlazasRestantes());
+    } catch (Exception e) {
+      throw new ReservaException(e);
+    }
   }
   
 }
