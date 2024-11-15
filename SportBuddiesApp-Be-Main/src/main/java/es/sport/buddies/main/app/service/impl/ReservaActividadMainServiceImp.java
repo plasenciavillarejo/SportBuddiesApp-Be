@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -13,12 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
 import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
+import es.sport.buddies.entity.app.dto.PaginadorDto;
 import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
 import es.sport.buddies.entity.app.models.entity.ReservaActividad;
@@ -69,37 +73,31 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   private Utilidades utilidades;
   
   @Override
-  public List<ReservaActividadDto> listadoReservaActividad(ListadoReservaActividadDto listadoDto) throws ReservaException {
-    //CompletableFuture<List<ReservaActividadDto>> list = new CompletableFuture<>();
-    List<ReservaActividadDto> listDos = null;
+  public Map<String, Object> listadoReservaActividad(ListadoReservaActividadDto listadoDto, Pageable pageable) throws ReservaException {
+    Map<String, Object> params = new HashMap<>();
+    Page<ReservaActividad> listPage = null;
+    List<ReservaActividadDto> listDto = null;
+    PaginadorDto paginador = new PaginadorDto();
     try {
-      /*
-      list = CompletableFuture.supplyAsync(() -> 
-      reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(listadoDto.getFechaReserva(),
-          listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio())
-      .stream()
-      .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
-      .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res))
-      .toList()).thenApply(lista -> lista);
-      CompletableFuture.allOf(list).get();
-      */
       if(!listadoDto.getFechaReserva().isBefore(LocalDate.now())) {
-        listDos = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
+        
+        listPage = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
             Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
-             listadoDto.getActividad(),
-            listadoDto.getProvincia(), listadoDto.getMunicipio()).stream()
-            .peek(res -> LOGGER.info(res != null ? "Recibiendo una reserva actividad con ID: {} " : "No se han recibido ningúna reserva actividad", res.getIdReservaActividad()))
-            .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
-
+             listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio(), pageable);
+        listDto = listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
+        params.put("reservaActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());        
+        
+        LOGGER.info("Configurando el tampo del paginador");
+        paginador.setRegistros((int)listPage.getTotalElements());
+        params.put("paginador", paginador);
       } else {
-        listDos = Collections.emptyList();
+        params.put("reservaActividad", Collections.emptyList());
       }
       
     } catch (Exception e) {
       throw new ReservaException(e.getMessage());
     }
-    //return !list.get().isEmpty() ? list.get() : Collections.emptyList();
-    return listDos;
+    return params;
   }
 
   @Override
@@ -204,9 +202,18 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   }
 
   @Override
-  public List<ReservaActividadDto> listarReservaActividaPorId(long idUsuario) throws ReservaException {
-    return reservaActividadService.findByUsuarioActividad_IdUsuario(idUsuario).stream()
-        .map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
+  public Map<String, Object> listarReservaActividaPorId(long idUsuario,Pageable pageable) throws ReservaException {
+    Map<String, Object> params = null;
+    Page<ReservaActividad> listPage = null;
+    PaginadorDto paginador = null;
+    listPage = reservaActividadService.findByUsuarioActividad_IdUsuario(idUsuario, pageable);
+    params.put("reservaActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());  
+    
+    LOGGER.info("Configurando el tampo del paginador");
+    paginador.setRegistros((int)listPage.getTotalElements());
+    params.put("paginador", paginador);
+    
+    return params;
   }
   
 }

@@ -3,16 +3,17 @@ package es.sport.buddies.main.app.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
+
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
 import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
-import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 
 public interface IReservaActividadMainService {
 
-  public List<ReservaActividadDto> listadoReservaActividad(ListadoReservaActividadDto listadoDto) throws ReservaException; 
+  public Map<String, Object> listadoReservaActividad(ListadoReservaActividadDto listadoDto, Pageable pageable) throws ReservaException; 
   
   public void crearReservaActivdad(CrearReservaActividadDto reservaActividadDto) throws CrearReservaException;
     
@@ -24,6 +25,6 @@ public interface IReservaActividadMainService {
  
   public List<Long> listarActividadInscritas(long idUsuario);
 
-  public List<ReservaActividadDto> listarReservaActividaPorId(long idUsuario) throws ReservaException; 
+  public Map<String, Object> listarReservaActividaPorId(long idUsuario, Pageable pageable) throws ReservaException; 
   
 }

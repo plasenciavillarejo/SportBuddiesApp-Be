@@ -5,26 +5,29 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 
-public interface IReservaActividadDao extends JpaRepository<ReservaActividad, Long> {
+public interface IReservaActividadDao extends JpaRepository<ReservaActividad, Long>, PagingAndSortingRepository<ReservaActividad, Long> {
 
   @EntityGraph(attributePaths = {"usuarioActividad"})
-  public List<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipio(@Param("fechaReserva") Date fechaReserva,
-      @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio);
+  public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipio(@Param("fechaReserva") Date fechaReserva,
+      @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio, Pageable pageable);
  
   public ReservaActividad findByProvinciaAndMunicipioAndFechaReservaAndHoraInicioAndHoraFinAndUsuarioActividad_IdUsuario(
       @Param("provincia") String provincia, @Param("muncipio") String municpio,
       @Param("fechaReserva") LocalDate fechaReserva, @Param("horaInicio") LocalTime horaInicio,
       @Param("horaFIn") LocalTime horaFin, @Param("idUsuario") long idUsuario);
  
-  public List<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario);
+  public Page<ReservaActividad> findByUsuarioActividad_IdUsuario(@Param("idUsuario") long idUsuario,Pageable pageable);
   
   @Modifying
   @Query(value = "update ReservaActividad set plazasRestantes = :plazaRestante where idReservaActividad = :idReservaActividad")

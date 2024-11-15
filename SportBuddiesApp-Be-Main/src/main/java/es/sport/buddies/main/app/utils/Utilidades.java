@@ -3,6 +3,9 @@ package es.sport.buddies.main.app.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
@@ -95,4 +98,24 @@ public class Utilidades {
     }
   }
   
+  /**
+   * Función para el paginador de forma global
+   * @param pagina
+   * @param tamanioPagina
+   * @param orden
+   * @param campo
+   * @return
+   * @throws ReservaException
+   */
+  public Pageable configurarPageRequest(int pagina, int tamanioPagina, int orden, String campo) throws ReservaException {
+    Pageable pag = null;
+    try {
+      pag = PageRequest.of(pagina - 1, tamanioPagina,
+          orden == 1 ? Sort.by(campo).ascending() : Sort.by(campo).descending());
+    } catch (Exception e) {
+      throw new ReservaException(e.getMessage(), e.getCause());
+    }
+    return pag;
+  }
+
 }

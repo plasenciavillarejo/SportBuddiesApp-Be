@@ -35,7 +35,7 @@ public class ReservaActividadDto implements Serializable {
   private String urgencia;
   
   private double abonoPista;
-  
+    
   private static final long serialVersionUID = 722868750680709837L;
 
 }

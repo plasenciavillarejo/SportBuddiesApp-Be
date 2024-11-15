@@ -19,6 +19,16 @@ public class ListadoReservaActividadDto implements Serializable {
 
   private String municipio;
   
+  private long idUsuario;
+  
+  private int pagina;
+  
+  private int tamanioPagina;
+  
+  private Integer ordenacion;
+  
+  private int orden;
+  
   private static final long serialVersionUID = 7339027390310558980L;
 
 }

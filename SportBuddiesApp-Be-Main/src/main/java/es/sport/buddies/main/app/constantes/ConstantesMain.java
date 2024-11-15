@@ -73,6 +73,8 @@ public class ConstantesMain {
 		
 	public static String STRIPESECRETKEY = "SECRETKEY";
 	
+	public static final String HORAINICIORESERVA = "horaInicio";
+	
 }
 
 

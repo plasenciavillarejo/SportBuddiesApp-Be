@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;
 import es.sport.buddies.main.app.service.IReservaActividadMainService;
+import es.sport.buddies.main.app.utils.Utilidades;
 
 @RestController
 @RequestMapping(value = "/reservaActividad")
@@ -35,6 +37,9 @@ public class ReservaActividadController {
     
   @Autowired
   private IReservaActividadMainService reservaActividadMainService;
+  
+  @Autowired
+  private Utilidades utilidades;
   
   @GetMapping(value = "/comboInicio")
   public ResponseEntity<Map<String, Object>> comboListadoInicial(@RequestParam("provincias") boolean provincias) throws ReservaException {
@@ -63,19 +68,19 @@ public class ReservaActividadController {
   }
     
   @GetMapping(value = "/listadoReserva")
-  public ResponseEntity<List<ReservaActividadDto>> listarReservaActividad(@RequestParam(name = "fechaReserva", required = false) LocalDate fechaReserva,
-      @RequestParam(name = "actividad", required = false) String actividad,@RequestParam(name = "provincia", required = false) String provincia,
-      @RequestParam(name = "municipio", required = false) String municipio, @RequestParam(name ="idUsuario", required = false, defaultValue = "0") long idUsuario) throws ReservaException {
-    List<ReservaActividadDto> listReservaDto = null;
+  public ResponseEntity<Map<String, Object>> listarReservaActividad(ListadoReservaActividadDto listadoDto) 
+          throws ReservaException {
+    Map<String, Object> params = null;
     try {
-     
-      listReservaDto = idUsuario == 0 ? reservaActividadMainService.listadoReservaActividad(ListadoReservaActividadDto.builder().fechaReserva(fechaReserva)
-          .actividad(actividad).provincia(provincia).municipio(municipio).build())
-          : reservaActividadMainService.listarReservaActividaPorId(idUsuario);
+      Pageable page = utilidades.configurarPageRequest(listadoDto.getPagina(), listadoDto.getTamanioPagina(), 
+          listadoDto.getOrden(), ConstantesMain.HORAINICIORESERVA);
+      
+      params = listadoDto.getIdUsuario() == 0 ? reservaActividadMainService.listadoReservaActividad(listadoDto, page)
+          : reservaActividadMainService.listarReservaActividaPorId(listadoDto.getIdUsuario(),page);
     } catch (Exception e) {
       throw new ReservaException(e);
     }
-    return new ResponseEntity<>(listReservaDto,HttpStatus.OK);
+    return new ResponseEntity<>(params,HttpStatus.OK);
   }
   
   @PostMapping(value = "/crear")
