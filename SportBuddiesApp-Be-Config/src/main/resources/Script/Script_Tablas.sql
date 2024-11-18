@@ -301,14 +301,23 @@ INSERT INTO `reservas_actividad` VALUES
 (6, '2024-12-14', '09:00:00', '10:30:00', '[\"Equipo Azul\", \"Equipo Amarillo\"]', 8, 'Fútbol', 3, 'Plaza Mayor 5', 'Araba/Álava', 'Amurrio', 28001, 'Alta', 2.00, 8),
 (7, '2024-12-14', '11:00:00', '12:30:00', '[\"Equipo Rojo\", \"Equipo Verde\"]', 10, 'Fútbol Sala', 3, 'Calle Mayor 22', 'Araba/Álava', 'Amurrio', 28002, 'Media', 3.00, 10),
 (8, '2024-12-14', '15:00:00', '16:30:00', '[\"Jugadores pendientes de confirmación\"]', 6, 'Baloncesto', 3, 'Calle La Rioja 8', 'Araba/Álava', 'Amurrio', 30001, 'Baja', 1.50, 6),
-(9,'2024-12-14','13:00:00','14:00:00','[\"Prueba Uno\", \"Prueba Dos\"]',1,'Futbol',3,'Avenida de los pinos','Araba/Álava','Amurrio',30100,'Alta',3.50,0),
+(9, '2024-12-14', '13:00:00', '14:00:00','[\"Prueba Uno\", \"Prueba Dos\"]',1,'Futbol',3,'Avenida de los pinos','Araba/Álava','Amurrio',30100,'Alta',3.50,0),
 (10, '2024-12-14', '16:00:00', '17:30:00', '[\"Equipo Azul\", \"Equipo Blanco\"]', 12, 'Fútbol', 3, 'Paseo de la Castellana 45', 'Araba/Álava', 'Amurrio', 28003, 'Alta', 4.00, 12),
 (11, '2024-12-14', '18:00:00', '19:30:00', '[\"Partido amistoso\"]', 10, 'Tenis', 3, 'Calle Tenis 10', 'Araba/Álava', 'Amurrio', 30100, 'Alta', 5.00, 10),
 (12, '2024-12-14', '20:30:00', '22:00:00', '[\"Liga local - Fase de grupos\"]', 8, 'Fútbol Sala', 3, 'Avenida del Deporte 25', 'Araba/Álava', 'Amurrio', 28004, 'Alta', 6.00, 8),
 (13, '2024-12-14', '08:00:00', '09:30:00', '[\"Entrenamiento equipo juvenil\"]', 15, 'Fútbol', 3, 'Calle Delicias 10', 'Araba/Álava', 'Amurrio', 29001, 'Alta', 2.50, 15),
 (14, '2024-12-14', '10:00:00', '11:00:00', '[\"Partido amistoso entre clubes\"]', 20, 'Pádel', 3, 'Calle del Pádel 7', 'Araba/Álava', 'Amurrio', 30002, 'Media', 1.00, 20),
 (15, '2024-12-14', '14:00:00', '15:30:00', '[\"Competición escolar\"]', 10, 'Baloncesto', 3, 'Polideportivo Norte', 'Araba/Álava', 'Amurrio', 28005, 'Alta', 3.00, 10),
-(16, '2024-12-14', '19:00:00', '20:30:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10);
+(16, '2024-12-14', '19:00:00', '20:30:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10)
+(17, '2024-12-14', '21:00:00', '22:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(18, '2024-12-14', '22:00:00', '23:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(19, '2024-12-14', '23:00:00', '00:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(20, '2024-12-14', '00:00:00', '01:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(21, '2024-12-14', '01:00:00', '02:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(22, '2024-12-14', '02:00:00', '03:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(23, '2024-12-14', '03:00:00', '04:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10),
+(24, '2024-12-14', '04:00:00', '05:00:00', '[\"Semifinal de torneo local\"]', 10, 'Fútbol', 3, 'Estadio Municipal', 'Araba/Álava', 'Amurrio', 28006, 'Alta', 4.50, 10);
+ 
 
 /*!40000 ALTER TABLE `reservas_actividad` ENABLE KEYS */;
 UNLOCK TABLES;

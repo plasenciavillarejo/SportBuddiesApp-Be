@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import es.sport.buddies.entity.app.dto.PaginadorDto;
 import es.sport.buddies.entity.app.dto.SuscripcionDto;
 import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
@@ -96,6 +97,16 @@ public class Utilidades {
     } catch (Exception e) {
       throw new ReservaException(e);
     }
+  }
+  
+  /**
+   * Configuramos el paginador
+   * @param paginador
+   * @param page
+   */
+  public void configurarPaginador(PaginadorDto paginador, Pageable page) {
+    paginador.setPaginaActual(page.getPageNumber() + 1);
+    paginador.setTamanioPagina(page.getPageSize());
   }
   
   /**

@@ -73,7 +73,7 @@ public class ReservaActividadController {
     Map<String, Object> params = null;
     try {
       Pageable page = utilidades.configurarPageRequest(listadoDto.getPagina(), listadoDto.getTamanioPagina(), 
-          listadoDto.getOrden(), ConstantesMain.HORAINICIORESERVA);
+          listadoDto.getOrden(), listadoDto.getCampoOrden());
       
       params = listadoDto.getIdUsuario() == 0 ? reservaActividadMainService.listadoReservaActividad(listadoDto, page)
           : reservaActividadMainService.listarReservaActividaPorId(listadoDto.getIdUsuario(),page);

@@ -76,24 +76,24 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   public Map<String, Object> listadoReservaActividad(ListadoReservaActividadDto listadoDto, Pageable pageable) throws ReservaException {
     Map<String, Object> params = new HashMap<>();
     Page<ReservaActividad> listPage = null;
-    List<ReservaActividadDto> listDto = null;
     PaginadorDto paginador = new PaginadorDto();
     try {
       if(!listadoDto.getFechaReserva().isBefore(LocalDate.now())) {
-        
         listPage = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
             Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
              listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio(), pageable);
-        listDto = listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList();
-        params.put("reservaActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());        
-        
+                
         LOGGER.info("Configurando el tampo del paginador");
+        utilidades.configurarPaginador(paginador, pageable);
         paginador.setRegistros((int)listPage.getTotalElements());
+        
+        LOGGER.info("Se procede agregar la información en el MAP");
+        params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());
         params.put("paginador", paginador);
       } else {
-        params.put("reservaActividad", Collections.emptyList());
-      }
-      
+        LOGGER.info("No se ha encontrando ningún registro con dichas características");
+        params.put("listActividad", Collections.emptyList());
+      }      
     } catch (Exception e) {
       throw new ReservaException(e.getMessage());
     }

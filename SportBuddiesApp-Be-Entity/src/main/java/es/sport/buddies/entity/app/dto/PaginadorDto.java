@@ -25,6 +25,7 @@ public class PaginadorDto implements Serializable {
 	// Verdadero si se está posicionado en la última página
 	private boolean fin;
 
+	// Inicializamos el paginador con valores por defecto
 	public PaginadorDto() {
 	   this.paginaActual = 1;
 	   this.tamanioPagina = 10;
