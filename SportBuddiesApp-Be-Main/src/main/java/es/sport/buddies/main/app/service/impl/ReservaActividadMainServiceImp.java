@@ -76,20 +76,15 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
   public Map<String, Object> listadoReservaActividad(ListadoReservaActividadDto listadoDto, Pageable pageable) throws ReservaException {
     Map<String, Object> params = new HashMap<>();
     Page<ReservaActividad> listPage = null;
-    PaginadorDto paginador = new PaginadorDto();
     try {
       if(!listadoDto.getFechaReserva().isBefore(LocalDate.now())) {
         listPage = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
             Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
              listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio(), pageable);
                 
-        LOGGER.info("Configurando el tampo del paginador");
-        utilidades.configurarPaginador(paginador, pageable);
-        paginador.setRegistros((int)listPage.getTotalElements());
-        
         LOGGER.info("Se procede agregar la información en el MAP");
         params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());
-        params.put("paginador", paginador);
+        params.put("paginador", configPaginator(pageable, listPage));
       } else {
         LOGGER.info("No se ha encontrando ningún registro con dichas características");
         params.put("listActividad", Collections.emptyList());
@@ -203,17 +198,27 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
 
   @Override
   public Map<String, Object> listarReservaActividaPorId(long idUsuario,Pageable pageable) throws ReservaException {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<String, Object>();
     Page<ReservaActividad> listPage = null;
-    PaginadorDto paginador = null;
+    
     listPage = reservaActividadService.findByUsuarioActividad_IdUsuario(idUsuario, pageable);
-    params.put("reservaActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());  
-    
-    LOGGER.info("Configurando el tampo del paginador");
-    paginador.setRegistros((int)listPage.getTotalElements());
-    params.put("paginador", paginador);
-    
+    params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());  
+    params.put("paginador", configPaginator(pageable, listPage));
     return params;
+  }
+ 
+  /**
+   * Función para crear el paginador
+   * @param paginador
+   * @param pageable
+   * @param listPage
+   */
+  private PaginadorDto configPaginator(Pageable pageable,Page<ReservaActividad> listPage) {
+    PaginadorDto paginador = new PaginadorDto();
+    LOGGER.info("Configurando el paginador");
+    utilidades.configurarPaginador(paginador, pageable);
+    paginador.setRegistros((int)listPage.getTotalElements());
+    return paginador;
   }
   
 }
