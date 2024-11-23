@@ -3,6 +3,8 @@ package es.sport.buddies.entity.app.models.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
@@ -27,5 +29,7 @@ public interface IReservaUsuarioService {
   public ReservaUsuario findById(@Param("idReservaUsuario") long idReservaUsuario);
   
   public double findByIdReserva(@Param("idReservaUsuario") long idReservaUsuario);
+ 
+  public Page<Object[]> listaConfirmacion(@Param("idUsuario") long idUsuario , Pageable pageable);
   
 }

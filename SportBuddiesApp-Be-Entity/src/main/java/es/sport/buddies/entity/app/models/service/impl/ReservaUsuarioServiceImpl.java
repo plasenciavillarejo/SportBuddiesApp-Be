@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +71,12 @@ public class ReservaUsuarioServiceImpl implements IReservaUsuarioService {
   @Transactional(readOnly = true)
   public double findByIdReserva(long idReservaUsuario) {
     return reservaUsuarioDao.findByIdReserva(idReservaUsuario);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Page<Object[]> listaConfirmacion(long idUsuario, Pageable pageable) {
+    return reservaUsuarioDao.listaConfirmacion(idUsuario, pageable);
   }
 
 

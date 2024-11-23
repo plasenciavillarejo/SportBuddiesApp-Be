@@ -22,7 +22,6 @@ import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PagoTarjetaException;
 import es.sport.buddies.main.app.service.IPagoTarjetaMainService;
 
-
 @RestController
 @RequestMapping(value = "/tarjeta")
 public class PagoTarjetaController {

@@ -56,7 +56,6 @@ import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSucce
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
-import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
 
 @Configuration
 @EnableWebSecurity

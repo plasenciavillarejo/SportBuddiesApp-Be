@@ -3,6 +3,7 @@ package es.sport.buddies.main.app.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -129,4 +130,19 @@ public class Utilidades {
     return pag;
   }
 
+  /**
+   * Función para crear el paginador
+   * @param <T>
+   * @param paginador
+   * @param pageable
+   * @param listPage
+   */
+  public <T> PaginadorDto configPaginator(Pageable pageable,Page<T> listPage) {
+    PaginadorDto paginador = new PaginadorDto();
+    LOGGER.info("Configurando el paginador");
+    configurarPaginador(paginador, pageable);
+    paginador.setRegistros((int)listPage.getTotalElements());
+    return paginador;
+  }
+  
 }

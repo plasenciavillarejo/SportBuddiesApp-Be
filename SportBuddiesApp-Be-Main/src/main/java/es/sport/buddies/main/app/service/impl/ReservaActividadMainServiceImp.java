@@ -84,7 +84,7 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
                 
         LOGGER.info("Se procede agregar la información en el MAP");
         params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());
-        params.put("paginador", configPaginator(pageable, listPage));
+        params.put("paginador", utilidades.configPaginator(pageable, listPage));
       } else {
         LOGGER.info("No se ha encontrando ningún registro con dichas características");
         params.put("listActividad", Collections.emptyList());
@@ -203,22 +203,8 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
     
     listPage = reservaActividadService.findByUsuarioActividad_IdUsuario(idUsuario, pageable);
     params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());  
-    params.put("paginador", configPaginator(pageable, listPage));
+    params.put("paginador", utilidades.configPaginator(pageable, listPage));
     return params;
-  }
- 
-  /**
-   * Función para crear el paginador
-   * @param paginador
-   * @param pageable
-   * @param listPage
-   */
-  private PaginadorDto configPaginator(Pageable pageable,Page<ReservaActividad> listPage) {
-    PaginadorDto paginador = new PaginadorDto();
-    LOGGER.info("Configurando el paginador");
-    utilidades.configurarPaginador(paginador, pageable);
-    paginador.setRegistros((int)listPage.getTotalElements());
-    return paginador;
   }
   
 }

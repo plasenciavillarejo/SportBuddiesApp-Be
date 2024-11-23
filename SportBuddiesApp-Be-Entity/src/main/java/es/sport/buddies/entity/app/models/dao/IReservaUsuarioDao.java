@@ -3,6 +3,8 @@ package es.sport.buddies.entity.app.models.dao;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -57,6 +59,15 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
   @Query(value = "select r.reservaActividad.abonoPista from ReservaUsuario r where r.idReserva = :idReservaUsuario")
   public double findByIdReserva(@Param("idReservaUsuario") long idReservaUsuario);
 
-  
+  @Query(value = "select resUsu.fecha_reserva, resUsu.hora_inicio_reserva, resUsu.hora_fin_reserva,"
+      +" usu.nombre_usuario, usu.apellido"
+      +" from reservas_usuario resUsu"
+      +" inner join reservas_actividad resAct"
+      +" on resAct.id_reserva_actividad = resUsu.reserva_actividad_fk"
+      +" inner join usuarios usu"
+      +" on resUsu.usuario_reserva_fk = usu.id_usuario"
+      +" where resUsu.abonado = 1"
+      +" and resAct.usuario_actividad_fk = :idUsuario", nativeQuery = true)  
+  public Page<Object[]> listaConfirmacion(@Param("idUsuario") long idUsuario , Pageable pageable);
   
 }

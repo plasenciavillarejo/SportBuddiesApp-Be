@@ -71,7 +71,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
               .build())
           .build();
 			
-			guardarCodigoVerificacion(codVerif, usuario);
+			//guardarCodigoVerificacion(codVerif, usuario);
 			
 			return new User(usuario.getNombreUsuario(),usuario.getPassword(),usuario.getEnabled(),true,true,true,authorities);
 		} catch (Exception e) {
