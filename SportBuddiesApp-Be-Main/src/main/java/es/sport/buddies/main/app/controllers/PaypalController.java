@@ -180,7 +180,7 @@ public class PaypalController {
     try {
       Paypal paypal = paypalService.buscarReservaPagada(idReservaUsuario);
       if(paypal == null) {
-        throw new PaypalException("La reserva con ID: "+ idReservaUsuario + " no existe");
+        throw new PaypalException("La reserva con id '"+ idReservaUsuario + "' no existe");
       }
 
       MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

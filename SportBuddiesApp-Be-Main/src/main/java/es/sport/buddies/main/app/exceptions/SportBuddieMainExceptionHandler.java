@@ -53,7 +53,7 @@ public class SportBuddieMainExceptionHandler {
     AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
         .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
         .mensaje(separaCadena[1])
-        .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .causa(separaCadena[1])
         .stack(ExceptionUtils.getStackTrace(ex))
         .build();
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -21,6 +21,7 @@ import es.sport.buddies.entity.app.models.entity.ReservaUsuario;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.service.IPagoTarjetaService;
 import es.sport.buddies.entity.app.models.service.IReservaUsuarioService;
+import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.PagoTarjetaException;
 import es.sport.buddies.main.app.service.IPagoTarjetaMainService;
@@ -36,13 +37,18 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
   @Autowired
   private IReservaUsuarioService reservaUsuarioService;
   
+  @Autowired
+  private IUsuarioService usuarioService;
+  
   public PagoTarjetaMainServiceImpl() {
     Stripe.apiKey = ConstantesMain.STRIPESECRETKEY;
   }
 
   @Override
   public Map<String, String> realizarCargo(StripeChargeDto stripeChargeDto) throws PagoTarjetaException, StripeException {
-    // Establece la clave justo antes de hacer la llamada
+    
+    LOGGER.info("Obteniendo al usuario con ID: {}", stripeChargeDto.getIdUsuario());
+    Usuario usuario = usuarioService.findById(stripeChargeDto.getIdUsuario()).orElse(null);
     
     LOGGER.info("Se procede a generar el PaymentIntentCreateParams con los datos de la tarjeta");
     PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
@@ -52,8 +58,9 @@ public class PagoTarjetaMainServiceImpl implements IPagoTarjetaMainService {
         .setPaymentMethod(stripeChargeDto.getMetodoPago())
         .setConfirm(true)
         // Agregar el correo de envio del recibo una vez que ha sido cobrado
-        //.setReceiptEmail(null)
+        .setReceiptEmail(usuario.getEmail())
         .setDescription(stripeChargeDto.getDescripcion())
+        .setStatementDescriptorSuffix("SportBuddiesApp")
         //.setReturnUrl("front-angular para devolver el retorno")
         .setAutomaticPaymentMethods(
             PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
