@@ -72,8 +72,10 @@ public class ReservaActividadController {
           throws ReservaException {
     Map<String, Object> params = null;
     try {
-      Pageable page = utilidades.configurarPageRequest(listadoDto.getPagina(), listadoDto.getTamanioPagina(), 
-          listadoDto.getOrden(), listadoDto.getCampoOrden());
+      Pageable page = utilidades.configurarPageRequest(listadoDto.getCaracteristicasPaginacion().getPagina(),
+          listadoDto.getCaracteristicasPaginacion().getTamanioPagina(), 
+          listadoDto.getCaracteristicasPaginacion().getOrden(), 
+          listadoDto.getCaracteristicasPaginacion().getCampoOrden());
       
       params = listadoDto.isPaginaInicio() ? reservaActividadMainService.listadoReservaActividad(listadoDto, page)
           : reservaActividadMainService.listarReservaActividaPorId(listadoDto.getIdUsuario(),page);

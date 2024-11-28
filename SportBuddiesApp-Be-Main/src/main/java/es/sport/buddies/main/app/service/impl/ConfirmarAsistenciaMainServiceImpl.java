@@ -44,6 +44,7 @@ public class ConfirmarAsistenciaMainServiceImpl implements IConfirmarAsistenciaM
         con.setHoraFin(LocalTime.parse(String.valueOf(act[2])));
         con.setNombreUsuario(String.valueOf(act[3]));
         con.setApellidoUsuario(String.valueOf(act[4]));
+        con.setIdUsuario(Long.valueOf(String.valueOf(act[5])));
         return con;
       }).toList());
       params.put("paginador", utilidades.configPaginator(page, resActividad));

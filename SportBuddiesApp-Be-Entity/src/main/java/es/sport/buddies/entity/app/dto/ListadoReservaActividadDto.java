@@ -21,13 +21,7 @@ public class ListadoReservaActividadDto implements Serializable {
   
   private long idUsuario;
   
-  private int pagina;
-  
-  private int tamanioPagina;
-  
-  private String campoOrden;
-  
-  private int orden;
+  private CaracteristicasPaginacionDto caracteristicasPaginacion;
   
   private boolean paginaInicio;
   

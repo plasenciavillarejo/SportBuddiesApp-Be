@@ -19,6 +19,8 @@ public class ConfirmarAsistenciaDto implements Serializable {
   
   private String apellidoUsuario;
   
+  private long idUsuario;
+  
   private static final long serialVersionUID = 44855331688008910L;
 
 }

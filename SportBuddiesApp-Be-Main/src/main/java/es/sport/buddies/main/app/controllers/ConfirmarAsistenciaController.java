@@ -20,6 +20,7 @@ public class ConfirmarAsistenciaController {
   @Autowired
   private IConfirmarAsistenciaMainService confirmarAsistenciaService;
   
+  // Debe ir ConfirmarAsistenciaDtoi en vez del pathVariable
   @GetMapping(value = "/usuarios/{idUsuario}")
   public ResponseEntity<Object> listarAsistentesActividad(@PathVariable("idUsuario") long idUsuario) {
     Map<String, Object> params = new HashMap<>();
