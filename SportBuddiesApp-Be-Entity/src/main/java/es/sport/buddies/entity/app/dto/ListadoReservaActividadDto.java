@@ -29,6 +29,8 @@ public class ListadoReservaActividadDto implements Serializable {
   
   private int orden;
   
+  private boolean paginaInicio;
+  
   private static final long serialVersionUID = 7339027390310558980L;
 
 }

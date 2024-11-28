@@ -3,7 +3,6 @@ package es.sport.buddies.entity.app.models.dao;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +17,10 @@ import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 
 public interface IReservaActividadDao extends JpaRepository<ReservaActividad, Long>, PagingAndSortingRepository<ReservaActividad, Long> {
 
+  public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipioAndUsuarioActividad_IdUsuarioNot(@Param("fechaReserva") Date fechaReserva,
+      @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio,
+      @Param("idUsuario") long idUsuario, Pageable pageable);
+  
   @EntityGraph(attributePaths = {"usuarioActividad"})
   public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipio(@Param("fechaReserva") Date fechaReserva,
       @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio, Pageable pageable);

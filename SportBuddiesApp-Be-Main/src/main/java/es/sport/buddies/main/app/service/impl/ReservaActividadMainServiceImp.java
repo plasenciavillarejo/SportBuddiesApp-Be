@@ -78,9 +78,10 @@ public class ReservaActividadMainServiceImp implements IReservaActividadMainServ
     Page<ReservaActividad> listPage = null;
     try {
       if(!listadoDto.getFechaReserva().isBefore(LocalDate.now())) {
-        listPage = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipio(
+        listPage = reservaActividadService.findByFechaReservaAndActividadAndProvinciaAndMunicipioAndUsuarioActividad_IdUsuarioNot(
             Date.from(listadoDto.getFechaReserva().atStartOfDay( ZoneOffset.UTC ).toInstant()),
-             listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio(), pageable);
+             listadoDto.getActividad(), listadoDto.getProvincia(), listadoDto.getMunicipio(),
+             listadoDto.getIdUsuario(), pageable);
                 
         LOGGER.info("Se procede agregar la información en el MAP");
         params.put("listActividad", listPage.getContent().stream().map(res -> IReservaActividadMapStruct.mapper.reservarActividadToDto(res)).toList());

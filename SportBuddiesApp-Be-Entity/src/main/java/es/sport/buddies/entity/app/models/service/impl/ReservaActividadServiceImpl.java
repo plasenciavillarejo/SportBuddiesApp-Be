@@ -3,7 +3,6 @@ package es.sport.buddies.entity.app.models.service.impl;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,15 @@ public class ReservaActividadServiceImpl implements IReservaActividadService {
 
   @Autowired
   private IReservaActividadDao reservaActividadDao;
-
+  
+  @Override
+  @Transactional(readOnly = true)
+  public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipioAndUsuarioActividad_IdUsuarioNot(
+      Date fechaReserva, String actividad, String provincia, String municipio, long idUsuario, Pageable pageable) {
+    return reservaActividadDao.findByFechaReservaAndActividadAndProvinciaAndMunicipioAndUsuarioActividad_IdUsuarioNot(fechaReserva, actividad, provincia, municipio,
+        idUsuario, pageable);
+  }
+  
   @Override
   @Transactional(readOnly = true)
   public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipio(Date fechaReserva,

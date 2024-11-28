@@ -75,7 +75,7 @@ public class ReservaActividadController {
       Pageable page = utilidades.configurarPageRequest(listadoDto.getPagina(), listadoDto.getTamanioPagina(), 
           listadoDto.getOrden(), listadoDto.getCampoOrden());
       
-      params = listadoDto.getIdUsuario() == 0 ? reservaActividadMainService.listadoReservaActividad(listadoDto, page)
+      params = listadoDto.isPaginaInicio() ? reservaActividadMainService.listadoReservaActividad(listadoDto, page)
           : reservaActividadMainService.listarReservaActividaPorId(listadoDto.getIdUsuario(),page);
     } catch (Exception e) {
       throw new ReservaException(e);

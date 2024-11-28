@@ -12,6 +12,10 @@ import es.sport.buddies.entity.app.models.entity.ReservaActividad;
 
 public interface IReservaActividadService {
 
+  public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipioAndUsuarioActividad_IdUsuarioNot(@Param("fechaReserva") Date fechaReserva,
+      @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio,
+      @Param("idUsuario") long idUsuario, Pageable pageable);
+  
   public Page<ReservaActividad> findByFechaReservaAndActividadAndProvinciaAndMunicipio(@Param("fechaReserva") Date fechaReserva,
       @Param("actividad") String actividad, @Param("provincia") String provincia, @Param("municipio") String municipio, Pageable pageable);
   

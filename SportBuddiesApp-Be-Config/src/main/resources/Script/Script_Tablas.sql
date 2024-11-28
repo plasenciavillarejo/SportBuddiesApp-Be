@@ -275,7 +275,7 @@ CREATE TABLE `reservas_actividad` (
   `requerimientos` json DEFAULT NULL,
   `usuarios_max_requeridos` bigint NOT NULL,
   `actividad` varchar(255) NOT NULL,
-  `usuario_actividad_fk` bigint NOT NULL,
+  `usuario_actividad_fk` bigint NOT NULL COMMENT 'ID del usuario que se ha inscrito en la actividad',
   `direccion` varchar(255) DEFAULT NULL,
   `provincia` varchar(255) DEFAULT NULL,
   `municipio` varchar(255) DEFAULT NULL,
