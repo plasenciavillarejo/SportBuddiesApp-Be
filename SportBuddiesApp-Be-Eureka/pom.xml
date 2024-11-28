@@ -6,31 +6,21 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>3.3.6</version>
+		<relativePath />
 	</parent>
+	
 	<groupId>es.sport.buddies.eureka.app</groupId>
 	<artifactId>SportBuddiesApp-Be-Eureka</artifactId>
 	<version>0.0.1</version>
 	<name>SportBuddiesApp-Be-Eureka</name>
 	<description>Proyecto para el descubrimiento de los demás servicios</description>
-	<url />
-	<licenses>
-		<license />
-	</licenses>
-	<developers>
-		<developer />
-	</developers>
-	<scm>
-		<connection />
-		<developerConnection />
-		<tag />
-		<url />
-	</scm>
+	
 	<properties>
 		<java.version>17</java.version>
-		<spring-cloud.version>2023.0.3</spring-cloud.version>
+		<spring-cloud.version>2023.0.4</spring-cloud.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
