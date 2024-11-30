@@ -1,6 +1,5 @@
 package es.sport.buddies.main.app.controllers;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import es.sport.buddies.entity.app.dto.CrearReservaActividadDto;
 import es.sport.buddies.entity.app.dto.InscripcionReservaActividadDto;
 import es.sport.buddies.entity.app.dto.ListadoReservaActividadDto;
-import es.sport.buddies.entity.app.dto.ReservaActividadDto;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.exceptions.CrearReservaException;
 import es.sport.buddies.main.app.exceptions.ReservaException;

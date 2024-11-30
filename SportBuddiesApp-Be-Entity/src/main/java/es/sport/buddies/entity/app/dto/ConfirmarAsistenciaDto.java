@@ -8,7 +8,13 @@ import lombok.Data;
 
 @Data
 public class ConfirmarAsistenciaDto implements Serializable {
+  
+  private long idUsuario;
+  
+  private long idReservaActividad;
 
+  private CaracteristicasPaginacionDto caracteristicasPaginacion;
+  
   private LocalDate fechaReserva;
   
   private LocalTime horaInicio;
@@ -18,9 +24,7 @@ public class ConfirmarAsistenciaDto implements Serializable {
   private String nombreUsuario;
   
   private String apellidoUsuario;
-  
-  private long idUsuario;
-  
+    
   private static final long serialVersionUID = 44855331688008910L;
 
 }

@@ -1,7 +1,6 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,24 +22,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Getter @Setter
-@Table(name = "codigo_verificacion")
-public class CodigoVerificacion implements Serializable {
+@Table(name = "confirmacion_usuarios")
+public class ConfirmacionUsuario implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id_codigo_verificacion")
-  private long idCodigoVerificacion;
-
-  @Column(name = "codigo", length = 10)
-  private String codigo;
-
-  @Column(name = "tiempo_expiracion")
-  private LocalDateTime tiempoExpiracion;
+  @Column(name = "id_confirmacion")
+  private long idConfirmacion;
   
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "usuario_fk", nullable = false)
   private Usuario usuario;
   
-  private static final long serialVersionUID = 2548016685745555611L;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "reserva_actividad_fk")
+  private ReservaActividad reservaActividad;
   
+  private static final long serialVersionUID = -353740012249140893L;
+
 }

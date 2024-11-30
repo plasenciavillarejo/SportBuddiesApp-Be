@@ -81,4 +81,15 @@ public class SportBuddieMainExceptionHandler {
     return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
   }
   
+  @ExceptionHandler(ConfirmarAsistenciaException.class)
+  public ResponseEntity<Object> handleConfirmarAsistenciaExceptions(ConfirmarAsistenciaException ex) {
+    String [] separaCadena = ex.getCause() != null ? ex.getCause().toString().split(":") : null;
+    AvisoErrorDto avisoErro = AvisoErrorDto.builder().localDate(new Date())
+        .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .mensaje(separaCadena[1])
+        .causa(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .build();
+    return new ResponseEntity<>(avisoErro, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+  
 }

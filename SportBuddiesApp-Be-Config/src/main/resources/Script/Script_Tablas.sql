@@ -540,3 +540,11 @@ INSERT INTO `usuario_plan_pago` VALUES (1,1,3,22,'2024-10-19'),(2,2,3,10,'2024-1
 UNLOCK TABLES;
 
 
+CREATE TABLE `confirmacion_usuarios` (
+ `id_confirmacion`  bigint NOT NULL AUTO_INCREMENT,
+ `usuario_fk` bigint NOT NULL COMMENT 'ID del Usuario que ha asistido a la actividad',
+ `reserva_actividad_fk` bigint NOT NULL COMMENT 'ID de la actividad al que ha asistido',
+ PRIMARY KEY (`id_confirmacion`),
+ FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario),
+ FOREIGN KEY (reserva_actividad_fk) REFERENCES reservas_actividad(id_reserva_actividad)
+);
