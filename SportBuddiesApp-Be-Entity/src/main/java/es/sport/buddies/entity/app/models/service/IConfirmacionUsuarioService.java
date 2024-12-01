@@ -10,6 +10,6 @@ public interface IConfirmacionUsuarioService {
 
   public void guardarConfirmacionUsuario(ConfirmacionUsuario confirmacionUsuario);
   
-  public List<Long> listarIdsUsuariosConfirmados(@Param("idUsuario") long idUsuario);
+  public List<Object[]> listarIdsUsuariosConfirmados(@Param("idUsuario") long idUsuario);
   
 }

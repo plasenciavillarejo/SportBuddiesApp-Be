@@ -24,7 +24,7 @@ public class ConfirmacionUsuarioServiceImpl implements IConfirmacionUsuarioServi
 
   @Override
   @Transactional(readOnly = true)
-  public List<Long> listarIdsUsuariosConfirmados(long idUsuario) {
+  public List<Object[]> listarIdsUsuariosConfirmados(long idUsuario) {
     return confirmacionUsuarioDao.listarIdsUsuariosConfirmados(idUsuario);
   }
 

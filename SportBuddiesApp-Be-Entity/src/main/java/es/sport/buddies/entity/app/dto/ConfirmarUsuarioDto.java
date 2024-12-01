@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import lombok.Data;
 
 @Data
-public class ConfirmarAsistenciaDto implements Serializable {
+public class ConfirmarUsuarioDto implements Serializable {
   
   private long idUsuario;
   

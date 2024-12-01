@@ -544,6 +544,9 @@ CREATE TABLE `confirmacion_usuarios` (
  `id_confirmacion`  bigint NOT NULL AUTO_INCREMENT,
  `usuario_fk` bigint NOT NULL COMMENT 'ID del Usuario que ha asistido a la actividad',
  `reserva_actividad_fk` bigint NOT NULL COMMENT 'ID de la actividad al que ha asistido',
+ `fecha_reserva` date DEFAULT NULL,
+ `hora_inicio` time DEFAULT NULL,
+ `hora_fin` time DEFAULT NULL,
  PRIMARY KEY (`id_confirmacion`),
  FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario),
  FOREIGN KEY (reserva_actividad_fk) REFERENCES reservas_actividad(id_reserva_actividad)

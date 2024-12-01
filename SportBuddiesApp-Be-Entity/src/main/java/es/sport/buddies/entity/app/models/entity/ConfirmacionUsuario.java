@@ -1,6 +1,8 @@
 package es.sport.buddies.entity.app.models.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +39,15 @@ public class ConfirmacionUsuario implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "reserva_actividad_fk")
   private ReservaActividad reservaActividad;
+  
+  @Column(name = "fecha_reserva")
+  private LocalDate fechaReserva;
+  
+  @Column(name = "hora_inicio")
+  private LocalTime horaInicio;
+  
+  @Column(name = "hora_fin")
+  private LocalTime horaFin;
   
   private static final long serialVersionUID = -353740012249140893L;
 

@@ -14,19 +14,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.sport.buddies.entity.app.dto.ConfirmarAsistenciaDto;
+import es.sport.buddies.entity.app.dto.ConfirmarUsuarioDto;
+import es.sport.buddies.entity.app.dto.UsuariosConfirmadosDto;
 import es.sport.buddies.main.app.exceptions.ConfirmarAsistenciaException;
-import es.sport.buddies.main.app.service.IConfirmarAsistenciaMainService;
+import es.sport.buddies.main.app.service.IConfirmarUsuarioMainService;
 
 @RestController
 @RequestMapping(value = "/confirmar-asistencia")
-public class ConfirmarAsistenciaController {
+public class ConfirmarUsuarioController {
   
   @Autowired
-  private IConfirmarAsistenciaMainService confirmarAsistenciaService;
+  private IConfirmarUsuarioMainService confirmarAsistenciaService;
   
   @GetMapping(value = "/usuarios")
-  public ResponseEntity<Object> listarAsistentesActividad(ConfirmarAsistenciaDto confirmarAsistenciaDto) throws ConfirmarAsistenciaException {
+  public ResponseEntity<Object> listarAsistentesActividad(ConfirmarUsuarioDto confirmarAsistenciaDto) throws ConfirmarAsistenciaException {
     Map<String, Object> params = new HashMap<>();
     try {
       params = confirmarAsistenciaService.listarUsuariosConfirmados(confirmarAsistenciaDto);
@@ -37,7 +38,7 @@ public class ConfirmarAsistenciaController {
   }
   
   @PostMapping(value = "/guardar")
-  public ResponseEntity<Object> guardarConfirmacionUsuario(@RequestBody ConfirmarAsistenciaDto confirmarAsistenciaDto) throws ConfirmarAsistenciaException {
+  public ResponseEntity<Object> guardarConfirmacionUsuario(@RequestBody ConfirmarUsuarioDto confirmarAsistenciaDto) throws ConfirmarAsistenciaException {
     try {
       confirmarAsistenciaService.almacenarConfirmacionUsuario(confirmarAsistenciaDto);
     } catch (Exception e) {
@@ -47,7 +48,7 @@ public class ConfirmarAsistenciaController {
   }
  
   @GetMapping(value = "/listadoIdConfirmados/{idUsuario}")
-  public ResponseEntity<List<Long>> listadoIdConfirmados(@PathVariable("idUsuario") long idUsuario) throws ConfirmarAsistenciaException {
+  public ResponseEntity<List<UsuariosConfirmadosDto>> listadoIdConfirmados(@PathVariable("idUsuario") long idUsuario) throws ConfirmarAsistenciaException {
     try {
       return new ResponseEntity<>(confirmarAsistenciaService.listIdConfirmados(idUsuario), HttpStatus.OK);
     } catch (Exception e) {
