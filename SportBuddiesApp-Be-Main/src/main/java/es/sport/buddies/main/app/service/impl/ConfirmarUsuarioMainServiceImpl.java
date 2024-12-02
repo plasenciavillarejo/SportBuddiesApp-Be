@@ -89,6 +89,7 @@ public class ConfirmarUsuarioMainServiceImpl implements IConfirmarUsuarioMainSer
           .fechaReserva(LocalDate.parse(String.valueOf(usu[1])))
           .horaInicio(LocalTime.parse(String.valueOf(usu[2])))
           .horaFin(LocalTime.parse(String.valueOf(usu[3])))
+          .actividad(String.valueOf(usu[4]))
           .build();
     }).toList();
   }

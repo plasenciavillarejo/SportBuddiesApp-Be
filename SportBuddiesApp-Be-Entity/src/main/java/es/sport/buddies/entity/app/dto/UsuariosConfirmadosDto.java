@@ -18,6 +18,8 @@ public class UsuariosConfirmadosDto implements Serializable {
   private LocalTime horaInicio;
 
   private LocalTime horaFin;
+  
+  private String actividad;
 
   private static final long serialVersionUID = -5415770705532731925L;
 

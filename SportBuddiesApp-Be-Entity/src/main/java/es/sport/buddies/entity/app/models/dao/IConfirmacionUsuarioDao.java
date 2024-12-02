@@ -10,7 +10,8 @@ import es.sport.buddies.entity.app.models.entity.ConfirmacionUsuario;
 
 public interface IConfirmacionUsuarioDao extends JpaRepository<ConfirmacionUsuario, Long> {
 
-  @Query(value = "select confUsu.usuario_fk, confUsu.fecha_reserva, confUsu.hora_inicio, confUsu.hora_fin"
+  @Query(value = "select confUsu.usuario_fk, confUsu.fecha_reserva, confUsu.hora_inicio, confUsu.hora_fin,"
+      + " resAct.actividad"
       + " FROM confirmacion_usuarios confUsu"
       + " INNER JOIN reservas_actividad resAct"
       + " ON confUsu.reserva_actividad_fk = resAct.id_reserva_actividad"
