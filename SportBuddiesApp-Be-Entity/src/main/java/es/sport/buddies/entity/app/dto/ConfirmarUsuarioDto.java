@@ -25,6 +25,8 @@ public class ConfirmarUsuarioDto implements Serializable {
   
   private String apellidoUsuario;
     
+  private String actividad;
+  
   private static final long serialVersionUID = 44855331688008910L;
 
 }

@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,8 @@ public class ConfirmarUsuarioMainServiceImpl implements IConfirmarUsuarioMainSer
     }
     Page<Object[]> resActividad = usuarioService.listaConfirmacion(ConfirmarUsuarioDto.getIdUsuario(), page);
     if(resActividad != null) {
-      params.put("listAsistencia", resActividad.getContent().stream().map(act -> {
+      
+      List<ConfirmarUsuarioDto> confUsuDto =  resActividad.getContent().stream().map(act -> {
         ConfirmarUsuarioDto con = new ConfirmarUsuarioDto();
         con.setFechaReserva(LocalDate.parse(String.valueOf(act[0]), 
             DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -63,8 +65,14 @@ public class ConfirmarUsuarioMainServiceImpl implements IConfirmarUsuarioMainSer
         con.setApellidoUsuario(String.valueOf(act[4]));
         con.setIdUsuario(Long.valueOf(String.valueOf(act[5])));
         con.setIdReservaActividad(Long.valueOf(String.valueOf(act[6])));
+        con.setActividad(String.valueOf(act[7]));
         return con;
-      }).toList());
+      }).toList();
+      
+      Map<String, List<ConfirmarUsuarioDto>> agrupado = confUsuDto.stream().collect(Collectors.groupingBy(usuDto -> 
+      usuDto.getActividad() + "|" + usuDto.getFechaReserva() + "|" + usuDto.getHoraInicio() + "|" + usuDto.getHoraFin() ));
+      
+      params.put("listAsistencia", agrupado);
       params.put("paginador", utilidades.configPaginator(page, resActividad));
     }
     return params;

@@ -60,7 +60,7 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
   public double findByIdReserva(@Param("idReservaUsuario") long idReservaUsuario);
 
   @Query(value = "select resUsu.fecha_reserva, resUsu.hora_inicio_reserva, resUsu.hora_fin_reserva,"
-      +" usu.nombre_usuario, usu.apellido, usu.id_usuario, resAct.id_reserva_actividad"
+      +" usu.nombre_usuario, usu.apellido, usu.id_usuario, resAct.id_reserva_actividad, resAct.actividad"
       +" from reservas_usuario resUsu"
       +" inner join reservas_actividad resAct"
       +" on resAct.id_reserva_actividad = resUsu.reserva_actividad_fk"
