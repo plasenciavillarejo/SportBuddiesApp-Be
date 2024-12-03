@@ -69,10 +69,13 @@ public class ConfirmarUsuarioMainServiceImpl implements IConfirmarUsuarioMainSer
         return con;
       }).toList();
       
-      Map<String, List<ConfirmarUsuarioDto>> agrupado = confUsuDto.stream().collect(Collectors.groupingBy(usuDto -> 
-      usuDto.getActividad() + "|" + usuDto.getFechaReserva() + "|" + usuDto.getHoraInicio() + "|" + usuDto.getHoraFin() ));
+      // Agrupamos en primer lugar por actividad y fecha, posteriormente creamos otro map donde su key sera la hora y su value, todos los usuarios que este inscritos a esa misma actividad.
+      Map<String, Map<LocalTime, List<ConfirmarUsuarioDto>>> agrupados = confUsuDto.stream()
+          .collect(Collectors.groupingBy(u -> u.getActividad() + " | " + u.getFechaReserva(),
+              Collectors.groupingBy(u -> u.getHoraInicio())
+          ));
       
-      params.put("listAsistencia", agrupado);
+      params.put("listAsistencia", agrupados);
       params.put("paginador", utilidades.configPaginator(page, resActividad));
     }
     return params;
