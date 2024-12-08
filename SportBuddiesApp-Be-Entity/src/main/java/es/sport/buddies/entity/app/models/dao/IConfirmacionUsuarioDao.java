@@ -18,7 +18,8 @@ public interface IConfirmacionUsuarioDao extends JpaRepository<ConfirmacionUsuar
       + " WHERE resAct.usuario_actividad_fk = :idUsuario"
         + " AND confUsu.fecha_reserva = resAct.fecha_reserva"
         + " AND SUBSTRING(confUsu.hora_inicio, 1, 5) = SUBSTRING(resAct.hora_inicio, 1, 5)"
-        + " AND SUBSTRING(confUsu.hora_fin, 1, 5) = SUBSTRING(resAct.hora_fin, 1, 5)", nativeQuery = true)
+        + " AND SUBSTRING(confUsu.hora_fin, 1, 5) = SUBSTRING(resAct.hora_fin, 1, 5)"
+        + " AND resAct.fecha_reserva >= CURRENT_DATE", nativeQuery = true)
   public List<Object[]> listarIdsUsuariosConfirmados(@Param("idUsuario") long idUsuario);
   
 }
