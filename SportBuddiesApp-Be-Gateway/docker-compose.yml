@@ -1,0 +1,8 @@
+services:
+  appinfoantenas:
+    image: sportbuddiesapp-be-eureka:0.0.1
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "8761:8761"
