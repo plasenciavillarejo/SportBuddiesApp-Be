@@ -23,6 +23,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -156,8 +158,8 @@ public class SecurityConfig {
             "/assets/**", "/clienteOauth/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
-        //.formLogin(Customizer.withDefaults())
-    .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
+       //.formLogin(Customizer.withDefaults())
+        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
             //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
@@ -321,6 +323,5 @@ public class SecurityConfig {
       }
     };
   }
-  
   
 }

@@ -53,7 +53,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		 		    				? ConstantesApp.ROLE+ role.getNombreRol() : role.getNombreRol()))
 		             .peek(authority -> LOGGER.info("Rol identificado {}, ", authority.getAuthority()))
 		             .toList();
-			LOGGER.info("Se ha localizado al usuario exitosamente, se procede almancenaro en el contexto de SpringSecurity");
+			LOGGER.info("Se ha localizado al usuario exitosamente, se procede almacenarlo en el contexto de SpringSecurity");
 			
 			UsernameAuthenticationDto userAuthentication = new UsernameAuthenticationDto(usuario,null, authorities);
 			UsuarioDto usuDto = new UsuarioDto();

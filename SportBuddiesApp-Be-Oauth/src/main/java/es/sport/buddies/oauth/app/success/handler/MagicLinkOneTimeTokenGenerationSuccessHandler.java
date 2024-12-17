@@ -18,11 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class MagicLinkOneTimeTokenGenerationSuccessHandler implements OneTimeTokenGenerationSuccessHandler {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(MagicLinkOneTimeTokenGenerationSuccessHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MagicLinkOneTimeTokenGenerationSuccessHandler.class);
   
-/*  private final OneTimeTokenGenerationSuccessHandler redirectHandler = new RedirectOneTimeTokenGenerationSuccessHandler(
+  private final OneTimeTokenGenerationSuccessHandler redirectHandler = new RedirectOneTimeTokenGenerationSuccessHandler(
       "/ott/sent");
-*/
+
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response, OneTimeToken oneTimeToken)
       throws IOException, ServletException {
@@ -30,10 +30,11 @@ public class MagicLinkOneTimeTokenGenerationSuccessHandler implements OneTimeTok
         .replacePath(request.getContextPath()).replaceQuery(null).fragment(null).path("/login/ott")
         .queryParam("token", oneTimeToken.getTokenValue());
     String magicLink = builder.toUriString();
-    LOGGER.info("Token generado para validar el inicio de sesión es: {}", oneTimeToken.getTokenValue());
-    
+    LOGGER.info("Token generado para validar el inicio de sesión es: {}", magicLink);    
     //String email = getUserEmail(oneTimeToken.getUsername());
     //this.mailSender.send(email, "Your Spring Security One Time Token", "Use the following link to sign in into the application: " + magicLink);
+    
+    response.sendRedirect("/login/ott?token=");
     //this.redirectHandler.handle(request, response, oneTimeToken);
   }
 
