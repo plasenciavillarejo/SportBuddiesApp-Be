@@ -56,6 +56,7 @@ import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSucce
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
+import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -155,10 +156,12 @@ public class SecurityConfig {
             "/assets/**", "/clienteOauth/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
-        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
+        //.formLogin(Customizer.withDefaults())
+    .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
             //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
+        .oneTimeTokenLogin(Customizer.withDefaults())
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
