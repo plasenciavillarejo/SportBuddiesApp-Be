@@ -36,8 +36,11 @@ public class MagicLinkOneTimeTokenGenerationSuccessHandler implements OneTimeTok
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response, OneTimeToken oneTimeToken)
       throws IOException, ServletException {
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
-        .replacePath(request.getContextPath()).replaceQuery(null).fragment(null).path("/login/validate-token")
+    UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(UrlUtils.buildFullRequestUrl(request))
+        .replacePath(request.getContextPath())
+        .replaceQuery(null)
+        .fragment(null)
+        .path("/login/validate-token")
         .queryParam("token", oneTimeToken.getTokenValue());
 
     Usuario usuario = usuarioService.findByNombreUsuario(oneTimeToken.getUsername());
