@@ -108,20 +108,21 @@ public class SecurityConfig {
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(Customizer.withDefaults());
-    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
-    // Enable OpenID Connect 1.0
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-    //.authorizationEndpoint(auth -> auth.consentPage(ConstantesApp.CUSTOMCONSENTPAGE))
-    .oidc(Customizer.withDefaults());
-        
-    http.exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()));
     
-    //  Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
-    http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
-            new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN),
-            new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+    // Enable OpenID Connect 1.0
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+        OAuth2AuthorizationServerConfigurer.authorizationServer()
+        .oidc(Customizer.withDefaults()); 
+    http
+    .cors(Customizer.withDefaults())
+        .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        .with(authorizationServerConfigurer, Customizer.withDefaults())
+        .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
+         // Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
+        .exceptionHandling((exceptions) -> exceptions.defaultAuthenticationEntryPointFor(
+              new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN),
+              new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
         // Aceptar tokens de acceso para información de usuario y/o registro de cliente
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
     return http.build();
