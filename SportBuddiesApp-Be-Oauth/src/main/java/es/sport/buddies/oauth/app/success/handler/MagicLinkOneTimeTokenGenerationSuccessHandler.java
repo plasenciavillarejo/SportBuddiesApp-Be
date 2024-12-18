@@ -34,7 +34,7 @@ public class MagicLinkOneTimeTokenGenerationSuccessHandler implements OneTimeTok
     //String email = getUserEmail(oneTimeToken.getUsername());
     //this.mailSender.send(email, "Your Spring Security One Time Token", "Use the following link to sign in into the application: " + magicLink);
     
-    response.sendRedirect("/login/ott?token=");
+    response.sendRedirect("/login/generate-token");
     //this.redirectHandler.handle(request, response, oneTimeToken);
   }
 

@@ -38,6 +38,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.ott.OneTimeTokenGenerationSuccessHandler;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -59,6 +60,7 @@ import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
 import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
+import es.sport.buddies.oauth.app.success.handler.MagicLinkOneTimeTokenGenerationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -149,13 +151,15 @@ public class SecurityConfig {
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
-  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, MagicLinkOneTimeTokenGenerationSuccessHandler magic) throws Exception {
     /* Cuando implemento un formulario propio, al loguear por google, la repuesta llega a '/error?continue', para poder enviar el code generado al servicio angular tengo que permitir
      * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
+     * Pasa lo mismo cuando implementamos el POST para /login/validate-token, se debe permitir todo para evitar que se quede sin redireccionar cuando termina
+     * el servicio en /login/generate-token/continue?
      */
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login","/error/**","/img/**", "/css/**",
-            "/assets/**", "/clienteOauth/**").permitAll()
+        .requestMatchers("/login/**","/error/**","/img/**", "/css/**",
+            "/assets/**", "/clienteOauth/**", "/login/generate-token/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
        //.formLogin(Customizer.withDefaults())
@@ -163,7 +167,16 @@ public class SecurityConfig {
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
             //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
-        .oneTimeTokenLogin(Customizer.withDefaults())
+        //.oneTimeTokenLogin(Customizer.withDefaults())
+        .oneTimeTokenLogin(ott -> ott
+            // Por defecto el filtro 'OneTimeTokenGenerationSuccessHandler' captura el PATH '/ott/generate', lo cambio por uno propio
+            .tokenGeneratingUrl("/login/filter-generate-token")
+            // Por defecto este servicio redirige a /login/ott que proporciona spring, lo cambio por uno propio
+            .defaultSubmitPageUrl("/login/generate-token")
+            // Para que spring no me proporcione la pagina le indica un false, he implemento yo la mia
+            .showDefaultSubmitPage(false)
+            // Cuando se envia el token el servicio POST por defecto es /login/ott, lo cambio por uno propio
+            .loginProcessingUrl("/login/validate-token"))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))

@@ -12,17 +12,21 @@
 <body>
 
 	<!-- flex-wrap: Para que los elementos dentro del contenedor puedan "envolverse" en lugar de forzar su alineación en una sola fila en pantallas pequeñas -->
-	<div class="container d-flex justify-content-between flex-wrap mt-5">
-		<form class="login-form" action="/login/ott" method="post">
-			<h2>Please input the token</h2>
+	<div class="container d-flex justify-content-center flex-wrap mt-5">
+	<div class="row">
+	<div class="col-12">
+		<span class=" alert alert-info mb-5 d-flex justify-content-center ">Se ha enviado un token a su correo, por favor, para continuar introduzcalo</span>
+		 <form class="form-signin m-auto mb-5 mt-5 " method="post" th:action="@{/login/validate-token}">
+			<h2 class="h3 mb-3 fw-normal">Por favor, introduzca el token enviado a su correo.</h2>
 			<p>
-				<label for="token" class="screenreader">Token</label> <input
+				<label for="token" class="screenreader">Token: </label> <input
 					type="text" id="token" name="token" value="" placeholder="Token"
 					required="true" autofocus="autofocus">
 			</p>
-			<button class="primary" type="submit">Sign in</button>
-
+			<button class="btn btn-primary btn-block d-flex justify-content-center" type="submit">Validar </button>
 		</form>
+		</div>
+		</div>
 	</div>
 
 </body>
