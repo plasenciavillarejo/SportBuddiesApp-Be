@@ -92,11 +92,10 @@
 					<hr class="flex-fill"
 						style="height: 1px; background-color: #000; margin: 0 10px;">
 				</div>
-				<form class="form-signin m-auto mb-5" method="post"
-					action="/webauthn/register">
+				<form class="form-signin m-auto mb-5" method="post" action="/webauthn/authenticate/options">
 					<input type="hidden" th:name="${_csrf.parameterName}"
 						th:value="${_csrf.token}">
-					<div class="d-flex justify-content-center">
+					<div class="d-flex justify-content-center mt-3">
 						<button
 							class="btn btn-lg btn-primary btn-block d-flex justify-content-center"
 							type="submit">Acceder con passkey</button>

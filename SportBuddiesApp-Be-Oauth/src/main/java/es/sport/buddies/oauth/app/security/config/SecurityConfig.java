@@ -154,11 +154,11 @@ public class SecurityConfig {
      */
     
     http
-    //.csrf(csrf -> csrf.disable())
+    .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/login/**","/error/**","/img/**", "/css/**",
             "/assets/**", "/clienteOauth/**", "/login/generate-token/**",
-            "/webauthn/**").permitAll()
+            "/webauthn/**","/passkeys/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
        //.formLogin(Customizer.withDefaults())
@@ -167,7 +167,7 @@ public class SecurityConfig {
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
             //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
-       /*  Configuración seguridad One-Time Token */
+       /* Configuración seguridad One-Time Token */
         .oneTimeTokenLogin(ott -> ott
             // Por defecto el filtro 'OneTimeTokenGenerationSuccessHandler' captura el PATH '/ott/generate', lo cambio por uno propio
             .tokenGeneratingUrl("/login/filter-generate-token")
@@ -180,7 +180,9 @@ public class SecurityConfig {
         /* Configuración seguridad para PASSKEYS */
         .webAuthn(webAuth -> webAuth.rpName("Spring Security Passkeys")
             .rpId("localhost")
-            .allowedOrigins("http://localhost:9000"))
+            .allowedOrigins("http://localhost:9000")
+            //.disableDefaultRegistrationPage(true)
+            )
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
