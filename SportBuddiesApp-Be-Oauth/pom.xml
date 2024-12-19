@@ -90,13 +90,24 @@
 		<!-- ################################################### -->
 		
 		<!-- INI: Dependencia para el envio de correo -->
-		<!-- ################################### -->
+		<!-- ######################################## -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<!-- FIN: Dependencia para el envio de correo -->
-		<!-- ################################### -->
+		<!-- ######################################## -->
+		
+		
+		<!-- INI: Dependencia para passkeys -->
+		<!-- ############################## -->	
+		<dependency>
+		    <groupId>com.webauthn4j</groupId>
+		    <artifactId>webauthn4j-core</artifactId>
+		    <version>0.28.3.RELEASE</version>
+		</dependency>
+		<!-- FIN: Dependencia para passkeys -->
+		<!-- ############################## -->			
 	</dependencies>
 
 	<dependencyManagement>

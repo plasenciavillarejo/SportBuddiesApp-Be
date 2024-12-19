@@ -23,8 +23,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -38,7 +36,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.ott.OneTimeTokenGenerationSuccessHandler;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -59,7 +56,6 @@ import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSucce
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
 import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
-import es.sport.buddies.oauth.app.success.handler.DobleFactorSuccessHandler;
 import es.sport.buddies.oauth.app.success.handler.MagicLinkOneTimeTokenGenerationSuccessHandler;
 
 @Configuration
@@ -108,13 +104,11 @@ public class SecurityConfig {
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-    
     // Enable OpenID Connect 1.0
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         OAuth2AuthorizationServerConfigurer.authorizationServer()
         .oidc(Customizer.withDefaults()); 
-    http
-    .cors(Customizer.withDefaults())
+    http.cors(Customizer.withDefaults())
         .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
         .with(authorizationServerConfigurer, Customizer.withDefaults())
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
@@ -155,20 +149,25 @@ public class SecurityConfig {
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, MagicLinkOneTimeTokenGenerationSuccessHandler magic) throws Exception {
     /* Cuando implemento un formulario propio, al loguear por google, la repuesta llega a '/error?continue', para poder enviar el code generado al servicio angular tengo que permitir
      * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
-     * Pasa lo mismo cuando implementamos el POST para /login/validate-token, se debe permitir todo para evitar que se quede sin redireccionar cuando termina
+     * Pasa lo mismo cuando implementamos el POST para /login/validate-token, se debe permitir para evitar que se quede sin redireccionar cuando termina
      * el servicio en /login/generate-token/continue?
      */
-    http.authorizeHttpRequests(authorize -> authorize
+    
+    http
+    //.csrf(csrf -> csrf.disable())
+    .authorizeHttpRequests(authorize -> authorize
         .requestMatchers("/login/**","/error/**","/img/**", "/css/**",
-            "/assets/**", "/clienteOauth/**", "/login/generate-token/**").permitAll()
+            "/assets/**", "/clienteOauth/**", "/login/generate-token/**",
+            "/webauthn/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
         .anyRequest().authenticated())
        //.formLogin(Customizer.withDefaults())
-        .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
+       //.oneTimeTokenLogin(Customizer.withDefaults())
+       .formLogin(form -> form.loginPage(ConstantesApp.LOGIN)
             // Para trabajar con el CLIENTE BE debemos comentar el successHandler 
             //.successHandler(new DobleFactorSuccessHandler())
             .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")))
-        //.oneTimeTokenLogin(Customizer.withDefaults())
+       /*  Configuración seguridad One-Time Token */
         .oneTimeTokenLogin(ott -> ott
             // Por defecto el filtro 'OneTimeTokenGenerationSuccessHandler' captura el PATH '/ott/generate', lo cambio por uno propio
             .tokenGeneratingUrl("/login/filter-generate-token")
@@ -178,10 +177,13 @@ public class SecurityConfig {
             .showDefaultSubmitPage(false)
             // Cuando se envia el token el servicio POST por defecto es /login/ott, lo cambio por uno propio
             .loginProcessingUrl("/login/validate-token"))
+        /* Configuración seguridad para PASSKEYS */
+        .webAuthn(webAuth -> webAuth.rpName("Spring Security Passkeys")
+            .rpId("localhost")
+            .allowedOrigins("http://localhost:9000"))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
-        .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()));
     return http.build();
@@ -202,7 +204,7 @@ public class SecurityConfig {
   }
    */
   
-  /* Configuración de nuestro cliente FRONT-END
+  /** Configuración de nuestro cliente FRONT-END
 	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server 
   @Bean
   RegisteredClientRepository registeredClientRepository() {
@@ -258,6 +260,7 @@ public class SecurityConfig {
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }
 */
+  
   @Bean
   JWKSource<SecurityContext> jwkSource() {
     KeyPair keyPair = generateRsaKey();
