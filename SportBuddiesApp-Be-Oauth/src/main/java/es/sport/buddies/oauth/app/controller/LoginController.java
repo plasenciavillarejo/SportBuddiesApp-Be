@@ -17,6 +17,7 @@ public class LoginController {
   @GetMapping(value = "/login")
   public String login(Model model) {
     model.addAttribute("aplicacionFront", ConstantesApp.APLICACIONANGULAR.concat("/nuevo-usuario"));
+    model.addAttribute("loginPasskey", ConstantesApp.APLICACIONANGULAR.concat("/login-passkey"));
     return "login";
   }
   
