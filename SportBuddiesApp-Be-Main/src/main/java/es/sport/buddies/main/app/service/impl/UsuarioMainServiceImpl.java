@@ -1,6 +1,8 @@
 package es.sport.buddies.main.app.service.impl;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.convert.map.struct.IUsuarioMapStruct;
 import es.sport.buddies.main.app.exceptions.UsuarioException;
 import es.sport.buddies.main.app.service.IUsuarioMainService;
+import es.sport.buddies.main.app.utils.Utilidades;
 
 @Service
 public class UsuarioMainServiceImpl implements IUsuarioMainService {
@@ -45,7 +48,8 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
       throw new UsuarioException("El correo indicado ya existe, por favor, vuelva a probar con otro.");
     }
     
-    usuarioDto.setPassword(bCryptPass.encode(usuarioDto.getPassword()));
+    usuarioDto.setPassword(usuarioDto.getPassword() != null ? bCryptPass.encode(usuarioDto.getPassword()) : 
+      bCryptPass.encode(Utilidades.generateSecureRandomPassword()));
     usuario = IUsuarioMapStruct.mapper.crearUsuarioEntity(usuarioDto);
     usuario.setRoles(Arrays.asList(roleServie.findByNombreRol("USER")));
     usuario.setEnabled(true);    
@@ -84,5 +88,5 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
   public UsuarioDto localizarUsuario(long idUsuario) throws UsuarioException {
     return IUsuarioMapStruct.mapper.usuarioToUsuarioDto(usuariosService.findById(idUsuario).orElse(null));
   }
-
+  
 }

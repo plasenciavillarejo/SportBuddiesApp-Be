@@ -1,5 +1,8 @@
 package es.sport.buddies.main.app.utils;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,6 +146,15 @@ public class Utilidades {
     configurarPaginador(paginador, pageable);
     paginador.setRegistros((int)listPage.getTotalElements());
     return paginador;
+  }
+  
+  public static String generateSecureRandomPassword() {
+    SecureRandom secureRandom = new SecureRandom();
+    byte[] randomBytes = new byte[16];
+    secureRandom.nextBytes(randomBytes);
+
+    // Convertir los bytes aleatorios a una cadena legible
+    return Base64.getUrlEncoder().encodeToString(randomBytes);
   }
   
 }
