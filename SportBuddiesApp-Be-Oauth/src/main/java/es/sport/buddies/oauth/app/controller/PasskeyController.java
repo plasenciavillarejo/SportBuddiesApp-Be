@@ -1,6 +1,10 @@
 package es.sport.buddies.oauth.app.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.webauthn4j.data.PublicKeyCredentialCreationOptions;
 
+import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
+import es.sport.buddies.entity.app.dto.ResponseCredentialDto;
 import es.sport.buddies.oauth.app.service.impl.PassKeyServiceImpl;
 
 @RestController
@@ -23,6 +29,12 @@ public class PasskeyController {
     return passkeyServiceImpl.generateRegistrationOptions(request);
   }
 
+  @PostMapping("/validar-registro")
+  public ResponseEntity<String> register(@RequestBody PasskeyCredentialDto credentialDto) throws IOException {
+      passkeyServiceImpl.validarRegistro(credentialDto);
+        return ResponseEntity.ok("Credencial procesada correctamente.");
+  }
+  
   /*
    * @PostMapping("/register/finish") public ResponseEntity<?>
    * finishRegistration(@RequestBody PasskeyRegistrationResponse response) { //
