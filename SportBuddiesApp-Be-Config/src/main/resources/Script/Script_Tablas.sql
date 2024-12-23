@@ -551,3 +551,17 @@ CREATE TABLE `confirmacion_usuarios` (
  FOREIGN KEY (usuario_fk) REFERENCES usuarios(id_usuario),
  FOREIGN KEY (reserva_actividad_fk) REFERENCES reservas_actividad(id_reserva_actividad)
 );
+
+
+
+
+CREATE TABLE usuarios_passkey (
+ `id_usuario_passkey` bigint NOT NULL AUTO_INCREMENT,
+ `usuarios_fk` bigint NOT NULL,
+ `credencial_id` VARCHAR(255) NOT NULL,
+ `llave_publica` VARCHAR(255) NOT NULL,
+ `algoritmo` VARCHAR(20) NOT NULL,
+ `fechaCreacion` date NOT NULL,
+ PRIMARY KEY (`id_usuario_passkey`),
+ FOREIGN KEY (`usuarios_fk`) REFERENCES usuarios(id_usuario)
+);

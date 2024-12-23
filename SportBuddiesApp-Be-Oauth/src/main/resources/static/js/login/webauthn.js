@@ -52,6 +52,9 @@
   async function isConditionalMediationAvailable() {
     return !!(window.PublicKeyCredential && window.PublicKeyCredential.isConditionalMediationAvailable && await window.PublicKeyCredential.isConditionalMediationAvailable());
   }
+  
+  
+  
   async function authenticate(headers, contextPath, useConditionalMediation) {
     let options;
     try {
@@ -117,6 +120,8 @@
     }
     return authenticationResponse.redirectUrl;
   }
+  
+  
   async function register(headers, contextPath, label) {
     if (!label) {
       throw new Error("Error: Passkey Label is required");

@@ -17,4 +17,6 @@ public class PasskeyCredentialDto {
   
   private Object clientExtensionResults;
   
+  private String nombreUsuario;
+  
 }
