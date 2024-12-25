@@ -1,36 +1,28 @@
 package es.sport.buddies.oauth.app.service.impl;
 
-import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.webauthn4j.converter.AttestationObjectConverter;
+import com.webauthn4j.converter.AuthenticatorDataConverter;
 import com.webauthn4j.converter.CollectedClientDataConverter;
 import com.webauthn4j.converter.util.ObjectConverter;
 import com.webauthn4j.data.AttestationConveyancePreference;
@@ -70,11 +62,13 @@ public class PassKeyServiceImpl {
   // Convertidores de la librería webauthn4j
   private final AttestationObjectConverter attestationObjectConverter;
   private final CollectedClientDataConverter clientDataConverter;
+  private final AuthenticatorDataConverter authenticatorDataConverter;
   
   public PassKeyServiceImpl () {
  // Inicializar los convertidores de objetos
     this.attestationObjectConverter = new AttestationObjectConverter(new ObjectConverter());
     this.clientDataConverter = new CollectedClientDataConverter(new ObjectConverter());
+    this.authenticatorDataConverter = new AuthenticatorDataConverter(new ObjectConverter());
   }
   
   private static final Logger LOGGER = LoggerFactory.getLogger(PassKeyServiceImpl.class);
@@ -189,14 +183,13 @@ public class PassKeyServiceImpl {
     if (loginPassKeyNavigationDto.getCredentialId() == null) {
       throw new RuntimeException("Credencial no encontrada");
     }
-    
     // Validar el challenge recibido, 
     if (!validateChallenge(loginPassKeyNavigationDto.getChallangeGenerateBe(), ConstantesApp.CODECHALLENGEBE)) {
       throw new RuntimeException("El challenge no es válido");
     }
 
-    // Validar la firma utilizando la clave pública almacenada
-    PublicKey publicKey = decodificarLlavePublicaBe(usuPass.get().getLlavePublica());
+    // Obtenemos la llave publica almacenada en BBDD
+    PublicKey publicKey = decodificarLlavePublicaBe(usuPass.get().getLlavePublica().replace('-', '+').replace('_', '/').replace("=", ""));
 
     // Verificar la firma de la autenticación
     boolean signatureValid = verifySignature(publicKey, loginPassKeyNavigationDto.getAuthenticatorData(),
@@ -214,41 +207,38 @@ public class PassKeyServiceImpl {
   }
 
   
-  private boolean verifySignature(PublicKey publicKey, String authenticatorData, String clientDataJSON,
+  private boolean verifySignature(PublicKey publicKey, String authenticatorData, String clientDataJson,
       String signature) {
     try {
-      // Convertir la firma de URL-safe Base64 a Base64 estándar
-      String base64Signature = signature.replace('-', '+').replace('_', '/');
+      byte[] decodedAuthenticatorData = convertirBase64UrlDecode(authenticatorData);
+      byte[] decodedClientDataJson = convertirBase64UrlDecode(clientDataJson);
+      byte[] decodedSignature = convertirBase64UrlDecode(signature);  // Decodifica directamente
 
-      // Asegurarse de que la firma tenga la longitud correcta (múltiplo de 4)
-      int paddingLength = (4 - base64Signature.length() % 4) % 4;
-      base64Signature += "=".repeat(paddingLength);
-
-      // Decodificar la firma con Base64 estándar
-      byte[] decodedSignature = Base64.getDecoder().decode(base64Signature);  // Aquí usas la firma ya convertida
-
-      LOGGER.info("Firma decodificada: {}" , Arrays.toString(decodedSignature));
-
-      // Verificar la firma
+      if (decodedAuthenticatorData.length == 0 || decodedClientDataJson.length == 0 || decodedSignature.length == 0) {
+          throw new IllegalArgumentException("No se pueden enviar datos nulos o vacíos.");
+      }
       Signature sig = Signature.getInstance("SHA256withECDSA");
       sig.initVerify(publicKey);
       
-      LOGGER.info("Datos de autenticación: {}" , authenticatorData);
-      LOGGER.info("Datos del cliente: {}" , clientDataJSON);
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] clientDataHash = digest.digest(decodedClientDataJson);
 
-      // Usamos los datos en su formato binario, por eso convertimos a bytes
-      sig.update(authenticatorData.getBytes(StandardCharsets.UTF_8)); // En este caso el 'authenticatorData' es un String
-      sig.update(clientDataJSON.getBytes(StandardCharsets.UTF_8));    // Lo mismo para 'clientDataJSON'
+      byte[] signedData = ByteBuffer.allocate(decodedAuthenticatorData.length + clientDataHash.length)
+          .put(decodedAuthenticatorData)
+          .put(clientDataHash)
+          .array();
 
-      boolean isValid = sig.verify(decodedSignature);
-      LOGGER.info("Resultado de la verificación: " + isValid);
-      return isValid;
+      sig.update(signedData);
+
+      LOGGER.info("Validación Firma: {}", sig.verify(decodedSignature));
+      return sig.verify(decodedSignature);
+      
     } catch (Exception e) {
-      throw new RuntimeException("Error al verificar la firma", e);
+      LOGGER.error(e.getMessage(),e.getCause());
+      return false; // O lanza una excepción personalizada
     }
   }
-  
-  
+    
   /**
    * Decodificamos la llave publica 
    * @param base64PublicKey
@@ -256,11 +246,9 @@ public class PassKeyServiceImpl {
    * @throws Exception
    */
   private PublicKey decodificarLlavePublicaBe(String base64PublicKey) throws Exception {
-    /*byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
+    byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
     KeyFactory keyFactory = KeyFactory.getInstance("EC");
-    return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));*/
-    return reconstruiLlavePublica(new BigInteger("15418210193393438647361277688816180959016573880402153664484426201424376283833"),
-        new BigInteger("114369761407809951100245863160254984994447130994177379634978877816733271057570"));
+    return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
   }
   
   public String generateChallengeLogin() {
@@ -283,10 +271,32 @@ public class PassKeyServiceImpl {
     return new DefaultChallenge(challengeBytes);
   }
  
+  /**
+   * Función encargada de recibir una cadena string y convertila en byte[]
+   * @param base64Url
+   * @return
+   */
   private String base64UrlToBase64(String base64Url) {
-    return base64Url.replace('-', '+').replace('_', '/');
+    return base64Url.replace("-", "+").replace("_", "/");
   }
 
+  /**
+   * Función encargada de recibir una cadena string y convertila en byte[]
+   * @param base64UrlEncoded
+   * @return
+   
+  private static byte[] convertirBase64UrlDecode(String base64UrlEncoded) {
+    return Base64.getDecoder().decode(base64UrlEncoded.replace("-", "+").replace("_", "/"));
+  }
+  */
+  private static byte[] convertirBase64UrlDecode(String base64UrlEncoded) {
+    if (base64UrlEncoded == null || base64UrlEncoded.isEmpty()) {
+          return new byte[0];
+      }
+      return Base64.getUrlDecoder().decode(base64UrlEncoded);
+  }
+  
+  /*
   private PublicKey reconstruiLlavePublica(BigInteger x, BigInteger y) throws NoSuchAlgorithmException, InvalidParameterSpecException, InvalidKeySpecException {
     ECPoint point = new ECPoint(x, y);
     // Obtener el ECParameterSpec para la curva "secp256r1"
@@ -297,5 +307,5 @@ public class PassKeyServiceImpl {
     KeyFactory keyFactory = KeyFactory.getInstance("EC");
     return keyFactory.generatePublic(publicKeySpec);
   }
-  
+  */
 }
