@@ -137,26 +137,21 @@ public class PassKeyServiceImpl {
     if (attestationObject.getAuthenticatorData().getAttestedCredentialData() != null) {
       ECPublicKey publicKey = (ECPublicKey) attestationObject.getAuthenticatorData().getAttestedCredentialData()
           .getCOSEKey().getPublicKey();
-      
-      LOGGER.info("Llave X: {}", publicKey.getW().getAffineX());
-      LOGGER.info("Llave Y: {}", publicKey.getW().getAffineY());
-      // curva("P-256")
       UsuarioPassKey usuPassKey = UsuarioPassKey.builder()
           .usuarios(usuario)
           .llavePublica(Base64.getEncoder().encodeToString(publicKey.getEncoded()))
-          .credencialId(base64UrlToBase64(Base64.getEncoder()
-              .encodeToString(attestationObject.getAuthenticatorData()
-                  .getAttestedCredentialData().getCredentialId())).replace("==", ""))
+          .credencialId(base64UrlToBase64(Base64.getEncoder().encodeToString(attestationObject.getAuthenticatorData()
+                  .getAttestedCredentialData().getCredentialId())))
           .algoritmo(attestationObject.getAuthenticatorData().getAttestedCredentialData()
               .getCOSEKey().getAlgorithm().toString())
           .fechaCreacion(LocalDate.now())
           .build();  
-      
-      LOGGER.info("Almacenando al usuario passkesy: {}", usuPassKey);
       try {
+        LOGGER.info("Se procede almacenar al usuario-passkesy: {}", usuPassKey);
         usuarioPasskeyService.guardarUsuarioPasskeys(usuPassKey);
+        LOGGER.info("Usuario-Passkey almacenado exitosamente");
       } catch (Exception e) {
-        throw new Error("No se ha podido almacenar correctamente el passkey");
+        throw new Error("No se ha podido almacenar correctamente al usuario-passkey.");
       }
     } else {
       throw new IllegalArgumentException("El attestationObject no contiene datos de clave pública.");
@@ -199,7 +194,7 @@ public class PassKeyServiceImpl {
       throw new RuntimeException("Firma inválida");
     }
 
-    return true;
+    return signatureValid;
   }
 
   private boolean validateChallenge(String challengeFromFrontend, String challengeBe) {
@@ -227,12 +222,8 @@ public class PassKeyServiceImpl {
           .put(decodedAuthenticatorData)
           .put(clientDataHash)
           .array();
-
       sig.update(signedData);
-
-      LOGGER.info("Validación Firma: {}", sig.verify(decodedSignature));
       return sig.verify(decodedSignature);
-      
     } catch (Exception e) {
       LOGGER.error(e.getMessage(),e.getCause());
       return false; // O lanza una excepción personalizada
@@ -277,7 +268,9 @@ public class PassKeyServiceImpl {
    * @return
    */
   private String base64UrlToBase64(String base64Url) {
-    return base64Url.replace("-", "+").replace("_", "/");
+    return base64Url.replace("-", "+")
+        .replace("_", "/")
+        .replace("==", "");
   }
 
   /**
