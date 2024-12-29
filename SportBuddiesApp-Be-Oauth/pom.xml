@@ -106,8 +106,16 @@
 		    <artifactId>webauthn4j-core</artifactId>
 		    <version>0.28.3.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.webauthn4j</groupId>
+			<artifactId>webauthn4j-spring-security-core</artifactId>
+			<version>0.10.0.RELEASE</version>
+			<scope>runtime</scope>
+		</dependency>
 		<!-- FIN: Dependencia para passkeys -->
-		<!-- ############################## -->			
+		<!-- ############################## -->
+					
 	</dependencies>
 
 	<dependencyManagement>

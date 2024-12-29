@@ -16,4 +16,5 @@ public class LoginPassKeyNavigationDto {
   private String clientDataJson;
   
   private String signature;
+  
 }

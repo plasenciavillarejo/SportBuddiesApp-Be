@@ -151,8 +151,7 @@ public class SecurityConfig {
      * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
      * Pasa lo mismo cuando implementamos el POST para /login/validate-token, se debe permitir para evitar que se quede sin redireccionar cuando termina
      * el servicio en /login/generate-token/continue?
-     */
-    
+     */    
     http
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authorize -> authorize
