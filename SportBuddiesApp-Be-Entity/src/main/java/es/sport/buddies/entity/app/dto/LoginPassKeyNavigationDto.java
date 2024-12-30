@@ -17,4 +17,6 @@ public class LoginPassKeyNavigationDto {
   
   private String signature;
   
+  private String urlRedirect;
+  
 }

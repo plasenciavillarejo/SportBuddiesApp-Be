@@ -20,6 +20,7 @@ import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
 import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
 import es.sport.buddies.oauth.app.service.impl.PassKeyServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/passkeys")
@@ -47,8 +48,7 @@ public class PasskeyController {
   public ResponseEntity<Object> validateLogin(@RequestBody LoginPassKeyNavigationDto loginPassKeyNavigationDto) throws Exception {
     return new ResponseEntity<>(passkeyServiceImpl.validateAssertion(loginPassKeyNavigationDto), HttpStatus.OK);
   }
-  
-  
+
   /*
    * @PostMapping("/register/finish") public ResponseEntity<?>
    * finishRegistration(@RequestBody PasskeyRegistrationResponse response) { //

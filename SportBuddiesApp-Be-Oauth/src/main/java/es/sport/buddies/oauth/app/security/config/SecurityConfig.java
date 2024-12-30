@@ -24,6 +24,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -99,6 +101,11 @@ public class SecurityConfig {
   @Bean
   AuthenticationSuccessHandler authSuccesHandler() {
     return new SavedRequestAwareAuthenticationSuccessHandler();
+  }
+  
+  @Bean
+  OAuth2AuthorizationService authorizationService() {
+      return new InMemoryOAuth2AuthorizationService(); 
   }
   
   @Bean

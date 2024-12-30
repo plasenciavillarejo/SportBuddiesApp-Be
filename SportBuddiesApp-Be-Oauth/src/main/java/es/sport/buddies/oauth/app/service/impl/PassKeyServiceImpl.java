@@ -4,20 +4,26 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +35,27 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -54,14 +80,20 @@ import com.webauthn4j.data.client.challenge.Challenge;
 import com.webauthn4j.data.client.challenge.DefaultChallenge;
 import com.webauthn4j.util.Base64UrlUtil;
 
+import es.sport.buddies.entity.app.dto.ClientesOauthDto;
 import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
 import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
 import es.sport.buddies.entity.app.models.dao.IUsuariosDao;
+import es.sport.buddies.entity.app.models.entity.ClientesOauth;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPassKey;
+import es.sport.buddies.entity.app.models.service.IClientesOauthService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPassKeyService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
+import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class PassKeyServiceImpl {
@@ -76,19 +108,31 @@ public class PassKeyServiceImpl {
   private UserDetailsService userDetailService;
 
   @Autowired
-  private RestTemplate clienteRest;
-
+  private IClientesOauthService clientOauthService;
+  
+  @Autowired
+  private OAuth2AuthorizationService authorizationService;
+  
+  @Autowired
+  private HttpServletRequest request;
+  
+  @Autowired
+  private HttpServletResponse response;
+  
+  private FederatedIdentityAuthenticationSuccessHandler succesHandler;
+  
+  @Autowired
+  private RestTemplate clientRest;
+  
   // Convertidores de la librería webauthn4j
   private final AttestationObjectConverter attestationObjectConverter;
   private final CollectedClientDataConverter clientDataConverter;
-
-  private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  private static final int CODE_VERIFIER_LENGTH = 44;
 
   public PassKeyServiceImpl() {
     // Inicializar los convertidores de objetos
     this.attestationObjectConverter = new AttestationObjectConverter(new ObjectConverter());
     this.clientDataConverter = new CollectedClientDataConverter(new ObjectConverter());
+    this.succesHandler = new FederatedIdentityAuthenticationSuccessHandler();
   }
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PassKeyServiceImpl.class);
@@ -211,7 +255,50 @@ public class PassKeyServiceImpl {
       if (!signatureValid) {
         throw new RuntimeException("Firma inválida");
       }
+      
+      UserDetails userDetails = userDetailService.loadUserByUsername(usuPass.get().getUsuarios().getNombreUsuario());
+      Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      
+      Optional<ClientesOauth>  cli = clientOauthService.findByClientId("client-angular");
 
+      RegisteredClient registeredClient = toRegisteredClient(cli.get());
+      
+      // 6. Generar el código de autorización manualmente
+      OAuth2AuthorizationCode authorizationCode = new OAuth2AuthorizationCode(
+              UUID.randomUUID().toString(), //  <- Genera el código aquí
+              Instant.now(),
+              Instant.now().plus(Duration.ofMinutes(5))); // Ajusta la duración según tus necesidades
+            
+      OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization.withRegisteredClient(registeredClient)
+          .principalName(authentication.getName())
+          .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) // <- importante
+          .authorizedScopes(registeredClient.getScopes())
+          .id(registeredClient.getClientId())
+          .token(authorizationCode);
+      
+      // Genera el código
+      //authorizationBuilder.token(authorizationCode);
+      
+      OAuth2Authorization authorization = authorizationBuilder.build();
+      
+      authorizationService.save(authorization);
+      LOGGER.info("TOKEN:  {}", authorization);
+      
+      //realizarLoginUsuario(authorizationCode.getTokenValue(), "");
+      
+      
+      /*
+      Map<String, Object> attributes = new HashMap<>();
+      attributes.put("username", authentication.getName());
+      attributes.put("authorities", authentication.getAuthorities());
+      
+      OAuth2User principal = new DefaultOAuth2User(authentication.getAuthorities(),attributes,"username");
+      OAuth2AuthenticationToken oAuth2Token = new OAuth2AuthenticationToken(principal,authentication.getAuthorities(),registeredClient.getClientId());
+      
+      OidcUser oidcUser = (OidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      succesHandler.onAuthenticationSuccess(request, response, oAuth2Token);
+      */
     }
     return signatureValid;
   }
@@ -317,8 +404,7 @@ public class PassKeyServiceImpl {
     return Base64.getUrlDecoder().decode(base64UrlEncoded);
   }
 
-  /*
-  public void realizarLoginUsuario(UsuarioPassKey usuPass, LoginPassKeyNavigationDto loginPassKeyNavigationDto) {
+  public void realizarLoginUsuario(String code, String codeVerifier) {
     try {
    
       // Enviar la solicitud de autorización para obtener el código
@@ -333,14 +419,16 @@ public class PassKeyServiceImpl {
       // Body
       MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
       body.add("grant_type", "authorization_code");
-      body.add("redirect_uri", "http://127.0.0.1:8090/authorized");
-      body.add("code", generateAuthorizationCode());
+      body.add("client_id", "client-angular");
+      body.add("redirect_uri", "http://localhost:4200/authorize");
+      body.add("code", code);
+      body.add("code_verifier", codeVerifier);
 
       try {
-        headers.setBasicAuth("gateway-app", "12345"); // Equivalente a btoa en Angular
+        headers.setBasicAuth("client-angular", "12345"); // Equivalente a btoa en Angular
         // Crear la solicitud HTTP
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
-        responseDos = clienteRest.exchange(url, HttpMethod.POST, requestEntity,
+        responseDos = clientRest.exchange(url, HttpMethod.POST, requestEntity,
             new ParameterizedTypeReference<Map<String, Object>>() {
             });
       } catch (Exception e) {
@@ -357,26 +445,47 @@ public class PassKeyServiceImpl {
       LOGGER.error("Error en la validación del usuario");
     }
   }
-
-  public String generateAuthorizationCode() {
-    // Generamos un código de autorización aleatorio
-    SecureRandom random = new SecureRandom();
-    byte[] codeBytes = new byte[32]; // 32 bytes es una longitud típica para el código de autorización
-    random.nextBytes(codeBytes);
-
-    // Convertimos el código en base64-url para cumplir con el estándar
-    return Base64.getUrlEncoder().withoutPadding().encodeToString(codeBytes);
+  
+  
+  private ClientesOauth clienteOauthDtoToEntity (ClientesOauthDto clientOauthDto) {
+    ClientesOauth cli = new ClientesOauth();
+    cli.setIdClienteOauth(clientOauthDto.getIdClienteOauth());
+    cli.setClientId(clientOauthDto.getClientId());
+    cli.setClientSecret(clientOauthDto.getClientSecret());
+    cli.setClientName(clientOauthDto.getClientName());
+    cli.setAuthenticationMethods(String.join(",", clientOauthDto.getAuthenticationMethods()));
+    cli.setAuthorizationGrantTypes(String.join(",", clientOauthDto.getAuthorizationGrantTypes()));
+    cli.setRedirectUris(String.join(",", clientOauthDto.getRedirectUris()));
+    cli.setPostLogoutRedirectUris(String.join(",", clientOauthDto.getPostLogoutRedirectUris()));
+    cli.setScopes(String.join(",", clientOauthDto.getScopes()));
+    cli.setTimeAccesToken(clientOauthDto.getTimeAccesToken());
+    cli.setTimeRefrehsToken(clientOauthDto.getTimeRefrehsToken());
+    return cli;
   }
-
-  //Método para generar el code challenge de PKCE
-  private String generateCodeChallenge(String codeVerifier) {
-    try {
-      MessageDigest digest = MessageDigest.getInstance("SHA-256");
-      byte[] hash = digest.digest(codeVerifier.getBytes(StandardCharsets.UTF_8));
-      return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException("Error al generar el hash SHA-256", e);
-    }
+  
+  private RegisteredClient toRegisteredClient(ClientesOauth client){ 
+    RegisteredClient.Builder builder = RegisteredClient.withId(client.getClientId())
+            .clientId(client.getClientId())
+            .clientSecret(client.getClientSecret())
+            .clientName(client.getClientName())
+            .clientIdIssuedAt(new Date().toInstant())
+            .clientAuthenticationMethods(am -> am.addAll(Arrays.stream(client.getAuthenticationMethods().split(","))
+                .map(ClientAuthenticationMethod::new).collect(Collectors.toSet())))
+            .authorizationGrantTypes(auth -> auth.addAll(Arrays.stream(client.getAuthorizationGrantTypes().split(","))
+                .map(AuthorizationGrantType::new).collect(Collectors.toSet())))
+            .redirectUris(redirect -> redirect.addAll(Arrays.stream(client.getRedirectUris().split(","))
+                .map(String::new).collect(Collectors.toSet())))
+            .postLogoutRedirectUris(logout -> logout.addAll(Arrays.stream(client.getPostLogoutRedirectUris().split(","))
+                .map(String::new).collect(Collectors.toSet())))
+            .scopes(sc -> sc.addAll(Arrays.stream(client.getScopes().split(","))
+                .map(String::new).collect(Collectors.toSet())))
+            .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(client.getTimeAccesToken()))
+                .refreshTokenTimeToLive(Duration.ofDays(client.getTimeRefrehsToken())).build())
+            .clientSettings(ClientSettings
+                    .builder()
+                    .requireAuthorizationConsent(false)
+                    .build());
+    return builder.build();
   }
-*/
+  
 }
