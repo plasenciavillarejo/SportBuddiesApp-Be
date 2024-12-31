@@ -272,11 +272,16 @@ public class SecurityConfig {
   @Bean
   JWKSource<SecurityContext> jwkSource() {
     KeyPair keyPair = generateRsaKey();
+    // Necesitamos obtener la llave para poder generar el token de forma local cuando se trabaja con passkeys
+    ConstantesApp.keyOauth = keyPair;
     RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
     exportPublicKey(publicKey);
     RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+    // Necesitamos obtener el mismo UUID para poder generar el token de forma local cuando se trabaja con passkeys
+    ConstantesApp.uuidOauth = UUID.randomUUID().toString();
     // Está llave va a quedar registrada en el BE
-    RSAKey rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(UUID.randomUUID().toString()).build();
+    RSAKey rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey)
+        .keyID(ConstantesApp.uuidOauth ).build();
     JWKSet jwkSet = new JWKSet(rsaKey);
     return new ImmutableJWKSet<>(jwkSet);
   }

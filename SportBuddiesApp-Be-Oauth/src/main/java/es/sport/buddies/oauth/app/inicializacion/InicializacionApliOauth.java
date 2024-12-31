@@ -42,6 +42,9 @@ public class InicializacionApliOauth {
 	@Value("${sportbuddies.fe}")
 	private String aplicacionFront;
 	
+	@Value("${issuer.uri.validate.token}")
+	private String issuerUriToken;
+	
 	@PostConstruct
 	public void init() {
 		
@@ -66,6 +69,8 @@ public class InicializacionApliOauth {
 	  ConstantesApp.CLIENTSECRETANGULAR = clientSecretAngular;
 		
 	  ConstantesApp.APLICACIONANGULAR = aplicacionFront;
+	  
+	  ConstantesApp.ISSUERVALIDATETOKEN = issuerUriToken;
 	  
 	}
 	

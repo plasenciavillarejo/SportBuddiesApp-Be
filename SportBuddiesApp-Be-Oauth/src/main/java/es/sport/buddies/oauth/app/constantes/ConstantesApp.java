@@ -1,5 +1,7 @@
 package es.sport.buddies.oauth.app.constantes;
 
+import java.security.KeyPair;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -61,5 +63,11 @@ public class ConstantesApp {
   public static final String UTF8 = "UTF-8";
   
   public static String CODECHALLENGEBE = "";
+ 
+  public static KeyPair keyOauth = null;
+  
+  public static String uuidOauth = null;
+  
+  public static String ISSUERVALIDATETOKEN = ""; 
   
 }
