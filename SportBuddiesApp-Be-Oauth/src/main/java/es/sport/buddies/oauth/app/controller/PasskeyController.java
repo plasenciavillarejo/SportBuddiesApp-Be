@@ -19,8 +19,8 @@ import com.webauthn4j.data.PublicKeyCredentialCreationOptions;
 import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
 import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
+import es.sport.buddies.oauth.app.exceptions.PasskeyException;
 import es.sport.buddies.oauth.app.service.impl.PassKeyServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/passkeys")
@@ -30,7 +30,7 @@ public class PasskeyController {
   private PassKeyServiceImpl passkeyServiceImpl;
 
   @PostMapping(value = "/register")
-  public ResponseEntity<PublicKeyCredentialCreationOptions> startRegistration(@RequestBody PasskeyDto request) {
+  public ResponseEntity<PublicKeyCredentialCreationOptions> startRegistration(@RequestBody PasskeyDto request) throws PasskeyException {
     return new ResponseEntity<>(passkeyServiceImpl.generateRegistrationOptions(request), HttpStatus.OK);
   }
 
@@ -45,34 +45,8 @@ public class PasskeyController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Object> validateLogin(@RequestBody LoginPassKeyNavigationDto loginPassKeyNavigationDto) throws Exception {
+  public ResponseEntity<Object> validateLogin(@RequestBody LoginPassKeyNavigationDto loginPassKeyNavigationDto) throws PasskeyException {
     return new ResponseEntity<>(passkeyServiceImpl.validateAssertion(loginPassKeyNavigationDto), HttpStatus.OK);
   }
 
-  /*
-   * @PostMapping("/register/finish") public ResponseEntity<?>
-   * finishRegistration(@RequestBody PasskeyRegistrationResponse response) { //
-   * Valida la respuesta de registro
-   * passkeyService.validateRegistrationResponse(response); return
-   * ResponseEntity.ok("Passkey registrada con éxito"); }
-   */
-  
-  /*
-  
-  @PostMapping("/authenticate")
-public PublicKeyCredentialRequestOptions startAuthentication(@RequestBody AuthRequest request) {
-    // Genera opciones de autenticación
-    PublicKeyCredentialRequestOptions options = passkeyService.generateAuthenticationOptions(request);
-    return options;
-}
-
-@PostMapping("/authenticate/finish")
-public ResponseEntity<?> finishAuthentication(@RequestBody AuthResponse response) {
-    // Valida la respuesta de autenticación
-    passkeyService.validateAuthenticationResponse(response);
-    return ResponseEntity.ok("Autenticación exitosa");
-}
-  
-  
-  */
 }

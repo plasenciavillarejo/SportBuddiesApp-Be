@@ -61,8 +61,6 @@ public class ConstantesApp {
   public static final String CODIFOVERIFICACION = "Codigo Verificación";
  
   public static final String UTF8 = "UTF-8";
-  
-  public static String CODECHALLENGEBE = "";
  
   public static KeyPair keyOauth = null;
   

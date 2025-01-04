@@ -553,8 +553,6 @@ CREATE TABLE `confirmacion_usuarios` (
 );
 
 
-
-
 CREATE TABLE usuarios_passkey (
  `id_usuario_passkey` bigint NOT NULL AUTO_INCREMENT,
  `usuarios_fk` bigint NOT NULL,
@@ -565,3 +563,11 @@ CREATE TABLE usuarios_passkey (
  PRIMARY KEY (`id_usuario_passkey`),
  FOREIGN KEY (`usuarios_fk`) REFERENCES usuarios(id_usuario)
 );
+
+
+CREATE TABLE code_challange (
+ `id_code_challange` bigint NOT NULL AUTO_INCREMENT,
+ `code_challange` VARCHAR(255) NOT NULL,
+ PRIMARY KEY (`id_code_challange`)
+ );
+

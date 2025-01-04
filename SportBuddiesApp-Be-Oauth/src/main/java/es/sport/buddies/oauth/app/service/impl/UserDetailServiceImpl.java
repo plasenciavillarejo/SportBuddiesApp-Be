@@ -70,7 +70,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
               .idUsuario(usuario.getIdUsuario())
               .build())
           .build();
-			
+			// PLASENCIA - COMENTADO MOMENTANEAMENTE PARA EVITAR EL ENVIO DE CORREOS EN EL INICIO DE SESIÓN
 			//guardarCodigoVerificacion(codVerif, usuario);
 			
 			return new User(usuario.getNombreUsuario(),usuario.getPassword(),usuario.getEnabled(),true,true,true,authorities);

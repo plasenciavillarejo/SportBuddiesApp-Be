@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.webauthn4j.converter.AttestationObjectConverter;
 import com.webauthn4j.converter.CollectedClientDataConverter;
@@ -49,11 +49,17 @@ import com.webauthn4j.util.Base64UrlUtil;
 import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
 import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
+import es.sport.buddies.entity.app.models.dao.ICodeChallangeDao;
 import es.sport.buddies.entity.app.models.dao.IUsuariosDao;
+import es.sport.buddies.entity.app.models.entity.CodeChallange;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPassKey;
+import es.sport.buddies.entity.app.models.service.ICodeChallangeService;
+import es.sport.buddies.entity.app.models.service.IRoleService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPassKeyService;
+import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
+import es.sport.buddies.oauth.app.exceptions.PasskeyException;
 
 @Service
 public class PassKeyServiceImpl {
@@ -71,7 +77,16 @@ public class PassKeyServiceImpl {
   private JwtServiceImpl jwtServieImpl;
   
   @Autowired
-  private RestTemplate clientRest;
+  private BCryptPasswordEncoder bCryptPass;
+  
+  @Autowired
+  private IRoleService roleService;
+  
+  @Autowired
+  private IUsuarioService usuariosService;
+  
+  @Autowired
+  private ICodeChallangeService codeChallangeService;
   
   // Convertidores de la librería webauthn4j
   private final AttestationObjectConverter attestationObjectConverter;
@@ -85,7 +100,25 @@ public class PassKeyServiceImpl {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PassKeyServiceImpl.class);
 
-  public PublicKeyCredentialCreationOptions generateRegistrationOptions(PasskeyDto request) {
+  /**
+   * Función encargada de generar un passkeys para el inicio de la aplicación.
+   * @param request
+   * @return
+   * @throws PasskeyException
+   */
+  public PublicKeyCredentialCreationOptions generateRegistrationOptions(PasskeyDto request) throws PasskeyException {
+    
+    LOGGER.info("Validando si el usuario tiene una cuenta creada...");
+
+    Usuario usuario = Optional.ofNullable(usuarioDao.findByNombreUsuario(request.getUsername()))
+        .or(() -> Optional.ofNullable(usuarioDao.findByEmail(request.getUsername())))
+        .orElseGet(() -> {
+            LOGGER.info("El usuario no existe, procediendo a crear uno nuevo.");
+            return crearUsuario(request.getUsername());
+        });
+
+    guardarUsuario(usuario);
+    
     return new PublicKeyCredentialCreationOptions(new PublicKeyCredentialRpEntity(request.getRpId(), "SportBuddiesApp"),
         new PublicKeyCredentialUserEntity(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8),
             request.getUsername(), request.getDisplayName()),
@@ -176,9 +209,11 @@ public class PassKeyServiceImpl {
    * @param authenticatorData
    * @param signature
    * @return
+   * @throws PasskeyException 
    * @throws Exception
    */
-  public Map<String, String> validateAssertion(LoginPassKeyNavigationDto loginPassKeyNavigationDto) throws Exception {
+  public Map<String, String> validateAssertion(LoginPassKeyNavigationDto loginPassKeyNavigationDto)
+      throws PasskeyException {
     LOGGER.info("Se procede a obtener la credential_id en el caso de que el usuario este registrado");
     Optional<UsuarioPassKey> usuPass = Optional
         .ofNullable(usuarioPasskeyService.findByCredencialId(loginPassKeyNavigationDto.getCredentialId()));
@@ -188,27 +223,34 @@ public class PassKeyServiceImpl {
       if (loginPassKeyNavigationDto.getCredentialId() == null) {
         throw new RuntimeException("Credencial no encontrada");
       }
+      CodeChallange codeChallange = codeChallangeService.findByCodeChallange(loginPassKeyNavigationDto.getChallangeGenerateBe());
       // Validar el challenge recibido,
-      if (!validateChallenge(loginPassKeyNavigationDto.getChallangeGenerateBe(), ConstantesApp.CODECHALLENGEBE)) {
-        throw new RuntimeException("El challenge no es válido");
+      if (!validateChallenge(loginPassKeyNavigationDto.getChallangeGenerateBe(), codeChallange.getCodeChallange())) {
+        throw new PasskeyException("El challenge no es válido");
       }
-
+      LOGGER.info("Procediendo a borrar el code-challange validado");
+      codeChallangeService.eliminarCodeChallangeValidado(codeChallange.getIdCodeChallange());
+      LOGGER.info("Registro borrado exitosamente");
+      
+      PublicKey publicKey = null;
+      try {
+        publicKey = decodificarLlavePublicaBe(usuPass.get().getLlavePublica()
+            .replace("-", "+").replace("_", "/").replace("=", ""));
+      } catch (Exception e) {
+        throw new PasskeyException("Error en la decodificacion de la firma");
+      }
       // Obtenemos la llave publica almacenada en BBDD
-      PublicKey publicKey = decodificarLlavePublicaBe(
-          usuPass.get().getLlavePublica().replace("-", "+")
-          .replace("_", "/")
-          .replace("=", ""));
 
       // Verificar la firma de la autenticación
       signatureValid = verifySignature(publicKey, loginPassKeyNavigationDto.getAuthenticatorData(),
           loginPassKeyNavigationDto.getClientDataJson(), loginPassKeyNavigationDto.getSignature());
 
       if (!signatureValid) {
-        throw new RuntimeException("Firma inválida");
+        throw new PasskeyException("Firma inválida");
       }
       // Volvemos a validar al usuari para aseguranos de que es correcto.
       UserDetails userDetails = userDetailService.loadUserByUsername(usuPass.get().getUsuarios().getNombreUsuario());
-      
+
       tokenGenerado = Map.ofEntries(
           Map.entry("access_token",
               jwtServieImpl.generateToken(usuPass.get().getUsuarios().getNombreUsuario(), ConstantesApp.CLIENTIDANGULAR,
@@ -219,6 +261,11 @@ public class PassKeyServiceImpl {
                   ConstantesApp.CLIENTIDANGULAR,
                   userDetails.getAuthorities().stream().map(rol -> rol.getAuthority()).toList(),
                   Arrays.asList("openid", "profile"), usuPass.get().getUsuarios().getIdUsuario())));
+    } else {
+      LOGGER.error("La credencial {}, no se encuentra registrada en la aplicación.",
+          loginPassKeyNavigationDto.getCredentialId());
+      throw new PasskeyException("Las credenciales proporcionadas no están registradas en nuestro sistema. "
+          + "Le invitamos a crear una cuenta para acceder a la aplicación.");
     }
     return tokenGenerado;
   }
@@ -276,9 +323,16 @@ public class PassKeyServiceImpl {
     return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
   }
 
+  /**
+   * Función encargada de genrera el code Challange que será enviado al front que posteriormente se validara
+   * con el login para validar que es correcto.
+   * @return
+   */
   public String generateChallengeLogin() {
-    ConstantesApp.CODECHALLENGEBE = Base64.getUrlEncoder().withoutPadding().encodeToString(generateChallengeBytes());
-    return ConstantesApp.CODECHALLENGEBE;
+    CodeChallange codeChallange = CodeChallange.builder().codeChallange(
+        Base64.getUrlEncoder().withoutPadding().encodeToString(generateChallengeBytes())).build();
+    codeChallangeService.guardarCodeChallange(codeChallange);
+    return codeChallange.getCodeChallange();
   }
 
   private byte[] generateChallengeBytes() {
@@ -324,4 +378,33 @@ public class PassKeyServiceImpl {
     return Base64.getUrlDecoder().decode(base64UrlEncoded);
   }
    
+  /**
+   * Función encargada de crear un usuario en el caso de que no exista cuando se registra por passkeys
+   * @param username
+   * @return
+   */
+  private Usuario crearUsuario(String username) {
+    byte[] randomBytes = new byte[16];
+    new SecureRandom().nextBytes(randomBytes);
+
+    return Usuario.builder().nombreUsuario(username)
+        .password(bCryptPass.encode(Base64.getUrlEncoder().encodeToString(randomBytes)))
+        .roles(Arrays.asList(roleService.findByNombreRol("USER"))).enabled(Boolean.TRUE).build();
+  }
+  
+  /**
+   * Función para almacenar al usu
+   * @param usuario
+   * @throws UsuarioException
+   */
+  public void guardarUsuario(Usuario usuario) throws PasskeyException {
+    try {
+      LOGGER.info("Se procede a guardar al usuario");
+      usuariosService.guardarUsuario(usuario);
+      LOGGER.info("Usuario guardado correctamente");
+    } catch (Exception e) {
+      throw new PasskeyException(e);
+    }
+  }
+  
 }
