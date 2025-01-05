@@ -93,6 +93,10 @@ public class ConfirmarUsuarioMainServiceImpl implements IConfirmarUsuarioMainSer
     }
   }
 
+  /**
+   * Función encargada de retornar los usuaris confirmado con la fecha >= al día actual, En caso de que sea 
+   * menor, devolverá un array vacío.
+   */
   @Override
   public List<UsuariosConfirmadosDto> listIdConfirmados(long idUsuario) {
     return confirmacionUsuarioService.listarIdsUsuariosConfirmados(idUsuario).stream().map(usu -> {

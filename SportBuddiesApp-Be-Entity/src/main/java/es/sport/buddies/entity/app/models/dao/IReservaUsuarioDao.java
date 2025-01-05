@@ -68,7 +68,8 @@ public interface IReservaUsuarioDao extends JpaRepository<ReservaUsuario, Long> 
       +" inner join usuarios usu"
       +" on resUsu.usuario_reserva_fk = usu.id_usuario"
       +" where resUsu.abonado = 1"
-      +" and resAct.usuario_actividad_fk = :idUsuario")  
+      +" and resAct.usuario_actividad_fk = :idUsuario"
+      +" and resAct.fecha_reserva >= CURRENT_DATE")  
   public Page<Object[]> listaConfirmacion(@Param("idUsuario") long idUsuario , Pageable pageable);
   
 }
