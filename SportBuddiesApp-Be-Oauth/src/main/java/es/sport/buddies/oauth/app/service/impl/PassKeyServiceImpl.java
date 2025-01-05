@@ -49,7 +49,6 @@ import com.webauthn4j.util.Base64UrlUtil;
 import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
 import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
-import es.sport.buddies.entity.app.models.dao.ICodeChallangeDao;
 import es.sport.buddies.entity.app.models.dao.IUsuariosDao;
 import es.sport.buddies.entity.app.models.entity.CodeChallange;
 import es.sport.buddies.entity.app.models.entity.Usuario;
@@ -224,8 +223,9 @@ public class PassKeyServiceImpl {
         throw new RuntimeException("Credencial no encontrada");
       }
       CodeChallange codeChallange = codeChallangeService.findByCodeChallange(loginPassKeyNavigationDto.getChallangeGenerateBe());
+      
       // Validar el challenge recibido,
-      if (!validateChallenge(loginPassKeyNavigationDto.getChallangeGenerateBe(), codeChallange.getCodeChallange())) {
+      if (!loginPassKeyNavigationDto.getChallangeGenerateBe().equalsIgnoreCase(codeChallange.getCodeChallange())) {
         throw new PasskeyException("El challenge no es válido");
       }
       LOGGER.info("Procediendo a borrar el code-challange validado");
@@ -270,10 +270,6 @@ public class PassKeyServiceImpl {
     return tokenGenerado;
   }
 
-  private boolean validateChallenge(String challengeFromFrontend, String challengeBe) {
-    return challengeFromFrontend.equalsIgnoreCase(challengeBe);
-  }
-
   /**
    * Función encargada de validar el clientDataJson y el authenticatodData
    * mediante la clave publica enviada al BE.
@@ -289,7 +285,7 @@ public class PassKeyServiceImpl {
     try {
       byte[] decodedAuthenticatorData = convertirBase64UrlDecode(authenticatorData);
       byte[] decodedClientDataJson = convertirBase64UrlDecode(clientDataJson);
-      byte[] decodedSignature = convertirBase64UrlDecode(signature); // Decodifica directamente
+      byte[] decodedSignature = convertirBase64UrlDecode(signature);
 
       if (decodedAuthenticatorData.length == 0 || decodedClientDataJson.length == 0 || decodedSignature.length == 0) {
         throw new IllegalArgumentException("No se pueden enviar datos nulos o vacíos.");
@@ -330,28 +326,26 @@ public class PassKeyServiceImpl {
    */
   public String generateChallengeLogin() {
     CodeChallange codeChallange = CodeChallange.builder().codeChallange(
-        Base64.getUrlEncoder().withoutPadding().encodeToString(generateChallengeBytes())).build();
+        Base64.getUrlEncoder().withoutPadding()
+        .encodeToString(generateChallengeBytes()))
+        .build();
     codeChallangeService.guardarCodeChallange(codeChallange);
     return codeChallange.getCodeChallange();
   }
 
+  private Challenge generateChallenge() {
+    return new DefaultChallenge(generateChallengeBytes());
+  }
+  
   private byte[] generateChallengeBytes() {
     SecureRandom random = new SecureRandom();
     byte[] challengeBytes = new byte[32];
-    random.nextBytes(challengeBytes); // Llena los bytes con valores aleatorios
+    random.nextBytes(challengeBytes);
     return challengeBytes;
   }
 
-  private Challenge generateChallenge() {
-    SecureRandom random = new SecureRandom();
-    byte[] challengeBytes = new byte[32];
-    // Llena challengeBytes con datos aleatorios.
-    random.nextBytes(challengeBytes);
-    return new DefaultChallenge(challengeBytes);
-  }
-
   /**
-   * Función encargada de recibir una cadena string y convertila en byte[]
+   * Función encargada 
    * 
    * @param base64Url
    * @return
@@ -362,14 +356,8 @@ public class PassKeyServiceImpl {
 
   /**
    * Función encargada de recibir una cadena string y convertila en byte[]
-   * 
    * @param base64UrlEncoded
    * @return
-   * 
-   *         private static byte[] convertirBase64UrlDecode(String
-   *         base64UrlEncoded) { return
-   *         Base64.getDecoder().decode(base64UrlEncoded.replace("-",
-   *         "+").replace("_", "/")); }
    */
   private static byte[] convertirBase64UrlDecode(String base64UrlEncoded) {
     if (base64UrlEncoded == null || base64UrlEncoded.isEmpty()) {
@@ -386,7 +374,6 @@ public class PassKeyServiceImpl {
   private Usuario crearUsuario(String username) {
     byte[] randomBytes = new byte[16];
     new SecureRandom().nextBytes(randomBytes);
-
     return Usuario.builder().nombreUsuario(username)
         .password(bCryptPass.encode(Base64.getUrlEncoder().encodeToString(randomBytes)))
         .roles(Arrays.asList(roleService.findByNombreRol("USER"))).enabled(Boolean.TRUE).build();
@@ -397,7 +384,7 @@ public class PassKeyServiceImpl {
    * @param usuario
    * @throws UsuarioException
    */
-  public void guardarUsuario(Usuario usuario) throws PasskeyException {
+  private void guardarUsuario(Usuario usuario) throws PasskeyException {
     try {
       LOGGER.info("Se procede a guardar al usuario");
       usuariosService.guardarUsuario(usuario);

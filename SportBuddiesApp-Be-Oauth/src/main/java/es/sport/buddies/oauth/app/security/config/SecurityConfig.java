@@ -125,7 +125,10 @@ public class SecurityConfig {
               new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
         .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
         // Aceptar tokens de acceso para información de usuario y/o registro de cliente
-        .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
+        .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()))
+        // Configuración para acceder mediante certificado digital
+        .x509(cert -> cert.subjectPrincipalRegex("CN=(.*?),")
+            .userDetailsService(usu()));
     return http.build();
   }
 
@@ -185,7 +188,7 @@ public class SecurityConfig {
             .loginProcessingUrl("/login/validate-token"))
         /* Configuración seguridad para PASSKEYS */
         .webAuthn(webAuth -> webAuth.rpName("Spring Security Passkeys")
-            .rpId("localhost")
+            .rpId("SportBuddiesApp")
             .allowedOrigins("http://localhost:9000")
             //.disableDefaultRegistrationPage(true)
             )
