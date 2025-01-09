@@ -1,6 +1,5 @@
 package es.sport.buddies.oauth.app.controller;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.webauthn4j.data.PublicKeyCredentialCreationOptions;
 
 import es.sport.buddies.entity.app.dto.LoginPassKeyNavigationDto;
@@ -35,7 +32,7 @@ public class PasskeyController {
   }
 
   @PostMapping("/validar-registro")
-  public ResponseEntity<Object> register(@RequestBody PasskeyCredentialDto credentialDto) throws StreamReadException, DatabindException, IOException {
+  public ResponseEntity<Object> register(@RequestBody PasskeyCredentialDto credentialDto) throws PasskeyException  {
     return new ResponseEntity<>(Map.of("response", passkeyServiceImpl.validarRegistro(credentialDto)), HttpStatus.OK);
   }
   

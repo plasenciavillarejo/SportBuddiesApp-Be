@@ -281,7 +281,7 @@ CREATE TABLE `reservas_actividad` (
   `municipio` varchar(255) DEFAULT NULL,
   `codigo_postal` bigint DEFAULT NULL,
   `urgencia` varchar(20) DEFAULT NULL,
-  `abono_pista` decimal(5,2) DEFAULT NULL,
+  `abono_pista` decimal(10,2) DEFAULT NULL,
   `plazas_restantes` bigint DEFAULT NULL,
   PRIMARY KEY (`id_reserva_actividad`),
   KEY `fk_usuario_actividad` (`usuario_actividad_fk`),

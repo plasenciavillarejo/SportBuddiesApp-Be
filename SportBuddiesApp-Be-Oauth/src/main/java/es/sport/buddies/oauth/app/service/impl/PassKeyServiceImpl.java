@@ -4,10 +4,12 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.interfaces.ECPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -152,8 +154,9 @@ public class PassKeyServiceImpl {
    * 
    * @param credentialDto
    * @return
+   * @throws PasskeyException 
    */
-  public String validarRegistro(PasskeyCredentialDto credentialDto) {
+  public String validarRegistro(PasskeyCredentialDto credentialDto) throws PasskeyException {
     LOGGER.info("Validando la existencia del usuario: {}", credentialDto.getNombreUsuario());
 
     Usuario usuario = Optional.ofNullable(usuarioDao.findByNombreUsuario(credentialDto.getNombreUsuario()))
@@ -173,7 +176,7 @@ public class PassKeyServiceImpl {
 
     // Validar los datos de clientData
     if (!clientData.getType().getValue().equalsIgnoreCase("webauthn.create")) {
-      throw new IllegalArgumentException("El tipo de clientData no es válido.");
+      throw new PasskeyException("El tipo de clientData no es válido.");
     }
 
     if (attestationObject.getAuthenticatorData().getAttestedCredentialData() != null) {
@@ -191,7 +194,7 @@ public class PassKeyServiceImpl {
         usuarioPasskeyService.guardarUsuarioPasskeys(usuPassKey);
         LOGGER.info("Usuario-Passkey almacenado exitosamente");
       } catch (Exception e) {
-        throw new Error("No se ha podido almacenar correctamente al usuario-passkey.");
+        throw new PasskeyException("No se ha podido almacenar correctamente al usuario-passkey.");
       }
     } else {
       throw new IllegalArgumentException("El attestationObject no contiene datos de clave pública.");
@@ -220,7 +223,7 @@ public class PassKeyServiceImpl {
     Map<String, String> tokenGenerado = new HashMap<>();
     if (usuPass.isPresent()) {
       if (loginPassKeyNavigationDto.getCredentialId() == null) {
-        throw new RuntimeException("Credencial no encontrada");
+        throw new PasskeyException("Credencial no encontrada");
       }
       CodeChallange codeChallange = codeChallangeService.findByCodeChallange(loginPassKeyNavigationDto.getChallangeGenerateBe());
       
@@ -239,7 +242,6 @@ public class PassKeyServiceImpl {
       } catch (Exception e) {
         throw new PasskeyException("Error en la decodificacion de la firma");
       }
-      // Obtenemos la llave publica almacenada en BBDD
 
       // Verificar la firma de la autenticación
       signatureValid = verifySignature(publicKey, loginPassKeyNavigationDto.getAuthenticatorData(),
@@ -248,6 +250,7 @@ public class PassKeyServiceImpl {
       if (!signatureValid) {
         throw new PasskeyException("Firma inválida");
       }
+      
       // Volvemos a validar al usuari para aseguranos de que es correcto.
       UserDetails userDetails = userDetailService.loadUserByUsername(usuPass.get().getUsuarios().getNombreUsuario());
 
@@ -311,9 +314,11 @@ public class PassKeyServiceImpl {
    * 
    * @param base64PublicKey
    * @return
+   * @throws InvalidKeySpecException 
+   * @throws NoSuchAlgorithmException 
    * @throws Exception
    */
-  private PublicKey decodificarLlavePublicaBe(String base64PublicKey) throws Exception {
+  private PublicKey decodificarLlavePublicaBe(String base64PublicKey) throws InvalidKeySpecException, NoSuchAlgorithmException  {
     byte[] decodedKey = Base64.getDecoder().decode(base64PublicKey);
     KeyFactory keyFactory = KeyFactory.getInstance("EC");
     return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
