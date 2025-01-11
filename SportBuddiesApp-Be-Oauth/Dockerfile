@@ -1,6 +1,5 @@
 # Usar una imagen con Maven y OpenJDK
-FROM maven:3.8.1-openjdk-17-slim
-
+#FROM maven:3.8.1-openjdk-17-slim
 
 # La variante -slim está basada en Debian y tiene apt-get disponible.
 FROM openjdk:17.0.2-jdk-slim
@@ -19,6 +18,9 @@ COPY pom.xml ./
 COPY .mvn ./.mvn
 COPY mvnw ./
 
+# Copiamos el settings.xml
+COPY settings.xml /root/.m2/settings.xml
+
 # Cambiar permisos para el archivo mvnw
 RUN chmod +x mvnw
 
@@ -29,7 +31,7 @@ RUN ./mvnw clean package -Dmaven-test-skip -Dmaven.main.skip -Dspring-boot.repac
 COPY src ./src
 
 # Compilar el proyecto saltando los test
-#RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # Exponer el puerto 9000
 EXPOSE 9000

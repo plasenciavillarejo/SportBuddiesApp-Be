@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>es.sport.buddies.entity.app</groupId>
 			<artifactId>SportBuddiesApp-Be-Entity</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- FIN: Dependencia Aplicaciones -->
 		<!-- ############################# -->
@@ -157,12 +157,20 @@
 		</plugins>
 	</build>
 
+	<!-- ## Se indica el repositior del sportBuddiesEntity donde esta ubicado dentro de nexus ## -->
 	<repositories>
 		<repository>
-			<id>local-repo</id>
-			<url>file://${user.home}/.m2/repository</url>
+			<id>nexus-snapshots</id>
+			<url>http://host.docker.internal:8081/repository/SportBuddiesEntityApp/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
+
 
 
 </project>

@@ -13,7 +13,7 @@
 	
 	<groupId>es.sport.buddies.entity.app</groupId>
 	<artifactId>SportBuddiesApp-Be-Entity</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>SportBuddiesApp-Be-Entity</name>
 	<description>Proyecto encargado de almacenar todos los objetos que contiene
 		la BBDD</description>
@@ -54,7 +54,19 @@
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-databind</artifactId>
 		</dependency>
-
 	</dependencies>
+
+	<!-- ### Configuración Nexus ### -->
+	<!-- ########################### -->
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
+		</snapshotRepository>
+	</distributionManagement> 
 
 </project>
