@@ -75,6 +75,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.30</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Se agrega el cliente para poder trabajar con google -->
@@ -170,7 +171,5 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
-
 
 </project>

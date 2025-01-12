@@ -13,10 +13,10 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 
-@Configuration
-/* Forzamos que cargue antes el @PostConstruct, ya que al tener el filtro JwtAuthenticationFilter con un constructor, por defecto va a cargar 
+/*@Configuration
+ Forzamos que cargue antes el @PostConstruct, ya que al tener el filtro JwtAuthenticationFilter con un constructor, por defecto va a cargar 
  * antes que el @PostConstruct y el valor de ConstantesMain.FICHERPEMPLUBLIKEY no contiene el valor asigando de forma externa
-*/
+
 @DependsOn("inicializacion")
 public class JwtDecoderConfig {
 
@@ -38,4 +38,4 @@ public class JwtDecoderConfig {
     }
   }
 
-}
+}*/

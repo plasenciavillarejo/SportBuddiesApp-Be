@@ -1,8 +1,12 @@
 services:
   appinfoantenas:
-    image: sportbuddiesapp-be-eureka:0.0.1
+    image: sportbuddiesapp-be-gateway:0.0.1
     build:
       context: ./
       dockerfile: ./Dockerfile
     ports:
-      - "8761:8761"
+      - "8090:8090"
+    volumes:
+      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
+    environment:
+      BBDD_DOCKER: host.docker.internal

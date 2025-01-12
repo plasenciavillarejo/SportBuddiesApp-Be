@@ -18,7 +18,7 @@ public class Inicializacion {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
-	@Value("${pass.public.key}")
+	//@Value("${pass.public.key}")
   private String publicKey;
 
   @Value("${paypal.client.id}")

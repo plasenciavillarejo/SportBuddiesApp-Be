@@ -30,7 +30,7 @@ COPY src ./src
 # Compilar el proyecto saltando los test
 RUN ./mvnw clean package -DskipTests
 
-# Exponer el puerto 8090
-EXPOSE 8090
+# Exponer el puerto 8100
+EXPOSE 8100
 
-ENTRYPOINT ["java", "-jar", "target/SportBuddiesApp-Be-Gateway-0.0.1.jar"]
+ENTRYPOINT ["java", "-jar", "target/SportBuddiesApp-Be-Main-0.0.1.jar"]

@@ -1,0 +1,12 @@
+services:
+  appinfoantenas:
+    image: sportbuddiesapp-be-main:0.0.1
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "8100:8100"
+    volumes:
+      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
+    environment:
+      BBDD_DOCKER: host.docker.internal

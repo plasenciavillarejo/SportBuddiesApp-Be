@@ -36,14 +36,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConstantesMain.LOGGUERMAIN);
     
     @Autowired
-    private final JwtDecoder jwtDecoder;
-
-    @Autowired
     private IUsuarioService usuarioService;
     
+    /*
+    @Autowired
+    private final JwtDecoder jwtDecoder;
+
     public JwtAuthenticationFilter(JwtDecoder jwtDecoder) {
         this.jwtDecoder = jwtDecoder;
     }
+     */
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
