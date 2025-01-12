@@ -1,0 +1,69 @@
+services:
+  sportbuddies-app-eureka-server:
+    image: sportbuddiesapp-be-eureka:0.0.1
+    container_name: SportBuddiesApp-Be-Eureka-Server
+    build:
+       context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
+       dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-be-oauth:
+    image: sportbuddiesapp-be-oauth:0.0.1
+    container_name: SportBuddiesApp-Be-Oauth
+    build:
+      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
+      dockerfile: ./Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
+    environment:
+      BBDD_DOCKER: host.docker.internal
+      EUREKA_DOCKER: host.docker.internal
+    depends_on:
+      - sportbuddies-app-eureka-server     
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-be-gateway:
+    image: sportbuddiesapp-be-gateway:0.0.1
+    container_name: SportBuddiesApp-Be-Gateway
+    build:
+      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - "8090:8090"
+    volumes:
+      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
+    environment:
+      BBDD_DOCKER: host.docker.internal
+      EUREKA_DOCKER: host.docker.internal
+    depends_on:
+      - sportbuddies-app-be-oauth
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-main:
+    image: sportbuddiesapp-be-main:0.0.1
+    container_name: SportBuddiesApp-Be-Main
+    build:
+      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
+      dockerfile: ./Dockerfile
+    ports:
+      - "8100:8100"
+    volumes:
+      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
+    environment:
+      BBDD_DOCKER: host.docker.internal
+      EUREKA_DOCKER: host.docker.internal
+    depends_on:
+      - sportbuddies-app-be-gateway
+    networks:
+      - sportbuddies-network
+
+networks:
+  sportbuddies-network:
+    driver: bridge
