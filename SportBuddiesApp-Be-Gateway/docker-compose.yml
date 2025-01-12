@@ -1,6 +1,7 @@
 services:
   appinfoantenas:
     image: sportbuddiesapp-be-gateway:0.0.1
+    container_name: SportBuddiesApp-Be-Gateway
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -10,3 +11,9 @@ services:
       - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
     environment:
       BBDD_DOCKER: host.docker.internal
+      EUREKA_DOCKER: host.docker.internal
+    networks:
+      - sportbuddies-network
+networks:
+  sportbuddies-network:
+    driver: bridge

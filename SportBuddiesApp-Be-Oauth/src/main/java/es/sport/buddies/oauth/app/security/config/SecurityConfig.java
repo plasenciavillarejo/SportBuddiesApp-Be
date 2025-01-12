@@ -278,7 +278,7 @@ public class SecurityConfig {
     // Necesitamos obtener la llave para poder generar el token de forma local cuando se trabaja con passkeys
     ConstantesApp.keyOauth = keyPair;
     RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-    exportPublicKey(publicKey);
+    //exportPublicKey(publicKey);
     RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
     // Necesitamos obtener el mismo UUID para poder generar el token de forma local cuando se trabaja con passkeys
     ConstantesApp.uuidOauth = UUID.randomUUID().toString();
@@ -306,7 +306,7 @@ public class SecurityConfig {
    * no se podrá, esto se hace para poder trabajar en el gateway y meter en el contexto de spring al usuario.
    * En cada ejecución creara el fichero desde cero, evitando la duplicida de la información
    * @param publicKey
-   */
+   
   private static void exportPublicKey(RSAPublicKey publicKey) {
     try (FileOutputStream fos = new FileOutputStream(ConstantesApp.FICHERPEMPLUBLIKEY)) {
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
@@ -316,7 +316,7 @@ public class SecurityConfig {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
+  }*/
 	
   @Bean
   JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {

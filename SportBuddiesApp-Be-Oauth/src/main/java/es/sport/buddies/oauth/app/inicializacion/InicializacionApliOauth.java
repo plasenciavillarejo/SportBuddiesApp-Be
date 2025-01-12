@@ -9,8 +9,8 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class InicializacionApliOauth {
 
-	@Value("${pass.public.key}")
-	private String publicKey;
+	//@Value("${pass.public.key}")
+	//private String publicKey;
 	
 	@Value("${seguridad.encriptacion}")
 	private String encriptacion;
@@ -48,7 +48,7 @@ public class InicializacionApliOauth {
 	@PostConstruct
 	public void init() {
 		
-		ConstantesApp.FICHERPEMPLUBLIKEY = publicKey;
+		//ConstantesApp.FICHERPEMPLUBLIKEY = publicKey;
 		
 		ConstantesApp.RSA = encriptacion;
 		

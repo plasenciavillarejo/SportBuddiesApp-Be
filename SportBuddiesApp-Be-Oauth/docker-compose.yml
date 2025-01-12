@@ -1,6 +1,8 @@
+version: '3.8'
 services:
   sportbuddiesappoauth:
     image: sportbuddiesapp-be-oauth:0.0.1
+    container_name: SportBuddiesApp-Be-Oauth
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -10,4 +12,9 @@ services:
       - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
     environment:
       BBDD_DOCKER: host.docker.internal
-
+      EUREKA_DOCKER: host.docker.internal
+    networks:
+      - sportbuddies-network
+networks:
+  sportbuddies-network:
+    driver: bridge
