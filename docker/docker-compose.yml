@@ -3,7 +3,7 @@ services:
     image: sportbuddiesapp-be-eureka:0.0.1
     container_name: SportBuddiesApp-Be-Eureka-Server
     build:
-       context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
+       context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
        dockerfile: Dockerfile
     ports:
       - "8761:8761"
@@ -14,12 +14,12 @@ services:
     image: sportbuddiesapp-be-oauth:0.0.1
     container_name: SportBuddiesApp-Be-Oauth
     build:
-      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
+      context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
       dockerfile: ./Dockerfile
     ports:
       - "9000:9000"
     volumes:
-      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
+      - C:/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
     environment:
       BBDD_DOCKER: host.docker.internal
       EUREKA_DOCKER: host.docker.internal
@@ -32,12 +32,12 @@ services:
     image: sportbuddiesapp-be-gateway:0.0.1
     container_name: SportBuddiesApp-Be-Gateway
     build:
-      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
+      context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
       dockerfile: ./Dockerfile
     ports:
       - "8090:8090"
     volumes:
-      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
+      - C:/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
     environment:
       BBDD_DOCKER: host.docker.internal
       EUREKA_DOCKER: host.docker.internal
@@ -50,12 +50,12 @@ services:
     image: sportbuddiesapp-be-main:0.0.1
     container_name: SportBuddiesApp-Be-Main
     build:
-      context: /Users/joseplasenciavillarejo/workspace_sportbuddies/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
+      context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
       dockerfile: ./Dockerfile
     ports:
       - "8100:8100"
     volumes:
-      - /Users/joseplasenciavillarejo/Desktop/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
+      - C:/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
     environment:
       BBDD_DOCKER: host.docker.internal
       EUREKA_DOCKER: host.docker.internal
