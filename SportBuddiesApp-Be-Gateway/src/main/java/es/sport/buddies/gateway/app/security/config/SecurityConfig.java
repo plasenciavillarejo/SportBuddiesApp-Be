@@ -134,7 +134,9 @@ public class SecurityConfig {
                 .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
                 .findFirst()
                 .orElse("http://default-redirect-uri.com"))
-            .authorizationUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
+            .authorizationUri(System.getenv("IP_HOST") != null ? System.getenv("IP_HOST") : ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
+            // Necesario para trabajar con docker, ya que la IP que permite el token debe ser externa y no dentro del contenedor
+            //.authorizationUri("http://192.168.0.22:9000/oauth2/authorize")
             .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))
             .jwkSetUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/.well-known/jwks.json"))
             .build())

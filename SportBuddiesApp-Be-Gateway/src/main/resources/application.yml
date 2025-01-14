@@ -6,7 +6,7 @@ spring:
         # La Ip que se indique aqui, sera la que confia cuando se genera el token dentro del apartado :
         # "iss": "http://192.168.0.22:9000", si se genera con 127.0.0.1 y se intenta validar con la ip 192.168.0.22 dara error
         jwt:
-          issuer-uri: "http://${IP_HOST:127.0.0.1}:9000"
+          issuer-uri: "http://192.168.0.22:9000"
 #      client:
 #        registration:
 #          client-app:
