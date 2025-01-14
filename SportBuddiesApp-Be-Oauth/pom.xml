@@ -75,7 +75,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.30</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Se agrega el cliente para poder trabajar con google -->
@@ -162,7 +161,7 @@
 	<repositories>
 		<repository>
 			<id>nexus-snapshots</id>
-			<url>http://host.docker.internal:8081/repository/SportBuddiesEntityApp/</url>
+			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>

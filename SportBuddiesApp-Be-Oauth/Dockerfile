@@ -21,6 +21,11 @@ COPY mvnw ./
 # Copiamos el settings.xml
 COPY settings.xml /root/.m2/settings.xml
 
+ENV JAVA_OPTS="-Duser.timezone=Europe/Madrid -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8453,server=y,suspend=n"
+
+# Exponer el puerto de depuración
+EXPOSE 8453
+
 # Cambiar permisos para el archivo mvnw
 RUN chmod +x mvnw
 
@@ -36,4 +41,5 @@ RUN ./mvnw clean package -DskipTests
 # Exponer el puerto 9000
 EXPOSE 9000
 
-ENTRYPOINT ["java", "-jar", "target/SportBuddiesApp-Be-Oauth-0.0.1.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar target/SportBuddiesApp-Be-Oauth-0.0.1.jar"]
+
