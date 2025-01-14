@@ -21,8 +21,10 @@ services:
     volumes:
       - C:/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
     environment:
-      BBDD_DOCKER: host.docker.internal
-      EUREKA_DOCKER: host.docker.internal
+      IP_HOST: 192.168.0.22
+      PORT: 9000
+      BBDD_DOCKER: 192.168.0.22:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
     depends_on:
       - sportbuddies-app-eureka-server     
     networks:
@@ -39,8 +41,9 @@ services:
     volumes:
       - C:/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
     environment:
-      BBDD_DOCKER: host.docker.internal
-      EUREKA_DOCKER: host.docker.internal
+      IP_HOST: 192.168.0.22
+      BBDD_DOCKER: 192.168.0.22:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server  
     depends_on:
       - sportbuddies-app-be-oauth
     networks:
@@ -57,8 +60,9 @@ services:
     volumes:
       - C:/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
     environment:
-      BBDD_DOCKER: host.docker.internal
-      EUREKA_DOCKER: host.docker.internal
+      IP_HOST: 192.168.0.22
+      BBDD_DOCKER: 192.168.0.22:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
     depends_on:
       - sportbuddies-app-be-gateway
     networks:
