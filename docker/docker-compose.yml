@@ -18,6 +18,7 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "9000:9000"
+      - "8453:8453"
     volumes:
       - C:/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
     environment:
