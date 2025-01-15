@@ -21,7 +21,9 @@ COPY mvnw ./
 # Copiamos el settings.xml
 COPY settings.xml /root/.m2/settings.xml
 
-ENV JAVA_OPTS="-Duser.timezone=Europe/Madrid -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8453,server=y,suspend=n"
+#ENV JAVA_OPTS="-Duser.timezone=Europe/Madrid -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8453,server=y,suspend=n"
+ENV JAVA_OPTS="-Duser.timezone=Europe/Madrid -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8454"
+
 
 # Exponer el puerto de depuración
 EXPOSE 8453
@@ -42,4 +44,5 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 9000
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar target/SportBuddiesApp-Be-Oauth-0.0.1.jar"]
+
 

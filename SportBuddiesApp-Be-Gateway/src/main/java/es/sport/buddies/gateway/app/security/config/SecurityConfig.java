@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -52,6 +53,9 @@ public class SecurityConfig {
   public SecurityConfig(IClientesOauthService clientOauthService) {
       this.clientOauthService = clientOauthService;
   }
+  
+  @Value("${port.oauth}")
+  private String portOauth;
   
   /**
    * Configuración Cors para la comunicación Entre Front y Back
@@ -134,7 +138,8 @@ public class SecurityConfig {
                 .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
                 .findFirst()
                 .orElse("http://default-redirect-uri.com"))
-            .authorizationUri(System.getenv("IP_HOST") != null ? System.getenv("IP_HOST") : ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
+            //.authorizationUri(System.getenv("IP_HOST") != null ? System.getenv("IP_HOST") : ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
+            .authorizationUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
             // Necesario para trabajar con docker, ya que la IP que permite el token debe ser externa y no dentro del contenedor
             //.authorizationUri("http://192.168.0.22:9000/oauth2/authorize")
             .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))

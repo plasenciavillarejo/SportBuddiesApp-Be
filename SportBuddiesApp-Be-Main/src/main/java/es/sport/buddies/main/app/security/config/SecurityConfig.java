@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/borrarCookie",
             "/swagger-ui/**",
             "/api-docs/**",
-            "/estado/pago").permitAll()
+            "/estado/pago",
+            "/usuario/crear").permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();

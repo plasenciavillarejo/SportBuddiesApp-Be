@@ -38,15 +38,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private IUsuarioService usuarioService;
     
-    /*
+/*   
     @Autowired
     private final JwtDecoder jwtDecoder;
 
     public JwtAuthenticationFilter(JwtDecoder jwtDecoder) {
         this.jwtDecoder = jwtDecoder;
     }
-     */
-
+     
+*/
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
@@ -59,18 +59,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           ConstantesMain.TOKEN = "";
         }
         try {
-          /* Decodificar token */
+       
           SignedJWT signedJWT = SignedJWT.parse(authHeader.substring(7));
           JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
           Map<String, Object> claims = claimsSet.getClaims();
           
-          /* Decodificando el Token utilizando la llave generada en SportBuddiesApp-Be-Oauth
-          String token = authHeader.substring(7);
-          LOGGER.info("Token JWT: {}", token);
-          Jwt jwt = jwtDecoder.decode(token);
-          List<GrantedAuthority> roles = jwt.getClaimAsStringList("roles").stream().map(role -> (GrantedAuthority) 
-                  new SimpleGrantedAuthority(role)).toList();
-          */
+       
           
           String userName = claims.get(ConstantesMain.SUB).toString();
           List<String> rolString = claimsSet.getStringListClaim(ConstantesMain.ROLES);

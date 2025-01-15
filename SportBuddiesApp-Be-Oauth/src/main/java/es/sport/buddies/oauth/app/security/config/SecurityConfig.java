@@ -120,7 +120,7 @@ public class SecurityConfig {
         .with(authorizationServerConfigurer, Customizer.withDefaults())
         .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
          // Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
-        .exceptionHandling((exceptions) -> exceptions.defaultAuthenticationEntryPointFor(
+        .exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
               new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN),
               new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
         .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
