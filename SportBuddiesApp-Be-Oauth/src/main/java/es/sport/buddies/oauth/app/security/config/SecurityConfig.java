@@ -1,19 +1,18 @@
 package es.sport.buddies.oauth.app.security.config;
 
-import java.io.FileOutputStream;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.X509EncodedKeySpec;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,13 +22,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,6 +46,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -49,13 +58,16 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import es.sport.buddies.entity.app.models.entity.ClientesOauth;
 import es.sport.buddies.entity.app.models.entity.Usuario;
+import es.sport.buddies.entity.app.models.service.IClientesOauthService;
 import es.sport.buddies.entity.app.models.service.ICodigoVerificacionService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.denied.handler.CustomAccessDeniedHandler;
 import es.sport.buddies.oauth.app.federated.FederatedIdentityAuthenticationSuccessHandler;
 import es.sport.buddies.oauth.app.federated.UserRepositoryOAuth2UserHandler;
+import es.sport.buddies.oauth.app.filter.JwtAuthenticationFilter;
 import es.sport.buddies.oauth.app.service.impl.EmailServiceImpl;
 import es.sport.buddies.oauth.app.service.impl.UserDetailServiceImpl;
 import es.sport.buddies.oauth.app.success.handler.MagicLinkOneTimeTokenGenerationSuccessHandler;
@@ -66,6 +78,16 @@ public class SecurityConfig {
   
   @Autowired
   private UserRepositoryOAuth2UserHandler ouaht2Handler;
+  
+
+  @Autowired
+  private IClientesOauthService clientOauthService; // Inyección directa
+
+  // Constructor para inyección de dependencias
+  public SecurityConfig(IClientesOauthService clientOauthService) {
+      this.clientOauthService = clientOauthService;
+  }
+  
   
   /**
    * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
@@ -156,16 +178,17 @@ public class SecurityConfig {
   // Configuración para el Default Security Filter Chain
   @Bean
   @Order(2)
-  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, MagicLinkOneTimeTokenGenerationSuccessHandler magic) throws Exception {
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, MagicLinkOneTimeTokenGenerationSuccessHandler magic
+      , JwtAuthenticationFilter authenticationFilter) throws Exception {
     /* Cuando implemento un formulario propio, al loguear por google, la repuesta llega a '/error?continue', para poder enviar el code generado al servicio angular tengo que permitir
      * dicho endpoint dentro de mi seguridad. Posteriormente ya funcionaría correctamente el redirect hacia el servicio de angular para generar el token.
-     * Pasa lo mismo cuando implementamos el POST para /login/validate-token, se debe permitir para evitar que se quede sin redireccionar cuando termina
+     * Pasa lo mismo cuando implem  entamos el POST para /login/validate-token, se debe permitir para evitar que se quede sin redireccionar cuando termina
      * el servicio en /login/generate-token/continue?
      */    
     http
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login/**","/error/**","/img/**", "/css/**",
+        .requestMatchers("/login/**","/oauth2/**", "/error/**","/img/**", "/css/**",
             "/assets/**", "/clienteOauth/**", "/login/generate-token/**",
             "/webauthn/**","/passkeys/**").permitAll()
         .requestMatchers("/dobleFactor").hasAnyAuthority("ROLE_TWO_F")
@@ -196,7 +219,8 @@ public class SecurityConfig {
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()));
+        .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
+        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
   
@@ -271,6 +295,35 @@ public class SecurityConfig {
     return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
   }
 */
+  
+  
+  @Bean
+  @Primary
+  RegisteredClientRepository registeredClientRepository() {
+    List<ClientesOauth> clientRegis = clientOauthService.findAll();
+    
+    List<RegisteredClient> registeredClients = clientRegis.stream()
+    .map(cli -> RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId(cli.getClientId())
+        .clientSecret(cli.getClientSecret())
+        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+        // Forma de autorización tipicas utilizado el estandar OUATH2
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+        .redirectUri(Arrays.stream(cli.getRedirectUris().split(","))
+            .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
+            .findFirst()
+            .orElse("http://default-redirect-uri.com"))
+        .postLogoutRedirectUri(cli.getPostLogoutRedirectUris())
+        .scope(OidcScopes.OPENID)
+        .scope(OidcScopes.PROFILE)
+        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(cli.getTimeAccesToken()))
+            .refreshTokenTimeToLive(Duration.ofDays(cli.getTimeRefrehsToken())).build())
+        // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
+        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
+        .build()).toList();
+    return new InMemoryRegisteredClientRepository(registeredClients);
+  }
   
   @Bean
   JWKSource<SecurityContext> jwkSource() {

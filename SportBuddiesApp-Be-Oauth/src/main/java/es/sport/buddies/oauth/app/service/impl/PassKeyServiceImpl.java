@@ -399,4 +399,12 @@ public class PassKeyServiceImpl {
     }
   }
   
+  public Map<String, String> token () {
+    return  Map.ofEntries(
+        Map.entry("access_token",
+            jwtServieImpl.generateToken("jose", "gateway-app",
+                Arrays.asList("ADMIN", "USER"),
+                Arrays.asList("openid", "profile"), 3L)));
+  }
+  
 }
