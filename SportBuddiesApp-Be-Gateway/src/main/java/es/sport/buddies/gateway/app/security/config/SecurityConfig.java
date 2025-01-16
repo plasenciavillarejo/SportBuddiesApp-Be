@@ -3,7 +3,6 @@ package es.sport.buddies.gateway.app.security.config;
 // Importamos método estático withDefaults
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
@@ -85,7 +83,7 @@ public class SecurityConfig {
 	@Bean
 	SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
 		return http.authorizeExchange(authHttp -> 
-			authHttp.pathMatchers("/authorized","/logout",
+			authHttp.pathMatchers("/authorized","/logout","/oauth2/**",
 			    "/api/main/reservaActividad/listarReserva",
 			    "/api/main/reservaActividad/comboInicio",
 			    "/api/main/reservaActividad/listadoMunicipios",
@@ -138,13 +136,13 @@ public class SecurityConfig {
                 .filter(uri -> uri.contains("authorized") || uri.contains("authorize"))
                 .findFirst()
                 .orElse("http://default-redirect-uri.com"))
-            //.authorizationUri(System.getenv("IP_HOST") != null ? System.getenv("IP_HOST") : ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
             .authorizationUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
-            // Necesario para trabajar con docker, ya que la IP que permite el token debe ser externa y no dentro del contenedor
-            //.authorizationUri("http://192.168.0.22:9000/oauth2/authorize")
             .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))
             .jwkSetUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/.well-known/jwks.json"))
+            .issuerUri("http://localhost:9000")
             .build())
+       /* .peek(lo -> System.out.println("\n" + ConstantesGateway.APPSPORTBUDDIOAUTH + "\n" 
+            + "http://".concat(System.getenv("IP_HOST")).concat(":"+portOauth).concat("/oauth2/authorize")))*/
         .toList();
 
     // Creamos repositorio reactivo

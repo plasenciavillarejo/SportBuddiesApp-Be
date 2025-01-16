@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
       String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            
+      
       if (authHeader != null && authHeader.startsWith(ConstantesMain.BEARER)) {
         if (request.getRequestURI().contains("/reservaUsuario/eliminar/")) {
           ConstantesMain.TOKEN = authHeader.substring(7);
@@ -89,6 +89,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           SecurityContextHolder.getContext().setAuthentication(userAuthentication);
         } catch (JwtException | ParseException e) {
           LOGGER.error("Error: {}", e.getMessage());
+          response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "NO ESTÁS AUTORIZADO NO TIENES TOKEN");
+          return;
         }
       }
       filterChain.doFilter(request, response);

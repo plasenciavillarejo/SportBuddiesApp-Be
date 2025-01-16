@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import es.sport.buddies.main.app.filter.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +43,10 @@ public class SecurityConfig {
             "/estado/pago",
             "/usuario/crear").permitAll()
         .anyRequest().authenticated())
+    .formLogin(login -> login.disable())
+    .httpBasic(basic -> basic.disable()) 
+    .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint((request, response, authException) 
+        -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();
   }
