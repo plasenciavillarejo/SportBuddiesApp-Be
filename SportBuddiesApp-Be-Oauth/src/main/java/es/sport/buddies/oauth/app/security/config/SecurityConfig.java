@@ -130,6 +130,19 @@ public class SecurityConfig {
       return new InMemoryOAuth2AuthorizationService(); 
   }
   
+  /**
+   * Importantes: Necesario para poder trabajar con contenedores docker, en el caso de no hacerlo de está forma, siempre tendremos el problema de
+   * "problem gateway Exceeded maxRedirects. Probably stuck in a redirect loop" ya que el contenedor está en una IP y el maquina en otra. Cuando generamos el token
+   * ya sea con una IP fija o con un localhost, si se trabaja con docker, el ISS se generará a nivel de contenedor.
+   * @return
+   */
+  @Bean
+  AuthorizationServerSettings authorizationServerSettings() {
+    return System.getenv("IP_HOST") != null ? AuthorizationServerSettings.builder()
+        .issuer("http://".concat(System.getenv("IP_HOST")).concat(":9000"))
+        .build() :  AuthorizationServerSettings.builder().build();   
+  }
+  
   @Bean
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -374,11 +387,6 @@ public class SecurityConfig {
   @Bean
   JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-  }
-
-  @Bean
-  AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().build();
   }
  
   /**

@@ -139,7 +139,6 @@ public class SecurityConfig {
             .authorizationUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/authorize"))
             .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))
             .jwkSetUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/.well-known/jwks.json"))
-            .issuerUri("http://localhost:9000")
             .build())
        /* .peek(lo -> System.out.println("\n" + ConstantesGateway.APPSPORTBUDDIOAUTH + "\n" 
             + "http://".concat(System.getenv("IP_HOST")).concat(":"+portOauth).concat("/oauth2/authorize")))*/
