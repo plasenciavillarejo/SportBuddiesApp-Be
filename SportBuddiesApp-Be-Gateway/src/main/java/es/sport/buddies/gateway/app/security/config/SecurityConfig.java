@@ -35,6 +35,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import es.sport.buddies.entity.app.models.entity.ClientesOauth;
 import es.sport.buddies.entity.app.models.service.IClientesOauthService;
 import es.sport.buddies.gateway.app.constantes.ConstantesGateway;
+import es.sport.buddies.gateway.app.utilidades.Utilidades;
 import reactor.core.publisher.Mono;
 
 /**
@@ -46,7 +47,10 @@ public class SecurityConfig {
 
   @Autowired
   private IClientesOauthService clientOauthService; // Inyección directa
-
+  
+  @Autowired
+  private Utilidades utilidades;
+  
   // Constructor para inyección de dependencias
   public SecurityConfig(IClientesOauthService clientOauthService) {
       this.clientOauthService = clientOauthService;
@@ -83,14 +87,7 @@ public class SecurityConfig {
 	@Bean
 	SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
 		return http.authorizeExchange(authHttp -> 
-			authHttp.pathMatchers("/authorized","/logout","/oauth2/**",
-			    "/api/main/reservaActividad/listarReserva",
-			    "/api/main/reservaActividad/comboInicio",
-			    "/api/main/reservaActividad/listadoMunicipios",
-			    "/api/main/reservaActividad/listadoReserva",
-			    "/api/main/borrarCookie",
-			    "/api/main/paypal/estado/pago",
-			    "/api/main/usuario/crear").permitAll()
+			authHttp.pathMatchers(utilidades.publicRoutes.toArray(new String[0])).permitAll()
 			.pathMatchers("/api/main/listar").hasAnyRole("ADMIN", "USER")
 			//.hasAnyAuthority("SCOPE_read", "SCOPE_write") -> De está format trabaja los roles de Oauth 2
 			//.pathMatchers(HttpMethod.POST, "/crear").hasAuthority("SCOPE_write")

@@ -38,15 +38,7 @@ public class SecurityConfig {
     return http
     .csrf(csrf -> csrf.disable())
     .authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/reservaActividad/listarReserva",
-            "/reservaActividad/comboInicio",
-            "/reservaActividad/listadoMunicipios",
-            "/reservaActividad/listadoReserva",
-            "/borrarCookie",
-            "/swagger-ui/**",
-            "/api-docs/**",
-            "/estado/pago",
-            "/usuario/crear").permitAll()
+        .requestMatchers(utilidades.publicRoutes.toArray(new String[0])).permitAll()
         .anyRequest().authenticated())
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();
