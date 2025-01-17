@@ -4,7 +4,7 @@ spring:
       resourceserver:
         # Ruta donde se va a validar el toquen (SportBuddiesApp-Be-Oauth)
         jwt:
-          issuer-uri: "http://${IP_HOST:127.0.0.1}:9000"
+          issuer-uri: "http://${IP_HOST:localhost}:9000"
 #      client:
 #        registration:
 #          client-app:

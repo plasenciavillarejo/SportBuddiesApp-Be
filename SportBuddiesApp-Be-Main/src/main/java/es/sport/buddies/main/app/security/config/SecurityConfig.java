@@ -1,5 +1,6 @@
 package es.sport.buddies.main.app.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,12 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import es.sport.buddies.main.app.filter.JwtAuthenticationFilter;
+import es.sport.buddies.main.app.utils.Utilidades;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+  @Autowired
+  private Utilidades utilidades;
+  
   @Bean
   AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
       throws Exception {
@@ -43,10 +48,6 @@ public class SecurityConfig {
             "/estado/pago",
             "/usuario/crear").permitAll()
         .anyRequest().authenticated())
-    .formLogin(login -> login.disable())
-    .httpBasic(basic -> basic.disable()) 
-    .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint((request, response, authException) 
-        -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
     .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
     .build();
   }

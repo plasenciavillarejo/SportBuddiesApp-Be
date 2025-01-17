@@ -1,7 +1,9 @@
 package es.sport.buddies.main.app.utils;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,20 @@ public class Utilidades {
 
   @Autowired
   private IReservaActividadService reservaActividadService;
+  
+  /**
+   * Función encargada de mapear todas las rutas públicas dentro de la aplicacion
+   */
+  public List<String> publicRoutes = Arrays.asList("/reservaActividad/listarReserva",
+      "/reservaActividad/comboInicio",
+      "/reservaActividad/listadoMunicipios",
+      "/reservaActividad/listadoReserva",
+      "/borrarCookie",
+      "/swagger-ui/**",
+      "/api-docs/**",
+      "/estado/pago",
+      "/usuario/crear");
+
   
   /**
    * Función encargada de validar una sucripción activa
