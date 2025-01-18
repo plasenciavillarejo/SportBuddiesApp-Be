@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -22,7 +23,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -78,16 +78,9 @@ public class SecurityConfig {
   
   @Autowired
   private UserRepositoryOAuth2UserHandler ouaht2Handler;
-  
 
-  @Autowired
-  private IClientesOauthService clientOauthService; // Inyección directa
-
-  // Constructor para inyección de dependencias
-  public SecurityConfig(IClientesOauthService clientOauthService) {
-      this.clientOauthService = clientOauthService;
-  }
-  
+  @Value("${server.port}")
+  private String portOauth;
   
   /**
    * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
@@ -133,14 +126,19 @@ public class SecurityConfig {
   /**
    * Importantes: Necesario para poder trabajar con contenedores docker, en el caso de no hacerlo de está forma, siempre tendremos el problema de
    * "problem gateway Exceeded maxRedirects. Probably stuck in a redirect loop" ya que el contenedor está en una IP y el maquina en otra. Cuando generamos el token
-   * ya sea con una IP fija o con un localhost, si se trabaja con docker, el ISS se generará a nivel de contenedor.
+   * ya sea con a nivel interno de contenedor o con un localhost, el ISS que se genera debe ser igual al que genero el endpoint del code:
+   * Ejemplo trabajando con el BE:
+   *  1.- Genero el Token mediante el endpoint -> http://localhost:9000/oauth2/token
+   *  2.- Cuando veo token dentro de jwt.io veo que el ISS lo genera http://localhost:9000
+   *  3.- Dentro del Gateway 'application.yml' le indico que el endpoint que va a validar la autenticidad es el http://localhost:900.
+   *  Sí esto no coincide tendremos un '401 no autorizado' ya que no confia quien genero el token.
    * @return
    */
   @Bean
   AuthorizationServerSettings authorizationServerSettings() {
-    return System.getenv("IP_HOST") != null ? AuthorizationServerSettings.builder()
-        .issuer("http://".concat(System.getenv("IP_HOST")).concat(":9000"))
-        .build() :  AuthorizationServerSettings.builder().build();   
+    return System.getenv("IP_HOST") != null
+        ? AuthorizationServerSettings.builder().issuer(ConstantesApp.HTTP.concat(System.getenv("IP_HOST")).concat(":" + portOauth)).build()
+        : AuthorizationServerSettings.builder().build();
   }
   
   @Bean
@@ -153,7 +151,7 @@ public class SecurityConfig {
     http.cors(Customizer.withDefaults())
         .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
         .with(authorizationServerConfigurer, Customizer.withDefaults())
-        .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
          // Redirigir a la página de inicio de sesión cuando no está autenticado desde el punto final de autorización
         .exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
               new LoginUrlAuthenticationEntryPoint(ConstantesApp.LOGIN),
@@ -225,9 +223,9 @@ public class SecurityConfig {
         /* Configuración seguridad para PASSKEYS */
         .webAuthn(webAuth -> webAuth.rpName("Spring Security Passkeys")
             .rpId("SportBuddiesApp")
-            .allowedOrigins("http://localhost:9000")
-            //.disableDefaultRegistrationPage(true)
-            )
+            .allowedOrigins(System.getenv("IP_HOST") != null
+                ? ConstantesApp.HTTP.concat(System.getenv("IP_HOST")).concat(":" + portOauth)
+                : "http://localhost:9000"))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
@@ -237,82 +235,9 @@ public class SecurityConfig {
     return http.build();
   }
   
-  /**
-   * Función para trabajar con usuarios en memoria para hacer pruebas
-   * @return
-   
-  @Bean
-  UserDetailsService userDetailsService() {
-    UserDetails userDetails = User.builder()
-        .username("jose")
-        .password("{noop}12345")
-        .roles("USER")
-        .build();
-    return new InMemoryUserDetailsManager(userDetails);
-  }
-   */
-  
-  /** Configuración de nuestro cliente FRONT-END
-	 Para acceder a más informacíon de oauthg acceder al siguiente EndPoint: http://localhost:9000/.well-known/oauth-authorization-server 
-  @Bean
-  RegisteredClientRepository registeredClientRepository() {
-    RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId(ConstantesApp.CLIENTID)
-        .clientSecret(passwordEncoder().encode(ConstantesApp.CLIENTSECRET))
-        //.clientSecret("{noop}12345")
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        // Forma de autorización tipicas utilizado el estandar OUATH2
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-        // Protegemos el proyecto principal (SPRING CLOUD GATEWAY) - Por defecto, esto no hace falta implementarlo ya que viene
-        .redirectUri(ConstantesApp.REDIRECTURIOAUTH2)
-        // Deberemos de crear un endpoint dentro del cliente (SPRING CLOUD GATEWAY) para poder obtener el código de AUTHORIZATION_CODE para generar el token
-        .redirectUri(ConstantesApp.ENDPOINTAUTHORIZATION)
-        // Ruta por defecto cuando se haga logout dentro de la web ( Es opcional cuando trabajamos con servicios REST)
-        .postLogoutRedirectUri(ConstantesApp.ENDPOINTLOGOUT)
-        // Roles para la aplicación por defecto
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        //.scope("read")
-        //.scope("write")
-        // Modificaicón del tiempo de expiración del Token y Refresh Token
-        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
-        		.refreshTokenTimeToLive(Duration.ofDays(1)).build())
-        // requireAuthorizationConsent(false) se indica a false ya que por defecto los roles son OPENID y PROFILE
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    
-    RegisteredClient oauthDebugger = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId("clietn-oauthdebugger")
-        .clientSecret(passwordEncoder().encode("secret"))
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-        .redirectUri("https://oauthdebugger.com/debug")
-        .scope(OidcScopes.OPENID)
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()).build();
-    
-    RegisteredClient clientAngular = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId(ConstantesApp.CLIENTIDANGULAR)
-        .clientSecret(passwordEncoder().encode(ConstantesApp.CLIENTSECRETANGULAR))
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-        // Envia el CODE a la página de angular
-        .redirectUri(ConstantesApp.REDIRECTANGULAR)
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(12))
-            .refreshTokenTimeToLive(Duration.ofDays(1)).build())
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build()).build();
-    
-    return new InMemoryRegisteredClientRepository(oidcClient,clientAngular);
-  }
-*/
-  
-  
   @Bean
   @Primary
-  RegisteredClientRepository registeredClientRepository() {
+  RegisteredClientRepository registeredClientRepository(IClientesOauthService clientOauthService) {
     List<ClientesOauth> clientRegis = clientOauthService.findAll();
     
     List<RegisteredClient> registeredClients = clientRegis.stream()
