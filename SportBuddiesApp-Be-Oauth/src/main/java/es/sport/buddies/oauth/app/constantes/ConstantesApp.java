@@ -67,5 +67,8 @@ public class ConstantesApp {
   public static String uuidOauth = null;
   
   public static String ISSUERVALIDATETOKEN = ""; 
+ 
+  public static final String HTTP = "http://";
+  
   
 }

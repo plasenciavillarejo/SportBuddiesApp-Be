@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,16 +44,6 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private IClientesOauthService clientOauthService; // Inyección directa
-  
-  @Autowired
-  private Utilidades utilidades;
-  
-  // Constructor para inyección de dependencias
-  public SecurityConfig(IClientesOauthService clientOauthService) {
-      this.clientOauthService = clientOauthService;
-  }
   
   @Value("${port.oauth}")
   private String portOauth;
@@ -85,7 +74,7 @@ public class SecurityConfig {
   }
 
 	@Bean
-	SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
+	SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http, Utilidades utilidades) {
 		return http.authorizeExchange(authHttp -> 
 			authHttp.pathMatchers(utilidades.publicRoutes.toArray(new String[0])).permitAll()
 			.pathMatchers("/api/main/listar").hasAnyRole("ADMIN", "USER")
@@ -118,7 +107,7 @@ public class SecurityConfig {
 	 * @return
 	 */
   @Bean
-  ReactiveClientRegistrationRepository clientRegistrationRepository() {
+  ReactiveClientRegistrationRepository clientRegistrationRepository(IClientesOauthService clientOauthService) {
     List<ClientesOauth> clientRegis = clientOauthService.findAll();
 
     List<ClientRegistration> listClient = clientRegis.stream()

@@ -122,7 +122,8 @@ public class PassKeyServiceImpl {
     
     return new PublicKeyCredentialCreationOptions(new PublicKeyCredentialRpEntity(request.getRpId(), "SportBuddiesApp"),
         new PublicKeyCredentialUserEntity(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8),
-            request.getUsername(), request.getDisplayName()),
+            request.getUsername(), 
+            request.getDisplayName()),
         generateChallenge(),
         /**
          * Configurar los parámetros de clave pública: Especificar múltiples algoritmos
