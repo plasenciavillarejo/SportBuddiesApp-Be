@@ -225,7 +225,11 @@ public class SecurityConfig {
             .rpId("SportBuddiesApp")
             .allowedOrigins(System.getenv("IP_HOST") != null
                 ? ConstantesApp.HTTP.concat(System.getenv("IP_HOST")).concat(":" + portOauth)
+<<<<<<< HEAD
                 : "http://localhost:9000"))*/
+=======
+                : "http://localhost:9000"))
+>>>>>>> 185381eb416a8c71fe799e368272d064c5e81498
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
