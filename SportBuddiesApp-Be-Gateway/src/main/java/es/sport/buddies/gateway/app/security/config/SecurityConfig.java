@@ -55,7 +55,8 @@ public class SecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfig = new CorsConfiguration();
-    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+    // PLASENCIA - CORREGIR LUEGO
+    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://200.234.230.76:4200"));
     corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
     corsConfig.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
     corsConfig.setAllowCredentials(true);
