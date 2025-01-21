@@ -43,7 +43,8 @@ services:
     environment:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 200.234.230.76:3306
-      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server  
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
+      MAVEN_OPTS: "-Ppro"
     depends_on:
       - sportbuddies-app-eureka-server
       - sportbuddies-app-be-oauth

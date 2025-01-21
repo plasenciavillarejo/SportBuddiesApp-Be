@@ -205,11 +205,35 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<!-- Por defecto, si no le indicamos ningún perfil al compilar, cargará el perfil DEV -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<repository.url>
+					http://localhost:8081/repository/SportBuddiesEntityApp/</repository.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>pro</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<repository.url>
+					http://200.234.230.76:8081/repository/SportBuddiesEntityApp/</repository.url>
+			</properties>
+		</profile>
+	</profiles>
+
 	<!-- ## Se indica el repositior del sportBuddiesEntity donde esta ubicado dentro de nexus ## -->
 	<repositories>
 		<repository>
 			<id>nexus-snapshots</id>
-			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
+			<url>${repository.url}</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
