@@ -102,6 +102,7 @@ public class ReservaUsuarioMainServiceImpl implements IReservaUsuarioMainService
       } else if(resUsuario.isAbonado() && resUsuario.getMetodoPago().equalsIgnoreCase(ConstantesMain.METODOPAGOTARJETA)){
         PagoTarjeta tarjeta = pagoTarjetaService.findByReservaUsuario_IdReserva(resUsuario.getIdReserva()); 
         if(tarjeta != null) {
+          LOGGER.info("Se procede a realizar el pago con tarjeta");
           devolverPagoTarjeta(tarjeta.getIdDevolucion());
         }
       }

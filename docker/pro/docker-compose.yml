@@ -1,0 +1,73 @@
+services:
+  sportbuddies-app-eureka-server:
+    image: sportbuddiesapp-be-eureka:0.0.1
+    container_name: SportBuddiesApp-Be-Eureka-Server
+    build:
+       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
+       dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-be-oauth:
+    image: sportbuddiesapp-be-oauth:0.0.1
+    container_name: SportBuddiesApp-Be-Oauth
+    build:
+      context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
+      dockerfile: ./Dockerfile
+    ports:
+      - "9000:9000"
+      - "8453:8453"
+    volumes:
+      - /root/DeploySportBuddieApp/config/SportBuddies_repository/SportBuddiesApp-Be-Oauth/dev/config:/repo-oauth
+    environment:
+      IP_HOST: sportbuddies-app-be-oauth
+      BBDD_DOCKER: 200.234.230.76:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+    depends_on:
+      - sportbuddies-app-eureka-server     
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-be-gateway:
+    image: sportbuddiesapp-be-gateway:0.0.1
+    container_name: SportBuddiesApp-Be-Gateway
+    build:
+      context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - "8090:8090"
+    volumes:
+      - /root/DeploySportBuddieApp/config/SportBuddies_repository/SportBuddiesApp-Be-Gateway/dev/config:/repo-gateway
+    environment:
+      IP_HOST: sportbuddies-app-be-oauth
+      BBDD_DOCKER: 200.234.230.76:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server  
+    depends_on:
+      - sportbuddies-app-eureka-server
+      - sportbuddies-app-be-oauth
+    networks:
+      - sportbuddies-network
+
+  sportbuddies-app-main:
+    image: sportbuddiesapp-be-main:0.0.1
+    container_name: SportBuddiesApp-Be-Main
+    build:
+      context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
+      dockerfile: ./Dockerfile
+    ports:
+      - "8100:8100"
+    volumes:
+      - /root/DeploySportBuddieApp/config/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
+    environment:
+      BBDD_DOCKER: 200.234.230.76:3306
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+    depends_on:
+      - sportbuddies-app-be-gateway
+    networks:
+      - sportbuddies-network
+
+networks:
+  sportbuddies-network:
+    driver: bridge
