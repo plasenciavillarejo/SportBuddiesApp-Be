@@ -56,7 +56,7 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfig = new CorsConfiguration();
     // PLASENCIA - CORREGIR LUEGO
-    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://200.234.230.76:443"));
+    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://www.sportbuddies.es"));
     corsConfig.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_DISPOSITION));
