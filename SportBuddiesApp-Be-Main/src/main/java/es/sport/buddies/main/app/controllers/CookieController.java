@@ -25,7 +25,7 @@ public class CookieController {
     c.setMaxAge(0);
     c.setPath("/");
     c.setHttpOnly(true);
-    //c.setSecure(true);
+    c.setSecure(true);
     response.addCookie(c);
     return new ResponseEntity<>(HttpStatus.OK);
   }

@@ -57,14 +57,9 @@ public class SecurityConfig {
     CorsConfiguration corsConfig = new CorsConfiguration();
     // PLASENCIA - CORREGIR LUEGO
     corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://200.234.230.76:4200"));
-    corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
     corsConfig.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_DISPOSITION));
-    
-    // Configuración de las cabeceras CORS
-    corsConfig.addExposedHeader(HttpHeaders.AUTHORIZATION);
-    corsConfig.addExposedHeader(HttpHeaders.CONTENT_DISPOSITION);
     
     // Pasamos el corsConfig a nuestras rutas urls    
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

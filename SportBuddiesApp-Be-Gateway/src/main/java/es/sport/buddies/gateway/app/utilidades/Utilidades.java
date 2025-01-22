@@ -24,6 +24,7 @@ public class Utilidades {
       "/api/main/borrarCookie", 
       "/api/main/paypal/estado/pago", 
       "/api/main/usuario/crear",
-      "/api/oauth2/**");
+      "/api/oauth2/**",
+      "/api/oauth2/passkeys/**");
   
 }

@@ -165,6 +165,11 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /**
+   * Función CORS necesaria ya que el FE se comunica para loguear el token de OAUTH2 directamente con la aplicación
+   * en el caso de no indicar los cors, no se podrá generar el token cuando se reciba el code
+   * @return
+   */
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfig = new CorsConfiguration();
@@ -220,12 +225,12 @@ public class SecurityConfig {
             .showDefaultSubmitPage(false)
             // Cuando se envia el token el servicio POST por defecto es /login/ott, lo cambio por uno propio
             .loginProcessingUrl("/login/validate-token"))
-        /* Configuración seguridad para PASSKEYS
+        /* Configuración seguridad para PASSKEYS*/
         .webAuthn(webAuth -> webAuth.rpName("Spring Security Passkeys")
             .rpId("SportBuddiesApp")
             .allowedOrigins(System.getenv("IP_HOST") != null
                 ? ConstantesApp.HTTP.concat(System.getenv("IP_HOST")).concat(":" + portOauth)
-                : "http://localhost:9000"))*/
+                : "http://localhost:9000"))
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
