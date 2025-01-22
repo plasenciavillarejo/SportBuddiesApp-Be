@@ -4,7 +4,7 @@ services:
     container_name: SportBuddiesApp-Be-Eureka-Server
     build:
        context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
-       dockerfile: Dockerfile
+       dockerfile: ./Dockerfile
     ports:
       - "8761:8761"
     networks:
@@ -24,7 +24,8 @@ services:
     environment:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 200.234.230.76:3306
-      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
+      MAVEN_OPTS: "-Ppro" 
     depends_on:
       - sportbuddies-app-eureka-server     
     networks:
@@ -63,7 +64,8 @@ services:
       - /root/DeploySportBuddieApp/config/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
     environment:
       BBDD_DOCKER: 200.234.230.76:3306
-      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
+      MAVEN_OPTS: "-Ppro"
     depends_on:
       - sportbuddies-app-be-gateway
     networks:

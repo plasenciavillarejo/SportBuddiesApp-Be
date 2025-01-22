@@ -1,33 +1,41 @@
-# La variante -slim está basada en Debian y tiene apt-get disponible.
-FROM openjdk:17.0.2-jdk-slim
+# Etapa 1: Build
+FROM openjdk:17.0.2-jdk-slim AS builder
 
-# Instalar el paquete tzdata para las zonas horarias
-RUN apt-get update && apt-get install -y tzdata
+# Establecer directorio de trabajo
+WORKDIR /build
 
-# Establecer la zona horaria a Europe/Madrid
-ENV TZ=Europe/Madrid
-
-# Crea el directorio dentro del target
-WORKDIR /app
-
-# Copiar archivos necesarios para resolver las dependencias
+# Copiar archivos esenciales de Maven para aprovechar la cache
 COPY pom.xml ./
 COPY .mvn ./.mvn
 COPY mvnw ./
 
-# Cambiar permisos para el archivo mvnw
-RUN chmod +x mvnw
+# Descargar dependencias (esto se cachea si el código no cambia)
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
-# Compilamos el proyecto saltando los test, no compile el test y no va a ejecutar nada relacionado al codigo fuente.
-RUN ./mvnw clean package -Dmaven-test-skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
-
-# Copiar el resto de los archivos del proyecto
+# Copiar el resto del proyecto al contenedor
 COPY src ./src
 
-# Compilar el proyecto saltando los test
-RUN ./mvnw clean package -DskipTests
+# Construir la aplicación, saltando pruebas
+RUN ./mvnw clean package -DskipTests ${MAVEN_OPTS}
 
-# Exponer el puerto 8761
-EXPOSE 8761
+# Etapa 2: Runtime
+FROM openjdk:17.0.2-jdk-slim
 
-ENTRYPOINT ["java", "-jar", "target/SportBuddiesApp-Be-Eureka-0.0.1.jar"]
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Instalar tzdata para la configuración de zona horaria
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+# Establecer la zona horaria
+ENV TZ=Europe/Madrid
+
+# Copiar el archivo JAR desde la etapa de build
+COPY --from=builder /build/target/*.jar SportBuddiesApp-Be-Eureka-0.0.1.jar
+
+# Exponer el puerto del servicio
+EXPOSE 9000
+
+# Ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "SportBuddiesApp-Be-Eureka-0.0.1.jar"]
