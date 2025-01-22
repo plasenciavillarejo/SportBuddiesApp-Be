@@ -11,16 +11,13 @@ COPY mvnw ./
 COPY settings.xml /root/.m2/settings.xml
 
 # Descargar dependencias (esto se cachea si el código no cambia)
-RUN chmod +x mvnw && ./mvnw -Ppro dependency:go-offline -B
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 # Copiar el resto del proyecto al contenedor
 COPY src ./src
 
-# Recogemos el valor definido dentro de nuestro compose
-ARG MAVEN_OPTS
-
 # Construir la aplicación, saltando pruebas
-RUN ./mvnw clean package -DskipTests ${MAVEN_OPTS}
+RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Runtime
 FROM openjdk:17.0.2-jdk-slim

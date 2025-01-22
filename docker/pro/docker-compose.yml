@@ -16,8 +16,6 @@ services:
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
       dockerfile: ./Dockerfile
-      args:
-        MAVEN_OPTS: "-Ppro"
     ports:
       - "9000:9000"
       - "8453:8453"
@@ -37,9 +35,7 @@ services:
     container_name: SportBuddiesApp-Be-Gateway
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
-      dockerfile: ./Dockerfile
-      args:
-        MAVEN_OPTS: "-Ppro"      
+      dockerfile: ./Dockerfile  
     ports:
       - "8090:8090"
     volumes:
@@ -59,9 +55,7 @@ services:
     container_name: SportBuddiesApp-Be-Main
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
-      dockerfile: ./Dockerfile
-      args:
-        MAVEN_OPTS: "-Ppro"      
+      dockerfile: ./Dockerfile  
     ports:
       - "8100:8100"
     volumes:
