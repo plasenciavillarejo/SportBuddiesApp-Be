@@ -61,11 +61,13 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
-			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
+			<!--<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>-->
+			<url>http://200.234.230.76:8081/repository/SportBuddiesEntityApp/</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
-			<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>
+			<!--<url>http://localhost:8081/repository/SportBuddiesEntityApp/</url>-->
+			<url>http://200.234.230.76:8081/repository/SportBuddiesEntityApp/</url>
 		</snapshotRepository>
 	</distributionManagement> 
 
