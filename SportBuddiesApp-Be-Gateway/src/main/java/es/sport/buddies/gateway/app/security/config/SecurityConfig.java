@@ -44,6 +44,7 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+  private static final List<String> ALLOWED_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS");
   
   @Value("${port.oauth}")
   private String portOauth;
@@ -55,9 +56,9 @@ public class SecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfig = new CorsConfiguration();
-    // PLASENCIA - CORREGIR LUEGO
-    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://www.sportbuddies.es"));
-    corsConfig.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
+    // Permite las solicitudes sean aceptadas por el servidor.
+    corsConfig.setAllowedOrigins(Arrays.asList(System.getenv("IP_HOST") != null ? ConstantesGateway.DOMINIOLOCALHOST : ConstantesGateway.DOMINIOHTTPS));
+    corsConfig.setAllowedMethods(ALLOWED_HTTP_METHODS);
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_DISPOSITION));
     
@@ -65,7 +66,6 @@ public class SecurityConfig {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     // se aplique a todas nuestras rutas
     source.registerCorsConfiguration("/**", corsConfig);
-    
     return source;
   }
 
@@ -122,10 +122,7 @@ public class SecurityConfig {
             .tokenUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/oauth2/token"))
             .jwkSetUri(ConstantesGateway.APPSPORTBUDDIOAUTH.concat("/.well-known/jwks.json"))
             .build())
-       /* .peek(lo -> System.out.println("\n" + ConstantesGateway.APPSPORTBUDDIOAUTH + "\n" 
-            + "http://".concat(System.getenv("IP_HOST")).concat(":"+portOauth).concat("/oauth2/authorize")))*/
         .toList();
-
     // Creamos repositorio reactivo
     return registrationId -> Mono.justOrEmpty(listClient.stream()
         .filter(clientRegistration -> clientRegistration.getRegistrationId().equals(registrationId))

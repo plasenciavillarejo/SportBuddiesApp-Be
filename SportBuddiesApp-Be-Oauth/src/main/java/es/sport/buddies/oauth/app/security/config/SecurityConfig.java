@@ -82,6 +82,8 @@ public class SecurityConfig {
   @Value("${server.port}")
   private String portOauth;
   
+  private static final List<String> ALLOWED_HTTP_METHODS = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS");
+  
   /**
    * Si queremos que la validación de la seguridad se haga desde nuestra BBDD deberemos de inyectar UserDetailService.java de Spring security y dentro del constructor
    * enviar el  IUsuarioService.java, de lo contrario dentro de dicha clase no se tiene acceso a la inyección de las dependencias
@@ -175,9 +177,9 @@ public class SecurityConfig {
     CorsConfiguration corsConfig = new CorsConfiguration();
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
-    corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Métodos permitidos
-    corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE,
-        HttpHeaders.ACCEPT, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));  // Headers permitidos
+    corsConfig.setAllowedMethods(ALLOWED_HTTP_METHODS);
+    corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_DISPOSITION,
+        HttpHeaders.CONTENT_TYPE,HttpHeaders.ACCEPT, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
     // Configuración de las cabeceras CORS
     corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
     corsConfig.addExposedHeader(HttpHeaders.AUTHORIZATION);
@@ -187,7 +189,6 @@ public class SecurityConfig {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     // se aplique a todas nuestras rutas
     source.registerCorsConfiguration("/**", corsConfig);
-    
     return source;
   }
   
