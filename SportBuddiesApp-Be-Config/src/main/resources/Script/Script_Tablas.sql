@@ -45,7 +45,7 @@ CREATE TABLE `usuarios_in_role` (
 --
 -- Dumping data for table `usuarios_in_role`
 --
-INSERT INTO `usuarios_in_role` VALUES (3,3),(3,4),(8,4),(9,4),(10,4),(11,4),(12,4),(18,4),(19,4),(20,4),(21,4),(22,4),(23,4),(24,4),(25,4);
+INSERT INTO `usuarios_in_role` VALUES (3,3),(3,4),(4,4),(8,4),(9,4),(10,4),(11,4),(12,4),(18,4),(19,4),(20,4),(21,4),(22,4),(23,4),(24,4),(25,4);
 
 --
 -- Table structure for table `autorizacion_consentimiento`
