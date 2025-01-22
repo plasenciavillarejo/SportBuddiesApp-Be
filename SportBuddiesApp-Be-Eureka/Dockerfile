@@ -16,7 +16,7 @@ RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 COPY src ./src
 
 # Construir la aplicación, saltando pruebas
-RUN ./mvnw clean package -DskipTests ${MAVEN_OPTS}
+RUN ./mvnw clean package -DskipTests 
 
 # Etapa 2: Runtime
 FROM openjdk:17.0.2-jdk-slim

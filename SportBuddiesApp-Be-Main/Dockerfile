@@ -16,6 +16,9 @@ RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 # Copiar el resto del proyecto al contenedor
 COPY src ./src
 
+# Recogemos el valor definido dentro de nuestro compose
+ARG MAVEN_OPTS
+
 # Construir la aplicación, saltando pruebas
 RUN ./mvnw clean package -DskipTests ${MAVEN_OPTS}
 

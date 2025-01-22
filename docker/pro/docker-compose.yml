@@ -16,6 +16,8 @@ services:
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
       dockerfile: ./Dockerfile
+      args:
+        MAVEN_OPTS: "-Ppro"
     ports:
       - "9000:9000"
       - "8453:8453"
@@ -25,7 +27,6 @@ services:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 200.234.230.76:3306
       EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
-      MAVEN_OPTS: "-Ppro" 
     depends_on:
       - sportbuddies-app-eureka-server     
     networks:
@@ -37,6 +38,8 @@ services:
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
       dockerfile: ./Dockerfile
+      args:
+        MAVEN_OPTS: "-Ppro"      
     ports:
       - "8090:8090"
     volumes:
@@ -45,7 +48,6 @@ services:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 200.234.230.76:3306
       EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
-      MAVEN_OPTS: "-Ppro"
     depends_on:
       - sportbuddies-app-eureka-server
       - sportbuddies-app-be-oauth
@@ -58,6 +60,8 @@ services:
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
       dockerfile: ./Dockerfile
+      args:
+        MAVEN_OPTS: "-Ppro"      
     ports:
       - "8100:8100"
     volumes:
@@ -65,7 +69,6 @@ services:
     environment:
       BBDD_DOCKER: 200.234.230.76:3306
       EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
-      MAVEN_OPTS: "-Ppro"
     depends_on:
       - sportbuddies-app-be-gateway
     networks:
