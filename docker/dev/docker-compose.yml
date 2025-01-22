@@ -3,8 +3,8 @@ services:
     image: sportbuddiesapp-be-eureka:0.0.1
     container_name: SportBuddiesApp-Be-Eureka-Server
     build:
-       context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
-       dockerfile: Dockerfile
+       context: ../../../SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
+       dockerfile: ./Dockerfile
     ports:
       - "8761:8761"
     networks:
@@ -14,7 +14,7 @@ services:
     image: sportbuddiesapp-be-oauth:0.0.1
     container_name: SportBuddiesApp-Be-Oauth
     build:
-      context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
+      context: ../../../SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
       dockerfile: ./Dockerfile
     ports:
       - "9000:9000"
@@ -24,7 +24,8 @@ services:
     environment:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 192.168.0.22:3306
-      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
+      MAVEN_OPTS: "-Pdev" 
     depends_on:
       - sportbuddies-app-eureka-server     
     networks:
@@ -34,7 +35,7 @@ services:
     image: sportbuddiesapp-be-gateway:0.0.1
     container_name: SportBuddiesApp-Be-Gateway
     build:
-      context: C:/workspace_sportbuddies_be/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
+      context: ../../../SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
       dockerfile: ./Dockerfile
     ports:
       - "8090:8090"
@@ -44,7 +45,7 @@ services:
       IP_HOST: sportbuddies-app-be-oauth
       BBDD_DOCKER: 192.168.0.22:3306
       EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
-      MAVEN_OPTS: "-Pdev"  
+      MAVEN_OPTS: "-Pdev"
     depends_on:
       - sportbuddies-app-eureka-server
       - sportbuddies-app-be-oauth
@@ -63,7 +64,8 @@ services:
       - C:/SportBuddies_repository/SportBuddiesApp-Be-Main/dev/config:/repo-main
     environment:
       BBDD_DOCKER: 192.168.0.22:3306
-      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server 
+      EUREKA_DOCKER: SportBuddiesApp-Be-Eureka-Server
+      MAVEN_OPTS: "-Pdev"
     depends_on:
       - sportbuddies-app-be-gateway
     networks:
