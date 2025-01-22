@@ -57,7 +57,7 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfig = new CorsConfiguration();
     // Permite las solicitudes sean aceptadas por el servidor.
-    corsConfig.setAllowedOrigins(Arrays.asList(System.getenv("IP_HOST") != null ? ConstantesGateway.DOMINIOLOCALHOST : ConstantesGateway.DOMINIOHTTPS));
+    corsConfig.setAllowedOrigins(Arrays.asList(ConstantesGateway.DOMINIOLOCALHOST, ConstantesGateway.DOMINIOHTTPS));
     corsConfig.setAllowedMethods(ALLOWED_HTTP_METHODS);
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_DISPOSITION));
