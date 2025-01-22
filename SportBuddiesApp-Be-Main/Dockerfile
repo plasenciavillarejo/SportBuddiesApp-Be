@@ -20,7 +20,7 @@ COPY src ./src
 ARG MAVEN_OPTS
 
 # Construir la aplicación, saltando pruebas
-RUN ./mvnw clean package -DskipTests ${MAVEN_OPTS}
+RUN ./mvnw clean package -DskipTests -Ppro
 
 # Etapa 2: Runtime
 FROM openjdk:17.0.2-jdk-slim
