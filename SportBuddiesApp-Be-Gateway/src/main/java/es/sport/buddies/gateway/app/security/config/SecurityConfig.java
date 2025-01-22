@@ -58,7 +58,7 @@ public class SecurityConfig {
     // PLASENCIA - CORREGIR LUEGO
     corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://200.234.230.76:4200"));
     corsConfig.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
-    //corsConfig.setAllowCredentials(true);
+    corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_DISPOSITION));
     
     // Pasamos el corsConfig a nuestras rutas urls    
