@@ -11,7 +11,7 @@ COPY mvnw ./
 COPY settings.xml /root/.m2/settings.xml
 
 # Descargar dependencias (esto se cachea si el código no cambia)
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B -Ppro
+RUN chmod +x mvnw && ./mvnw -Ppro dependency:go-offline -B
 
 # Copiar el resto del proyecto al contenedor
 COPY src ./src
