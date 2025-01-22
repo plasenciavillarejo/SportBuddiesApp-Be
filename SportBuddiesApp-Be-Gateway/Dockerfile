@@ -10,12 +10,8 @@ COPY .mvn ./.mvn
 COPY mvnw ./
 COPY settings.xml /root/.m2/settings.xml
 
-# Recogemos el valor definido dentro de nuestro compose
-ARG MAVEN_OPTS
-ENV MAVEN_OPTS=${MAVEN_OPTS}
-
 # Descargar dependencias (esto se cachea si el código no cambia)
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B -P${MAVEN_OPTS}
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B -Ppro
 
 # Copiar el resto del proyecto al contenedor
 COPY src ./src
