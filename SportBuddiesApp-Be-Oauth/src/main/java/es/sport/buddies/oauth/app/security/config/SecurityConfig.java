@@ -164,27 +164,6 @@ public class SecurityConfig {
             .userDetailsService(usu()));
     return http.build();
   }
-
-  @Bean
-  CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration corsConfig = new CorsConfiguration();
-    corsConfig.setAllowCredentials(true);
-    corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
-    corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Métodos permitidos
-    corsConfig.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE,
-        HttpHeaders.ACCEPT, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));  // Headers permitidos
-    // Configuración de las cabeceras CORS
-    corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
-    corsConfig.addExposedHeader(HttpHeaders.AUTHORIZATION);
-    corsConfig.addExposedHeader(HttpHeaders.CONTENT_DISPOSITION);
-    
-    // Pasamos el corsConfig a nuestras rutas urls    
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    // se aplique a todas nuestras rutas
-    source.registerCorsConfiguration("/**", corsConfig);
-    
-    return source;
-  }
   
   // Configuración para el Default Security Filter Chain
   @Bean
@@ -229,7 +208,7 @@ public class SecurityConfig {
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.disable())
         .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
