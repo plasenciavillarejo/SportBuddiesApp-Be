@@ -15,7 +15,7 @@ ARG MAVEN_OPTS
 ENV MAVEN_OPTS=${MAVEN_OPTS}
 
 # Descargar dependencias (esto se cachea si el código no cambia)
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B ${MAVEN_OPTS}
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B -Ppro
 
 # Copiar el resto del proyecto al contenedor
 COPY src ./src
