@@ -164,6 +164,7 @@ public class SecurityConfig {
             .userDetailsService(usu()));
     return http.build();
   }
+<<<<<<< HEAD
 
   /**
    * Función CORS necesaria ya que el FE se comunica para loguear el token de OAUTH2 directamente con la aplicación
@@ -190,6 +191,8 @@ public class SecurityConfig {
     
     return source;
   }
+=======
+>>>>>>> fe12c0ed82d15ada42c5e69a05bce557baa26be3
   
   // Configuración para el Default Security Filter Chain
   @Bean
@@ -234,7 +237,7 @@ public class SecurityConfig {
         .oauth2Login(oauth -> oauth.loginPage(ConstantesApp.LOGIN)
             .successHandler(authenticationSuccessHandler()))
         .logout(logout -> logout.logoutSuccessUrl(ConstantesApp.LOGOUTANGULAR))
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.disable())
         .exceptionHandling(exc -> exc.accessDeniedHandler(accessDeniedHandler()))
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
