@@ -420,15 +420,8 @@ public class PassKeyServiceImpl {
           .fechaFin(new Date()).precioTotal(BigDecimal.valueOf(4.99))
           .metodoPago("Tarjeta").estadoPago("Activo")
           .build();
-      
-      try {
-        LOGGER.info("Se procede almacenar la suscripción del usuario: {}", usuario.getNombreUsuario());
-        suscripcionService.guardarSuscripcion(suscripcion);
-        LOGGER.info("Suscripción almacenada exitosamente");
-      } catch (Exception e) {
-        LOGGER.error("Error al guardar la Suscripción para el usuariuo: {}", usuario.getNombreUsuario());
-        throw new PasskeyException("Error al guardar la Suscripción para el usuariuo:");
-      }
+           
+      guardarSuscripcion(suscripcion, usuario);
       
       LOGGER.info("Recuperando los planes de pago gratuitos por defecto");
       PlanPago planPago = planPagoService.findByIdPlanPago(1);
@@ -440,16 +433,32 @@ public class PassKeyServiceImpl {
           .fechaRenovacion(new Date())
           .build();
       
-      try {
-        LOGGER.info("Se procede almacenar el plan pago del usuario");
-        usuarioPlanPagoService.guardarPlanPago(usuaPlanPago);
-        LOGGER.info("Plan pago del usuario {} almacenado exitosamente", usuario.getNombreUsuario());
-      } catch (Exception e) {
-        throw new PasskeyException("Error al almacenar el plan pago del usuario: " + usuario.getNombreUsuario());
-      }
+      guardarUsuarioPlanPago(usuaPlanPago, usuario);
+      
     } catch (Exception e) {
       throw new PasskeyException(e);
     }
   }
-  
+    
+  private void guardarSuscripcion(Suscripcion suscripcion, Usuario usuario) throws PasskeyException {
+    try {
+      LOGGER.info("Se procede almacenar la suscripción del usuario: {}", usuario.getNombreUsuario());
+      suscripcionService.guardarSuscripcion(suscripcion);
+      LOGGER.info("Suscripción almacenada exitosamente");
+    } catch (Exception e) {
+      LOGGER.error("Error al guardar la Suscripción para el usuariuo: {}", usuario.getNombreUsuario());
+      throw new PasskeyException("Error al guardar la Suscripción para el usuariuo:");
+    }
+  }
+
+  private void guardarUsuarioPlanPago(UsuarioPlanPago usuaPlanPago, Usuario usuario) throws PasskeyException {
+    try {
+      LOGGER.info("Se procede almacenar el plan pago del usuario");
+      usuarioPlanPagoService.guardarPlanPago(usuaPlanPago);
+      LOGGER.info("Plan pago del usuario {} almacenado exitosamente", usuario.getNombreUsuario());
+    } catch (Exception e) {
+      throw new PasskeyException("Error al almacenar el plan pago del usuario: " + usuario.getNombreUsuario());
+    }
+  }
+
 }
