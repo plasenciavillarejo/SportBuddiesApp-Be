@@ -2,6 +2,7 @@ services:
   sportbuddies-app-eureka-server:
     image: sportbuddiesapp-be-eureka:0.0.1
     container_name: SportBuddiesApp-Be-Eureka-Server
+    restart: always
     build:
        context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Eureka
        dockerfile: ./Dockerfile
@@ -13,6 +14,7 @@ services:
   sportbuddies-app-be-oauth:
     image: sportbuddiesapp-be-oauth:0.0.1
     container_name: SportBuddiesApp-Be-Oauth
+    restart: always
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Oauth
       dockerfile: ./Dockerfile
@@ -33,6 +35,7 @@ services:
   sportbuddies-app-be-gateway:
     image: sportbuddiesapp-be-gateway:0.0.1
     container_name: SportBuddiesApp-Be-Gateway
+    restart: always
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Gateway
       dockerfile: ./Dockerfile  
@@ -53,6 +56,7 @@ services:
   sportbuddies-app-main:
     image: sportbuddiesapp-be-main:0.0.1
     container_name: SportBuddiesApp-Be-Main
+    restart: always
     build:
       context: /root/DeploySportBuddieApp/SportBuddiesApp-Be/SportBuddiesApp-Be-Main
       dockerfile: ./Dockerfile  

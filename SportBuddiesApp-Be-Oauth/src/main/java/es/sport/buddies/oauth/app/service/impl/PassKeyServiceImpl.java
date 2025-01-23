@@ -1,5 +1,6 @@
 package es.sport.buddies.oauth.app.service.impl;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +55,17 @@ import es.sport.buddies.entity.app.dto.PasskeyCredentialDto;
 import es.sport.buddies.entity.app.dto.PasskeyDto;
 import es.sport.buddies.entity.app.models.dao.IUsuariosDao;
 import es.sport.buddies.entity.app.models.entity.CodeChallange;
+import es.sport.buddies.entity.app.models.entity.PlanPago;
+import es.sport.buddies.entity.app.models.entity.Suscripcion;
 import es.sport.buddies.entity.app.models.entity.Usuario;
 import es.sport.buddies.entity.app.models.entity.UsuarioPassKey;
+import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
 import es.sport.buddies.entity.app.models.service.ICodeChallangeService;
+import es.sport.buddies.entity.app.models.service.IPlanPagoService;
 import es.sport.buddies.entity.app.models.service.IRoleService;
+import es.sport.buddies.entity.app.models.service.ISuscripcionService;
 import es.sport.buddies.entity.app.models.service.IUsuarioPassKeyService;
+import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.oauth.app.constantes.ConstantesApp;
 import es.sport.buddies.oauth.app.exceptions.PasskeyException;
@@ -88,6 +96,15 @@ public class PassKeyServiceImpl {
   
   @Autowired
   private ICodeChallangeService codeChallangeService;
+  
+  @Autowired
+  private ISuscripcionService suscripcionService;
+  
+  @Autowired
+  private IPlanPagoService planPagoService;
+  
+  @Autowired
+  private IUsuarioPlanPagoService usuarioPlanPagoService;
   
   // Convertidores de la librería webauthn4j
   private final AttestationObjectConverter attestationObjectConverter;
@@ -395,17 +412,44 @@ public class PassKeyServiceImpl {
       LOGGER.info("Se procede a guardar al usuario");
       usuariosService.guardarUsuario(usuario);
       LOGGER.info("Usuario guardado correctamente");
+      
+      /* PLASENCIA - Por perrería he agregado la misma lógica que hay cuando se crea un usuario
+      con nombre y contraseña. Para futuro, mejorar esto generando un único registro para ambos */
+      Suscripcion suscripcion = Suscripcion.builder()
+          .usuario(usuario).fechaInicio(new Date())
+          .fechaFin(new Date()).precioTotal(BigDecimal.valueOf(4.99))
+          .metodoPago("Tarjeta").estadoPago("Activo")
+          .build();
+      
+      try {
+        LOGGER.info("Se procede almacenar la suscripción del usuario: {}", usuario.getNombreUsuario());
+        suscripcionService.guardarSuscripcion(suscripcion);
+        LOGGER.info("Suscripción almacenada exitosamente");
+      } catch (Exception e) {
+        LOGGER.error("Error al guardar la Suscripción para el usuariuo: {}", usuario.getNombreUsuario());
+        throw new PasskeyException("Error al guardar la Suscripción para el usuariuo:");
+      }
+      
+      LOGGER.info("Recuperando los planes de pago gratuitos por defecto");
+      PlanPago planPago = planPagoService.findByIdPlanPago(1);
+      
+      UsuarioPlanPago usuaPlanPago = UsuarioPlanPago.builder()
+          .suscripcion(suscripcion)
+          .planPago(planPago)
+          .reservasRestantes(planPago.getLimiteReservas())
+          .fechaRenovacion(new Date())
+          .build();
+      
+      try {
+        LOGGER.info("Se procede almacenar el plan pago del usuario");
+        usuarioPlanPagoService.guardarPlanPago(usuaPlanPago);
+        LOGGER.info("Plan pago del usuario {} almacenado exitosamente", usuario.getNombreUsuario());
+      } catch (Exception e) {
+        throw new PasskeyException("Error al almacenar el plan pago del usuario: " + usuario.getNombreUsuario());
+      }
     } catch (Exception e) {
       throw new PasskeyException(e);
     }
-  }
-  
-  public Map<String, String> token () {
-    return  Map.ofEntries(
-        Map.entry("access_token",
-            jwtServieImpl.generateToken("jose", "gateway-app",
-                Arrays.asList("ADMIN", "USER"),
-                Arrays.asList("openid", "profile"), 3L)));
   }
   
 }
