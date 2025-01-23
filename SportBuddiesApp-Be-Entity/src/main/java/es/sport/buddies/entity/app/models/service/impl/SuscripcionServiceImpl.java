@@ -19,5 +19,11 @@ public class SuscripcionServiceImpl implements ISuscripcionService {
   public Suscripcion findByUsuario_IdUsuario(long idUsuario) {
     return suscripcionDao.findByUsuario_IdUsuario(idUsuario);
   }
+
+  @Override
+  @Transactional
+  public void guardarSuscripcion(Suscripcion suscripcion) {
+    suscripcionDao.save(suscripcion);
+  }
   
 }

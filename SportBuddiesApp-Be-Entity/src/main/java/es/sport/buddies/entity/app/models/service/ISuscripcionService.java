@@ -8,4 +8,6 @@ public interface ISuscripcionService {
 
   public Suscripcion findByUsuario_IdUsuario(@Param("idUsuario") long idUsuario);
   
+  public void guardarSuscripcion(Suscripcion suscripcion);
+  
 }

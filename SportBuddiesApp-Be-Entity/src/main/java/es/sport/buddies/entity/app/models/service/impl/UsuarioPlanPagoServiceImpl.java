@@ -25,5 +25,11 @@ public class UsuarioPlanPagoServiceImpl implements IUsuarioPlanPagoService {
   public void actualizarReservasRestantes(long reservasRestantes, long idPlanPago) {
     usuarioPlanPagoDao.actualizarReservasRestantes(reservasRestantes, idPlanPago);
   }
+
+  @Override
+  @Transactional
+  public void guardarPlanPago(UsuarioPlanPago usuarioPlanPago) {
+    usuarioPlanPagoDao.save(usuarioPlanPago);
+  }
   
 }

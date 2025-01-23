@@ -1,6 +1,8 @@
 package es.sport.buddies.main.app.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +11,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.sport.buddies.entity.app.dto.UsuarioDto;
+import es.sport.buddies.entity.app.models.entity.PlanPago;
+import es.sport.buddies.entity.app.models.entity.Suscripcion;
 import es.sport.buddies.entity.app.models.entity.Usuario;
+import es.sport.buddies.entity.app.models.entity.UsuarioPlanPago;
+import es.sport.buddies.entity.app.models.service.IPlanPagoService;
 import es.sport.buddies.entity.app.models.service.IRoleService;
+import es.sport.buddies.entity.app.models.service.ISuscripcionService;
+import es.sport.buddies.entity.app.models.service.IUsuarioPlanPagoService;
 import es.sport.buddies.entity.app.models.service.IUsuarioService;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 import es.sport.buddies.main.app.convert.map.struct.IUsuarioMapStruct;
@@ -32,6 +40,15 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
   @Autowired
   private IRoleService roleServie;
   
+  @Autowired
+  private ISuscripcionService suscripcionService;
+  
+  @Autowired
+  private IPlanPagoService planPagoService;
+  
+  @Autowired
+  private IUsuarioPlanPagoService usuarioPlanPagoService;
+  
   @Override
   public void crearNuevoUsuario(UsuarioDto usuarioDto) throws UsuarioException {
     LOGGER.info("Se procede a validar que el nombre del usuario no exista");
@@ -52,7 +69,47 @@ public class UsuarioMainServiceImpl implements IUsuarioMainService {
     usuario.setRoles(Arrays.asList(roleServie.findByNombreRol("USER")));
     usuario.setEnabled(true);    
     // Al guardar al usario, se almacena en la tabla UsuarioInRol su relación entre usuario y el rol
-    guardarUsuario(usuario);    
+    guardarUsuario(usuario); 
+    
+    /* PLASENCIA - UNA VEZ QUE GUARDO AL USUARIO DEBEO DE CREAR POR DEFECTO UNA SUSCRIPCION PARA DARLE COMO ACTIVA, DEBIDO A QUE AL REALIZAR UNA SUSCRIPCIÓN VALIDA PRIMERO
+    SI ESTÁ ESTA ACTIVA LUEGO. SE DEBE DE ASIGNAR A LA TABLA USUARIOS_PLAN_PAGO LA CUAL ESTA CONTIENE AL USUARIO REGISTRADO Y LAS RESERVAS RESTANTES QUE LE QUEDAN,
+    ESTAS RESERVAS RESTANTES SE OBTIENE POR DEFECTO DE UNA TABLA MAESTRA LLAMADA PLANES_DE_PAGO */
+    Suscripcion suscripcion = Suscripcion.builder()
+        .usuario(usuario)
+        .fechaInicio(new Date())
+        // No se está validando la fecha fin de la suscripcion ya que todo es gratuito actualmente
+        .fechaFin(new Date())
+        .precioTotal(BigDecimal.valueOf(4.99))
+        .metodoPago("Tarjeta")
+        .estadoPago("Activo")
+        .build();
+    
+    try {
+      LOGGER.info("Se procede almacenar la suscripción del usuario: {}", usuario.getNombreUsuario());
+      suscripcionService.guardarSuscripcion(suscripcion);
+      LOGGER.info("Suscripción almacenada exitosamente");
+    } catch (Exception e) {
+      LOGGER.error("Error al guardar la Suscripción para el usuariuo: {}", usuario.getNombreUsuario());
+      throw new UsuarioException("Error al guardar la Suscripción para el usuariuo:");
+    }
+    
+    LOGGER.info("Recuperando los planes de pago gratuitos por defecto");
+    PlanPago planPago = planPagoService.findByIdPlanPago(1);
+    
+    UsuarioPlanPago usuaPlanPago = UsuarioPlanPago.builder()
+        .suscripcion(suscripcion)
+        .planPago(planPago)
+        .reservasRestantes(planPago.getLimiteReservas())
+        .fechaRenovacion(new Date())
+        .build();
+    
+    try {
+      LOGGER.info("Se procede almacenar el plan pago del usuario");
+      usuarioPlanPagoService.guardarPlanPago(usuaPlanPago);
+      LOGGER.info("Plan pago del usuario {} almacenado exitosamente", usuario.getNombreUsuario());
+    } catch (Exception e) {
+      throw new UsuarioException("Error al almacenar el plan pago del usuario: " + usuario.getNombreUsuario());
+    }
   }
 
   /**

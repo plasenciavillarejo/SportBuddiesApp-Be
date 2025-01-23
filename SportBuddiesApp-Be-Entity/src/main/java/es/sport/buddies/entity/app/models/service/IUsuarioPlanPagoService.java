@@ -10,4 +10,6 @@ public interface IUsuarioPlanPagoService {
   
   public void actualizarReservasRestantes(@Param("reservasRestantes") long reservasRestantes, @Param("idPlanPago") long idPlanPago);
   
+  public void guardarPlanPago(UsuarioPlanPago usuarioPlanPago);
+  
 }
