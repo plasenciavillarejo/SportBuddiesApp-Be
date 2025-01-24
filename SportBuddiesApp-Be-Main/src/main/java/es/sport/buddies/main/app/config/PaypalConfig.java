@@ -9,6 +9,7 @@ import com.paypal.base.rest.APIContext;
 import es.sport.buddies.main.app.constantes.ConstantesMain;
 
 @Configuration
+// SE indica a nivel de clase Inicializacion.java
 @DependsOn("inicializacion")
 public class PaypalConfig {
 
